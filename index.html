@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>電子化賽程系統</title>
+		<script src="resource/custom.js"></script>
+	</head>
+	<body>
+	<div>
+		<table>
+			<tr><th colspan="2">請輸入競賽編號</th></tr>
+			<tr><td colspan="2"><input type="text" id="gameno"></td></tr>
+			<tr><th colspan="2">請輸入參賽人數</th></tr>
+			<tr><td colspan="2"><input type="number" id="amount" value="16" min="9"></td></tr>
+			<tr><th colspan="2">請選擇賽程排列方式</th></tr>
+			<tr><td><form id="type"><input type="radio" name="type" value="a">手動排籤</td><td><input type="radio" name="type" value="b">系統抽籤</form></td></tr>
+		</table>
+		<button onclick="enter()">確定</button>
+		<div id="players" style="display: none;">
+		</div>
+	</div>
+	</body>
+</html>

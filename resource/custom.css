@@ -1,0 +1,44 @@
+input {
+	width: 90px;
+}
+
+table tr td {
+	width: 100px;
+	height: 25px;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+.t-r {
+	border-top: 2px solid black;
+	border-right: 2px solid black;
+}
+
+.b-r {
+	border-bottom: 2px solid black;
+	border-right: 2px solid black;
+}
+
+.r {
+	border-right: 2px solid black;
+}
+
+.b {
+	border-bottom: 2px solid black;
+}
+
+.t-r_red {
+	border-top: 2px solid red;
+	border-right: 2px solid red;
+}
+
+.b-r_red {
+	border-bottom: 2px solid red;
+	border-right: 2px solid red;
+}
+
+.r_red {
+	border-right: 2px solid red;
+}
