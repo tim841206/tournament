@@ -1,5 +1,6 @@
 <?php
 include_once("resource/database.php");
+include_once("resource/custom.php");
 
 $mode = $_POST['mode'];
 $amount = $_POST['amount'];
@@ -12,7 +13,6 @@ if (!is_validAmount($amount)) {
 else {
 	mysql_query("INSERT INTO GAMEMAIN (GAMENO, AMOUNT) VALUES ('$gameno', '$amount')");
 	if ($mode == 'auto') {
-		// process data
 		$rand = array();
 		for ($i = 0; $i < $amount; $i++) {
 			array_push($rand, $i);
@@ -112,63 +112,29 @@ else {
 				}
 			}
 		}
-		// process public
-		$start = '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>電子化賽程系統</title><link rel="stylesheet" type="text/css" href="../resource/custom.css"></head><body>';
-		$public_content = '<table><tr><td>單位</td><td>名稱</td></tr>';
-		$adjust_content = '<script src="../resource/custom.js"></script><table><tr><td>單位</td><td>名稱</td></tr>';
+		// process chart
 		if ($amount > 8 && $amount <= 16) {
 			createGameState(16, $gameno);
 			$index = 1;
 			for ($i = 1; $i <= 8; $i++) {
 				$single = query($gameno, $i*2-1);
 				$double = query($gameno, $i*2);
-				if ($single['unit'] == 'none') {
-					$public_content .= '<tr><td></td><td>Bye</td><td id="p'.($i*4-3).'_1"></td><td id="p'.($i*4-3).'_2"></td><td id="p'.($i*4-3).'_3"></td><td id="p'.($i*4-3).'_4"></td><td id="p'.($i*4-3).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4-2).'_1"></td><td id="p'.($i*4-2).'_2"></td><td id="p'.($i*4-2).'_3"></td><td id="p'.($i*4-2).'_4"></td><td id="p'.($i*4-2).'_5"></td></tr><tr><td>'.$double['unit'].'</td><td>'.$double['name'].'</td><td id="p'.($i*4-1).'_1"></td><td id="p'.($i*4-1).'_2"></td><td id="p'.($i*4-1).'_3"></td><td id="p'.($i*4-1).'_4"></td><td id="p'.($i*4-1).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4).'_1"></td><td id="p'.($i*4).'_2"></td><td id="p'.($i*4).'_3"></td><td id="p'.($i*4).'_4"></td><td id="p'.($i*4).'_5"></td></tr>';
-					$adjust_content .= '<tr><td></td><td>Bye</td><td id="p'.($i*4-3).'_1"></td><td id="p'.($i*4-3).'_2"></td><td id="p'.($i*4-3).'_3"></td><td id="p'.($i*4-3).'_4"></td><td id="p'.($i*4-3).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4-2).'_1"></td><td id="p'.($i*4-2).'_2"></td><td id="p'.($i*4-2).'_3"></td><td id="p'.($i*4-2).'_4"></td><td id="p'.($i*4-2).'_5"></td></tr><tr><td>'.$double['unit'].'</td><td>'.$double['name'].'</td><td id="p'.($i*4-1).'_1"></td><td id="p'.($i*4-1).'_2"></td><td id="p'.($i*4-1).'_3"></td><td id="p'.($i*4-1).'_4"></td><td id="p'.($i*4-1).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4).'_1"></td><td id="p'.($i*4).'_2"></td><td id="p'.($i*4).'_3"></td><td id="p'.($i*4).'_4"></td><td id="p'.($i*4).'_5"></td></tr>';
-				}
-				elseif ($double['unit'] == 'none') {
-					$public_content .= '<tr><td>'.$single['unit'].'</td><td>'.$single['name'].'</td><td id="p'.($i*4-3).'_1"></td><td id="p'.($i*4-3).'_2"></td><td id="p'.($i*4-3).'_3"></td><td id="p'.($i*4-3).'_4"></td><td id="p'.($i*4-3).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4-2).'_1"></td><td id="p'.($i*4-2).'_2"></td><td id="p'.($i*4-2).'_3"></td><td id="p'.($i*4-2).'_4"></td><td id="p'.($i*4-2).'_5"></td></tr><tr><td></td><td>Bye</td><td id="p'.($i*4-1).'_1"></td><td id="p'.($i*4-1).'_2"></td><td id="p'.($i*4-1).'_3"></td><td id="p'.($i*4-1).'_4"></td><td id="p'.($i*4-1).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4).'_1"></td><td id="p'.($i*4).'_2"></td><td id="p'.($i*4).'_3"></td><td id="p'.($i*4).'_4"></td><td id="p'.($i*4).'_5"></td></tr>';
-					$adjust_content .= '<tr><td>'.$single['unit'].'</td><td>'.$single['name'].'</td><td id="p'.($i*4-3).'_1"></td><td id="p'.($i*4-3).'_2"></td><td id="p'.($i*4-3).'_3"></td><td id="p'.($i*4-3).'_4"></td><td id="p'.($i*4-3).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4-2).'_1"></td><td id="p'.($i*4-2).'_2"></td><td id="p'.($i*4-2).'_3"></td><td id="p'.($i*4-2).'_4"></td><td id="p'.($i*4-2).'_5"></td></tr><tr><td></td><td>Bye</td><td id="p'.($i*4-1).'_1"></td><td id="p'.($i*4-1).'_2"></td><td id="p'.($i*4-1).'_3"></td><td id="p'.($i*4-1).'_4"></td><td id="p'.($i*4-1).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4).'_1"></td><td id="p'.($i*4).'_2"></td><td id="p'.($i*4).'_3"></td><td id="p'.($i*4).'_4"></td><td id="p'.($i*4).'_5"></td></tr>';
-				}
-				else {
-					$public_content .= '<tr><td>'.$single['unit'].'</td><td>'.$single['name'].'</td><td id="p'.($i*4-3).'_1"></td><td id="p'.($i*4-3).'_2"></td><td id="p'.($i*4-3).'_3"></td><td id="p'.($i*4-3).'_4"></td><td id="p'.($i*4-3).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4-2).'_1" align="right">'.$index.'</td><td id="p'.($i*4-2).'_2"></td><td id="p'.($i*4-2).'_3"></td><td id="p'.($i*4-2).'_4"></td><td id="p'.($i*4-2).'_5"></td></tr><tr><td>'.$double['unit'].'</td><td>'.$double['name'].'</td><td id="p'.($i*4-1).'_1"></td><td id="p'.($i*4-1).'_2"></td><td id="p'.($i*4-1).'_3"></td><td id="p'.($i*4-1).'_4"></td><td id="p'.($i*4-1).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4).'_1"></td><td id="p'.($i*4).'_2"></td><td id="p'.($i*4).'_3"></td><td id="p'.($i*4).'_4"></td><td id="p'.($i*4).'_5"></td></tr>';
-					$adjust_content .= '<tr><td>'.$single['unit'].'</td><td>'.$single['name'].'</td><td id="p'.($i*4-3).'_1"></td><td id="p'.($i*4-3).'_2"></td><td id="p'.($i*4-3).'_3"></td><td id="p'.($i*4-3).'_4"></td><td id="p'.($i*4-3).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4-2).'_1" align="right">'.$index.'</td><td id="p'.($i*4-2).'_2"><input type="text" id="'.$index.'_above"></td><td id="p'.($i*4-2).'_3"></td><td id="p'.($i*4-2).'_4"></td><td id="p'.($i*4-2).'_5"></td></tr><tr><td>'.$double['unit'].'</td><td>'.$double['name'].'</td><td id="p'.($i*4-1).'_1"></td><td id="p'.($i*4-1).'_2"><input type="text" id="'.$index.'_below"></td><td id="p'.($i*4-1).'_3"></td><td id="p'.($i*4-1).'_4"></td><td id="p'.($i*4-1).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4).'_1"></td><td id="p'.($i*4).'_2"></td><td id="p'.($i*4).'_3"></td><td id="p'.($i*4).'_4"></td><td id="p'.($i*4).'_5"></td></tr>';
+				if ($single['unit'] != 'none' && $double['unit'] != 'none') {
 					mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
 					$index++;
 				}
 			}
 			for ($i = 1; $i <= 4; $i++) {
-				$pos = $i*8-4;
-				$public_content = str_replace('<td id="p'.$pos.'_2"></td>', '<td id="p'.$pos.'_2" align="right">'.$index.'</td>', $public_content);
-				$adjust_content = str_replace('<td id="p'.$pos.'_2"></td>', '<td id="p'.$pos.'_2" align="right">'.$index.'</td>', $adjust_content);
-				$adjust_content = str_replace('<td id="p'.$pos.'_3"></td>', '<td id="p'.$pos.'_3"><input type="text" id="'.$index.'_above"></td>', $adjust_content);
-				$adjust_content = str_replace('<td id="p'.($pos+1).'_3"></td>', '<td id="p'.($pos+1).'_3"><input type="text" id="'.$index.'_below"></td>', $adjust_content);
 				mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i+8");
 				$index++;
 			}
 			for ($i = 1; $i <= 2; $i++) {
-				$pos = $i*16-8;
-				$public_content = str_replace('<td id="p'.$pos.'_3"></td>', '<td id="p'.$pos.'_3" align="right">'.$index.'</td>', $public_content);
-				$adjust_content = str_replace('<td id="p'.$pos.'_3"></td>', '<td id="p'.$pos.'_3" align="right">'.$index.'</td>', $adjust_content);
-				$adjust_content = str_replace('<td id="p'.$pos.'_4"></td>', '<td id="p'.$pos.'_4"><input type="text" id="'.$index.'_above"></td>', $adjust_content);
-				$adjust_content = str_replace('<td id="p'.($pos+1).'_4"></td>', '<td id="p'.($pos+1).'_4"><input type="text" id="'.$index.'_below"></td>', $adjust_content);
 				mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i+12");
 				$index++;
 			}
-			$public_content = str_replace('<td id="p16_4"></td>', '<td id="p16_4" align="right">'.$index.'</td>', $public_content);
-			$adjust_content = str_replace('<td id="p16_4"></td>', '<td id="p16_4" align="right">'.$index.'</td>', $adjust_content);
-			$adjust_content = str_replace('<td id="p16_5"></td>', '<td id="p16_5"><input type="text" id="'.$index.'_above"></td>', $adjust_content);
-			$adjust_content = str_replace('<td id="p17_5"></td>', '<td id="p17_5"><input type="text" id="'.$index.'_below"></td>', $adjust_content);
 			mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=15");
-			$public_content .= '</table>';
-			$adjust_content .= '</table><button onclick="update(\''.$gameno.'\')">確定更新</button>';
-			$end = '</body><script src="../resource/16.js"></script></html>';
-			$file = fopen("public/" . $gameno . ".html", "w");
-			fwrite($file, $start.$public_content.$end);
-			fclose($file);
-			$file = fopen("adjust/" . $gameno . ".html", "w");
-			fwrite($file, $start.$adjust_content.$end);
-			fclose($file);
+			makePublic($amount, $gameno);
+			makeEdit($amount, $gameno);
 			echo json_encode(array('message' => 'Success', 'gameno' => $gameno));
 		}
 		elseif ($amount > 16 && $amount <= 32) {
@@ -177,62 +143,26 @@ else {
 			for ($i = 1; $i <= 16; $i++) {
 				$single = query($gameno, $i*2-1);
 				$double = query($gameno, $i*2);
-				if ($single['unit'] == 'none') {
-					$public_content .= '<tr><td></td><td>Bye</td><td id="p'.($i*4-3).'_1"></td><td id="p'.($i*4-3).'_2"></td><td id="p'.($i*4-3).'_3"></td><td id="p'.($i*4-3).'_4"></td><td id="p'.($i*4-3).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4-2).'_1"></td><td id="p'.($i*4-2).'_2"></td><td id="p'.($i*4-2).'_3"></td><td id="p'.($i*4-2).'_4"></td><td id="p'.($i*4-2).'_5"></td></tr><tr><td>'.$double['unit'].'</td><td>'.$double['name'].'</td><td id="p'.($i*4-1).'_1"></td><td id="p'.($i*4-1).'_2"></td><td id="p'.($i*4-1).'_3"></td><td id="p'.($i*4-1).'_4"></td><td id="p'.($i*4-1).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4).'_1"></td><td id="p'.($i*4).'_2"></td><td id="p'.($i*4).'_3"></td><td id="p'.($i*4).'_4"></td><td id="p'.($i*4).'_5"></td></tr>';
-					$adjust_content .= '<tr><td></td><td>Bye</td><td id="p'.($i*4-3).'_1"></td><td id="p'.($i*4-3).'_2"></td><td id="p'.($i*4-3).'_3"></td><td id="p'.($i*4-3).'_4"></td><td id="p'.($i*4-3).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4-2).'_1"></td><td id="p'.($i*4-2).'_2"></td><td id="p'.($i*4-2).'_3"></td><td id="p'.($i*4-2).'_4"></td><td id="p'.($i*4-2).'_5"></td></tr><tr><td>'.$double['unit'].'</td><td>'.$double['name'].'</td><td id="p'.($i*4-1).'_1"></td><td id="p'.($i*4-1).'_2"></td><td id="p'.($i*4-1).'_3"></td><td id="p'.($i*4-1).'_4"></td><td id="p'.($i*4-1).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4).'_1"></td><td id="p'.($i*4).'_2"></td><td id="p'.($i*4).'_3"></td><td id="p'.($i*4).'_4"></td><td id="p'.($i*4).'_5"></td></tr>';
-				}
-				elseif ($double['unit'] == 'none') {
-					$public_content .= '<tr><td>'.$single['unit'].'</td><td>'.$single['name'].'</td><td id="p'.($i*4-3).'_1"></td><td id="p'.($i*4-3).'_2"></td><td id="p'.($i*4-3).'_3"></td><td id="p'.($i*4-3).'_4"></td><td id="p'.($i*4-3).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4-2).'_1"></td><td id="p'.($i*4-2).'_2"></td><td id="p'.($i*4-2).'_3"></td><td id="p'.($i*4-2).'_4"></td><td id="p'.($i*4-2).'_5"></td></tr><tr><td></td><td>Bye</td><td id="p'.($i*4-1).'_1"></td><td id="p'.($i*4-1).'_2"></td><td id="p'.($i*4-1).'_3"></td><td id="p'.($i*4-1).'_4"></td><td id="p'.($i*4-1).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4).'_1"></td><td id="p'.($i*4).'_2"></td><td id="p'.($i*4).'_3"></td><td id="p'.($i*4).'_4"></td><td id="p'.($i*4).'_5"></td></tr>';
-					$adjust_content .= '<tr><td>'.$single['unit'].'</td><td>'.$single['name'].'</td><td id="p'.($i*4-3).'_1"></td><td id="p'.($i*4-3).'_2"></td><td id="p'.($i*4-3).'_3"></td><td id="p'.($i*4-3).'_4"></td><td id="p'.($i*4-3).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4-2).'_1"></td><td id="p'.($i*4-2).'_2"></td><td id="p'.($i*4-2).'_3"></td><td id="p'.($i*4-2).'_4"></td><td id="p'.($i*4-2).'_5"></td></tr><tr><td></td><td>Bye</td><td id="p'.($i*4-1).'_1"></td><td id="p'.($i*4-1).'_2"></td><td id="p'.($i*4-1).'_3"></td><td id="p'.($i*4-1).'_4"></td><td id="p'.($i*4-1).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4).'_1"></td><td id="p'.($i*4).'_2"></td><td id="p'.($i*4).'_3"></td><td id="p'.($i*4).'_4"></td><td id="p'.($i*4).'_5"></td></tr>';
-				}
-				else {
-					$public_content .= '<tr><td>'.$single['unit'].'</td><td>'.$single['name'].'</td><td id="p'.($i*4-3).'_1"></td><td id="p'.($i*4-3).'_2"></td><td id="p'.($i*4-3).'_3"></td><td id="p'.($i*4-3).'_4"></td><td id="p'.($i*4-3).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4-2).'_1" align="right">'.$index.'</td><td id="p'.($i*4-2).'_2"></td><td id="p'.($i*4-2).'_3"></td><td id="p'.($i*4-2).'_4"></td><td id="p'.($i*4-2).'_5"></td></tr><tr><td>'.$double['unit'].'</td><td>'.$double['name'].'</td><td id="p'.($i*4-1).'_1"></td><td id="p'.($i*4-1).'_2"></td><td id="p'.($i*4-1).'_3"></td><td id="p'.($i*4-1).'_4"></td><td id="p'.($i*4-1).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4).'_1"></td><td id="p'.($i*4).'_2"></td><td id="p'.($i*4).'_3"></td><td id="p'.($i*4).'_4"></td><td id="p'.($i*4).'_5"></td></tr>';
-					$adjust_content .= '<tr><td>'.$single['unit'].'</td><td>'.$single['name'].'</td><td id="p'.($i*4-3).'_1"></td><td id="p'.($i*4-3).'_2"></td><td id="p'.($i*4-3).'_3"></td><td id="p'.($i*4-3).'_4"></td><td id="p'.($i*4-3).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4-2).'_1" align="right">'.$index.'</td><td id="p'.($i*4-2).'_2"><input type="text" id="'.$index.'_above"></td><td id="p'.($i*4-2).'_3"></td><td id="p'.($i*4-2).'_4"></td><td id="p'.($i*4-2).'_5"></td></tr><tr><td>'.$double['unit'].'</td><td>'.$double['name'].'</td><td id="p'.($i*4-1).'_1"></td><td id="p'.($i*4-1).'_2"><input type="text" id="'.$index.'_below"></td><td id="p'.($i*4-1).'_3"></td><td id="p'.($i*4-1).'_4"></td><td id="p'.($i*4-1).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4).'_1"></td><td id="p'.($i*4).'_2"></td><td id="p'.($i*4).'_3"></td><td id="p'.($i*4).'_4"></td><td id="p'.($i*4).'_5"></td></tr>';
+				if ($single['unit'] != 'none' && $double['unit'] != 'none') {
 					mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
 					$index++;
 				}
 			}
 			for ($i = 1; $i <= 8; $i++) {
-				$pos = $i*8-4;
-				$public_content = str_replace('<td id="p'.$pos.'_2"></td>', '<td id="p'.$pos.'_2" align="right">'.$index.'</td>', $public_content);
-				$adjust_content = str_replace('<td id="p'.$pos.'_2"></td>', '<td id="p'.$pos.'_2" align="right">'.$index.'</td>', $adjust_content);
-				$adjust_content = str_replace('<td id="p'.$pos.'_3"></td>', '<td id="p'.$pos.'_3"><input type="text" id="'.$index.'_above"></td>', $adjust_content);
-				$adjust_content = str_replace('<td id="p'.($pos+1).'_3"></td>', '<td id="p'.($pos+1).'_3"><input type="text" id="'.$index.'_below"></td>', $adjust_content);
 				mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i+16");
 				$index++;
 			}
 			for ($i = 1; $i <= 4; $i++) {
-				$pos = $i*16-8;
-				$public_content = str_replace('<td id="p'.$pos.'_3"></td>', '<td id="p'.$pos.'_3" align="right">'.$index.'</td>', $public_content);
-				$adjust_content = str_replace('<td id="p'.$pos.'_3"></td>', '<td id="p'.$pos.'_3" align="right">'.$index.'</td>', $adjust_content);
-				$adjust_content = str_replace('<td id="p'.$pos.'_4"></td>', '<td id="p'.$pos.'_4"><input type="text" id="'.$index.'_above"></td>', $adjust_content);
-				$adjust_content = str_replace('<td id="p'.($pos+1).'_4"></td>', '<td id="p'.($pos+1).'_4"><input type="text" id="'.$index.'_below"></td>', $adjust_content);
 				mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i+24");
 				$index++;
 			}
 			for ($i = 1; $i <= 2; $i++) {
-				$pos = $i*32-16;
-				$public_content = str_replace('<td id="p'.$pos.'_4"></td>', '<td id="p'.$pos.'_4" align="right">'.$index.'</td>', $public_content);
-				$adjust_content = str_replace('<td id="p'.$pos.'_4"></td>', '<td id="p'.$pos.'_4" align="right">'.$index.'</td>', $adjust_content);
-				$adjust_content = str_replace('<td id="p'.$pos.'_5"></td>', '<td id="p'.$pos.'_5"><input type="text" id="'.$index.'_above"></td>', $adjust_content);
-				$adjust_content = str_replace('<td id="p'.($pos+1).'_5"></td>', '<td id="p'.($pos+1).'_5"><input type="text" id="'.$index.'_below"></td>', $adjust_content);
 				mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i+28");
 				$index++;
 			}
-			$public_content = str_replace('<td id="p32_4"></td>', '<td id="p32_4" align="right">'.$index.'</td>', $public_content);
-			$adjust_content = str_replace('<td id="p32_4"></td>', '<td id="p32_4" align="right">'.$index.'</td>', $adjust_content);
-			$adjust_content = str_replace('<td id="p32_5"></td>', '<td id="p32_5"><input type="text" id="'.$index.'_above"></td>', $adjust_content);
-			$adjust_content = str_replace('<td id="p33_5"></td>', '<td id="p33_5"><input type="text" id="'.$index.'_below"></td>', $adjust_content);
 			mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=31");
-			$public_content .= '</table>';
-			$adjust_content .= '</table><button onclick="update(\''.$gameno.'\')">確定更新</button>';
-			$end = '</body><script src="../resource/32.js"></script></html>';
-			$file = fopen($gameno . "/public.html", "w");
-			fwrite($file, $start.$public_content.$end);
-			fclose($file);
-			$file = fopen($gameno . "/edit.html", "w");
-			fwrite($file, $start.$adjust_content.$end);
-			fclose($file);
+			makePublic($amount, $gameno);
+			makeEdit($amount, $gameno);
 			echo json_encode(array('message' => 'Success', 'gameno' => $gameno));
 		}
 		elseif ($amount > 32 && $amount <= 64) {
@@ -241,71 +171,30 @@ else {
 			for ($i = 1; $i <= 32; $i++) {
 				$single = query($gameno, $i*2-1);
 				$double = query($gameno, $i*2);
-				if ($single['unit'] == 'none') {
-					$public_content .= '<tr><td></td><td>Bye</td><td id="p'.($i*4-3).'_1"></td><td id="p'.($i*4-3).'_2"></td><td id="p'.($i*4-3).'_3"></td><td id="p'.($i*4-3).'_4"></td><td id="p'.($i*4-3).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4-2).'_1"></td><td id="p'.($i*4-2).'_2"></td><td id="p'.($i*4-2).'_3"></td><td id="p'.($i*4-2).'_4"></td><td id="p'.($i*4-2).'_5"></td></tr><tr><td>'.$double['unit'].'</td><td>'.$double['name'].'</td><td id="p'.($i*4-1).'_1"></td><td id="p'.($i*4-1).'_2"></td><td id="p'.($i*4-1).'_3"></td><td id="p'.($i*4-1).'_4"></td><td id="p'.($i*4-1).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4).'_1"></td><td id="p'.($i*4).'_2"></td><td id="p'.($i*4).'_3"></td><td id="p'.($i*4).'_4"></td><td id="p'.($i*4).'_5"></td></tr>';
-					$adjust_content .= '<tr><td></td><td>Bye</td><td id="p'.($i*4-3).'_1"></td><td id="p'.($i*4-3).'_2"></td><td id="p'.($i*4-3).'_3"></td><td id="p'.($i*4-3).'_4"></td><td id="p'.($i*4-3).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4-2).'_1"></td><td id="p'.($i*4-2).'_2"></td><td id="p'.($i*4-2).'_3"></td><td id="p'.($i*4-2).'_4"></td><td id="p'.($i*4-2).'_5"></td></tr><tr><td>'.$double['unit'].'</td><td>'.$double['name'].'</td><td id="p'.($i*4-1).'_1"></td><td id="p'.($i*4-1).'_2"></td><td id="p'.($i*4-1).'_3"></td><td id="p'.($i*4-1).'_4"></td><td id="p'.($i*4-1).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4).'_1"></td><td id="p'.($i*4).'_2"></td><td id="p'.($i*4).'_3"></td><td id="p'.($i*4).'_4"></td><td id="p'.($i*4).'_5"></td></tr>';
-				}
-				elseif ($double['unit'] == 'none') {
-					$public_content .= '<tr><td>'.$single['unit'].'</td><td>'.$single['name'].'</td><td id="p'.($i*4-3).'_1"></td><td id="p'.($i*4-3).'_2"></td><td id="p'.($i*4-3).'_3"></td><td id="p'.($i*4-3).'_4"></td><td id="p'.($i*4-3).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4-2).'_1"></td><td id="p'.($i*4-2).'_2"></td><td id="p'.($i*4-2).'_3"></td><td id="p'.($i*4-2).'_4"></td><td id="p'.($i*4-2).'_5"></td></tr><tr><td></td><td>Bye</td><td id="p'.($i*4-1).'_1"></td><td id="p'.($i*4-1).'_2"></td><td id="p'.($i*4-1).'_3"></td><td id="p'.($i*4-1).'_4"></td><td id="p'.($i*4-1).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4).'_1"></td><td id="p'.($i*4).'_2"></td><td id="p'.($i*4).'_3"></td><td id="p'.($i*4).'_4"></td><td id="p'.($i*4).'_5"></td></tr>';
-					$adjust_content .= '<tr><td>'.$single['unit'].'</td><td>'.$single['name'].'</td><td id="p'.($i*4-3).'_1"></td><td id="p'.($i*4-3).'_2"></td><td id="p'.($i*4-3).'_3"></td><td id="p'.($i*4-3).'_4"></td><td id="p'.($i*4-3).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4-2).'_1"></td><td id="p'.($i*4-2).'_2"></td><td id="p'.($i*4-2).'_3"></td><td id="p'.($i*4-2).'_4"></td><td id="p'.($i*4-2).'_5"></td></tr><tr><td></td><td>Bye</td><td id="p'.($i*4-1).'_1"></td><td id="p'.($i*4-1).'_2"></td><td id="p'.($i*4-1).'_3"></td><td id="p'.($i*4-1).'_4"></td><td id="p'.($i*4-1).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4).'_1"></td><td id="p'.($i*4).'_2"></td><td id="p'.($i*4).'_3"></td><td id="p'.($i*4).'_4"></td><td id="p'.($i*4).'_5"></td></tr>';
-				}
-				else {
-					$public_content .= '<tr><td>'.$single['unit'].'</td><td>'.$single['name'].'</td><td id="p'.($i*4-3).'_1"></td><td id="p'.($i*4-3).'_2"></td><td id="p'.($i*4-3).'_3"></td><td id="p'.($i*4-3).'_4"></td><td id="p'.($i*4-3).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4-2).'_1" align="right">'.$index.'</td><td id="p'.($i*4-2).'_2"></td><td id="p'.($i*4-2).'_3"></td><td id="p'.($i*4-2).'_4"></td><td id="p'.($i*4-2).'_5"></td></tr><tr><td>'.$double['unit'].'</td><td>'.$double['name'].'</td><td id="p'.($i*4-1).'_1"></td><td id="p'.($i*4-1).'_2"></td><td id="p'.($i*4-1).'_3"></td><td id="p'.($i*4-1).'_4"></td><td id="p'.($i*4-1).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4).'_1"></td><td id="p'.($i*4).'_2"></td><td id="p'.($i*4).'_3"></td><td id="p'.($i*4).'_4"></td><td id="p'.($i*4).'_5"></td></tr>';
-					$adjust_content .= '<tr><td>'.$single['unit'].'</td><td>'.$single['name'].'</td><td id="p'.($i*4-3).'_1"></td><td id="p'.($i*4-3).'_2"></td><td id="p'.($i*4-3).'_3"></td><td id="p'.($i*4-3).'_4"></td><td id="p'.($i*4-3).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4-2).'_1" align="right">'.$index.'</td><td id="p'.($i*4-2).'_2"><input type="text" id="'.$index.'_above"></td><td id="p'.($i*4-2).'_3"></td><td id="p'.($i*4-2).'_4"></td><td id="p'.($i*4-2).'_5"></td></tr><tr><td>'.$double['unit'].'</td><td>'.$double['name'].'</td><td id="p'.($i*4-1).'_1"></td><td id="p'.($i*4-1).'_2"><input type="text" id="'.$index.'_below"></td><td id="p'.($i*4-1).'_3"></td><td id="p'.($i*4-1).'_4"></td><td id="p'.($i*4-1).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4).'_1"></td><td id="p'.($i*4).'_2"></td><td id="p'.($i*4).'_3"></td><td id="p'.($i*4).'_4"></td><td id="p'.($i*4).'_5"></td></tr>';
+				if ($single['unit'] != 'none' && $double['unit'] != 'none') {
 					mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
 					$index++;
 				}
 			}
 			for ($i = 1; $i <= 16; $i++) {
-				$pos = $i*8-4;
-				$public_content = str_replace('<td id="p'.$pos.'_2"></td>', '<td id="p'.$pos.'_2" align="right">'.$index.'</td>', $public_content);
-				$adjust_content = str_replace('<td id="p'.$pos.'_2"></td>', '<td id="p'.$pos.'_2" align="right">'.$index.'</td>', $adjust_content);
-				$adjust_content = str_replace('<td id="p'.$pos.'_3"></td>', '<td id="p'.$pos.'_3"><input type="text" id="'.$index.'_above"></td>', $adjust_content);
-				$adjust_content = str_replace('<td id="p'.($pos+1).'_3"></td>', '<td id="p'.($pos+1).'_3"><input type="text" id="'.$index.'_below"></td>', $adjust_content);
 				mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i+32");
 				$index++;
 			}
 			for ($i = 1; $i <= 8; $i++) {
-				$pos = $i*16-8;
-				$public_content = str_replace('<td id="p'.$pos.'_3"></td>', '<td id="p'.$pos.'_3" align="right">'.$index.'</td>', $public_content);
-				$adjust_content = str_replace('<td id="p'.$pos.'_3"></td>', '<td id="p'.$pos.'_3" align="right">'.$index.'</td>', $adjust_content);
-				$adjust_content = str_replace('<td id="p'.$pos.'_4"></td>', '<td id="p'.$pos.'_4"><input type="text" id="'.$index.'_above"></td>', $adjust_content);
-				$adjust_content = str_replace('<td id="p'.($pos+1).'_4"></td>', '<td id="p'.($pos+1).'_4"><input type="text" id="'.$index.'_below"></td>', $adjust_content);
 				mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i+48");
 				$index++;
 			}
 			for ($i = 1; $i <= 4; $i++) {
-				$pos = $i*32-16;
-				$public_content = str_replace('<td id="p'.$pos.'_4"></td>', '<td id="p'.$pos.'_4" align="right">'.$index.'</td>', $public_content);
-				$adjust_content = str_replace('<td id="p'.$pos.'_4"></td>', '<td id="p'.$pos.'_4" align="right">'.$index.'</td>', $adjust_content);
-				$adjust_content = str_replace('<td id="p'.$pos.'_5"></td>', '<td id="p'.$pos.'_5"><input type="text" id="'.$index.'_above"></td>', $adjust_content);
-				$adjust_content = str_replace('<td id="p'.($pos+1).'_5"></td>', '<td id="p'.($pos+1).'_5"><input type="text" id="'.$index.'_below"></td>', $adjust_content);
 				mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i+56");
 				$index++;
 			}
 			for ($i = 1; $i <= 2; $i++) {
-				$pos = $i*64-32;
-				$public_content = str_replace('<td id="p'.$pos.'_5"></td>', '<td id="p'.$pos.'_5" align="right">'.$index.'</td>', $public_content);
-				$adjust_content = str_replace('<td id="p'.$pos.'_5"></td>', '<td id="p'.$pos.'_5" align="right">'.$index.'</td>', $adjust_content);
-				$adjust_content = str_replace('<td id="p'.$pos.'_6"></td>', '<td id="p'.$pos.'_6"><input type="text" id="'.$index.'_above"></td>', $adjust_content);
-				$adjust_content = str_replace('<td id="p'.($pos+1).'_6"></td>', '<td id="p'.($pos+1).'_6"><input type="text" id="'.$index.'_below"></td>', $adjust_content);
 				mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i+60");
 				$index++;
 			}
-			$public_content = str_replace('<td id="p64_6"></td>', '<td id="p64_6" align="right>'.$index.'</td>', $public_content);
-			$adjust_content = str_replace('<td id="p64_6"></td>', '<td id="p64_6" align="right>'.$index.'</td>', $adjust_content);
-			$adjust_content = str_replace('<td id="p64_7"></td>', '<td id="p64_7"><input type="text" id="'.$index.'_above"></td>', $adjust_content);
-			$adjust_content = str_replace('<td id="p64_7"></td>', '<td id="p64_7"><input type="text" id="'.$index.'_below"></td>', $adjust_content);
 			mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=63");
-			$public_content .= '</table>';
-			$adjust_content .= '</table><button onclick="update(\''.$gameno.'\')">確定更新</button>';
-			$end = '</body><script src="../resource/64.js"></script></html>';
-			$file = fopen($gameno . "/public.html", "w");
-			fwrite($file, $start.$public_content.$end);
-			fclose($file);
-			$file = fopen($gameno . "/edit.html", "w");
-			fwrite($file, $start.$adjust_content.$end);
-			fclose($file);
+			makePublic($amount, $gameno);
+			makeEdit($amount, $gameno);
 			echo json_encode(array('message' => 'Success', 'gameno' => $gameno));
 		}
 	}
@@ -331,63 +220,29 @@ else {
 				mysql_query("INSERT INTO GAMEPOSITION (GAMENO, POSITION, UNIT, NAME) VALUES ('$gameno', '$i', '$temp_unit', '$temp_name')");
 			}
 		}
-		// process public
-		$start = '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>電子化賽程系統</title><link rel="stylesheet" type="text/css" href="../resource/custom.css"></head><body>';
-		$public_content = '<table><tr><td>單位</td><td>名稱</td></tr>';
-		$adjust_content = '<script src="../resource/custom.js"></script><table><tr><td>單位</td><td>名稱</td></tr>';
+		// process chart
 		if ($amount > 8 && $amount <= 16) {
 			createGameState(16, $gameno);
 			$index = 1;
 			for ($i = 1; $i <= 8; $i++) {
 				$single = query($gameno, $i*2-1);
 				$double = query($gameno, $i*2);
-				if ($single['unit'] == 'none') {
-					$public_content .= '<tr><td></td><td>Bye</td><td id="p'.($i*4-3).'_1"></td><td id="p'.($i*4-3).'_2"></td><td id="p'.($i*4-3).'_3"></td><td id="p'.($i*4-3).'_4"></td><td id="p'.($i*4-3).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4-2).'_1"></td><td id="p'.($i*4-2).'_2"></td><td id="p'.($i*4-2).'_3"></td><td id="p'.($i*4-2).'_4"></td><td id="p'.($i*4-2).'_5"></td></tr><tr><td>'.$double['unit'].'</td><td>'.$double['name'].'</td><td id="p'.($i*4-1).'_1"></td><td id="p'.($i*4-1).'_2"></td><td id="p'.($i*4-1).'_3"></td><td id="p'.($i*4-1).'_4"></td><td id="p'.($i*4-1).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4).'_1"></td><td id="p'.($i*4).'_2"></td><td id="p'.($i*4).'_3"></td><td id="p'.($i*4).'_4"></td><td id="p'.($i*4).'_5"></td></tr>';
-					$adjust_content .= '<tr><td></td><td>Bye</td><td id="p'.($i*4-3).'_1"></td><td id="p'.($i*4-3).'_2"></td><td id="p'.($i*4-3).'_3"></td><td id="p'.($i*4-3).'_4"></td><td id="p'.($i*4-3).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4-2).'_1"></td><td id="p'.($i*4-2).'_2"></td><td id="p'.($i*4-2).'_3"></td><td id="p'.($i*4-2).'_4"></td><td id="p'.($i*4-2).'_5"></td></tr><tr><td>'.$double['unit'].'</td><td>'.$double['name'].'</td><td id="p'.($i*4-1).'_1"></td><td id="p'.($i*4-1).'_2"></td><td id="p'.($i*4-1).'_3"></td><td id="p'.($i*4-1).'_4"></td><td id="p'.($i*4-1).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4).'_1"></td><td id="p'.($i*4).'_2"></td><td id="p'.($i*4).'_3"></td><td id="p'.($i*4).'_4"></td><td id="p'.($i*4).'_5"></td></tr>';
-				}
-				elseif ($double['unit'] == 'none') {
-					$public_content .= '<tr><td>'.$single['unit'].'</td><td>'.$single['name'].'</td><td id="p'.($i*4-3).'_1"></td><td id="p'.($i*4-3).'_2"></td><td id="p'.($i*4-3).'_3"></td><td id="p'.($i*4-3).'_4"></td><td id="p'.($i*4-3).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4-2).'_1"></td><td id="p'.($i*4-2).'_2"></td><td id="p'.($i*4-2).'_3"></td><td id="p'.($i*4-2).'_4"></td><td id="p'.($i*4-2).'_5"></td></tr><tr><td></td><td>Bye</td><td id="p'.($i*4-1).'_1"></td><td id="p'.($i*4-1).'_2"></td><td id="p'.($i*4-1).'_3"></td><td id="p'.($i*4-1).'_4"></td><td id="p'.($i*4-1).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4).'_1"></td><td id="p'.($i*4).'_2"></td><td id="p'.($i*4).'_3"></td><td id="p'.($i*4).'_4"></td><td id="p'.($i*4).'_5"></td></tr>';
-					$adjust_content .= '<tr><td>'.$single['unit'].'</td><td>'.$single['name'].'</td><td id="p'.($i*4-3).'_1"></td><td id="p'.($i*4-3).'_2"></td><td id="p'.($i*4-3).'_3"></td><td id="p'.($i*4-3).'_4"></td><td id="p'.($i*4-3).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4-2).'_1"></td><td id="p'.($i*4-2).'_2"></td><td id="p'.($i*4-2).'_3"></td><td id="p'.($i*4-2).'_4"></td><td id="p'.($i*4-2).'_5"></td></tr><tr><td></td><td>Bye</td><td id="p'.($i*4-1).'_1"></td><td id="p'.($i*4-1).'_2"></td><td id="p'.($i*4-1).'_3"></td><td id="p'.($i*4-1).'_4"></td><td id="p'.($i*4-1).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4).'_1"></td><td id="p'.($i*4).'_2"></td><td id="p'.($i*4).'_3"></td><td id="p'.($i*4).'_4"></td><td id="p'.($i*4).'_5"></td></tr>';
-				}
-				else {
-					$public_content .= '<tr><td>'.$single['unit'].'</td><td>'.$single['name'].'</td><td id="p'.($i*4-3).'_1"></td><td id="p'.($i*4-3).'_2"></td><td id="p'.($i*4-3).'_3"></td><td id="p'.($i*4-3).'_4"></td><td id="p'.($i*4-3).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4-2).'_1" align="right">'.$index.'</td><td id="p'.($i*4-2).'_2"></td><td id="p'.($i*4-2).'_3"></td><td id="p'.($i*4-2).'_4"></td><td id="p'.($i*4-2).'_5"></td></tr><tr><td>'.$double['unit'].'</td><td>'.$double['name'].'</td><td id="p'.($i*4-1).'_1"></td><td id="p'.($i*4-1).'_2"></td><td id="p'.($i*4-1).'_3"></td><td id="p'.($i*4-1).'_4"></td><td id="p'.($i*4-1).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4).'_1"></td><td id="p'.($i*4).'_2"></td><td id="p'.($i*4).'_3"></td><td id="p'.($i*4).'_4"></td><td id="p'.($i*4).'_5"></td></tr>';
-					$adjust_content .= '<tr><td>'.$single['unit'].'</td><td>'.$single['name'].'</td><td id="p'.($i*4-3).'_1"></td><td id="p'.($i*4-3).'_2"></td><td id="p'.($i*4-3).'_3"></td><td id="p'.($i*4-3).'_4"></td><td id="p'.($i*4-3).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4-2).'_1" align="right">'.$index.'</td><td id="p'.($i*4-2).'_2"><input type="text" id="'.$index.'_above"></td><td id="p'.($i*4-2).'_3"></td><td id="p'.($i*4-2).'_4"></td><td id="p'.($i*4-2).'_5"></td></tr><tr><td>'.$double['unit'].'</td><td>'.$double['name'].'</td><td id="p'.($i*4-1).'_1"></td><td id="p'.($i*4-1).'_2"><input type="text" id="'.$index.'_below"></td><td id="p'.($i*4-1).'_3"></td><td id="p'.($i*4-1).'_4"></td><td id="p'.($i*4-1).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4).'_1"></td><td id="p'.($i*4).'_2"></td><td id="p'.($i*4).'_3"></td><td id="p'.($i*4).'_4"></td><td id="p'.($i*4).'_5"></td></tr>';
+				if ($single['unit'] != 'none' && $double['unit'] != 'none') {
 					mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
 					$index++;
 				}
 			}
 			for ($i = 1; $i <= 4; $i++) {
-				$pos = $i*8-4;
-				$public_content = str_replace('<td id="p'.$pos.'_2"></td>', '<td id="p'.$pos.'_2" align="right">'.$index.'</td>', $public_content);
-				$adjust_content = str_replace('<td id="p'.$pos.'_2"></td>', '<td id="p'.$pos.'_2" align="right">'.$index.'</td>', $adjust_content);
-				$adjust_content = str_replace('<td id="p'.$pos.'_3"></td>', '<td id="p'.$pos.'_3"><input type="text" id="'.$index.'_above"></td>', $adjust_content);
-				$adjust_content = str_replace('<td id="p'.($pos+1).'_3"></td>', '<td id="p'.($pos+1).'_3"><input type="text" id="'.$index.'_below"></td>', $adjust_content);
 				mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i+8");
 				$index++;
 			}
 			for ($i = 1; $i <= 2; $i++) {
-				$pos = $i*16-8;
-				$public_content = str_replace('<td id="p'.$pos.'_3"></td>', '<td id="p'.$pos.'_3" align="right">'.$index.'</td>', $public_content);
-				$adjust_content = str_replace('<td id="p'.$pos.'_3"></td>', '<td id="p'.$pos.'_3" align="right">'.$index.'</td>', $adjust_content);
-				$adjust_content = str_replace('<td id="p'.$pos.'_4"></td>', '<td id="p'.$pos.'_4"><input type="text" id="'.$index.'_above"></td>', $adjust_content);
-				$adjust_content = str_replace('<td id="p'.($pos+1).'_4"></td>', '<td id="p'.($pos+1).'_4"><input type="text" id="'.$index.'_below"></td>', $adjust_content);
 				mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i+12");
 				$index++;
 			}
-			$public_content = str_replace('<td id="p16_4"></td>', '<td id="p16_4" align="right">'.$index.'</td>', $public_content);
-			$adjust_content = str_replace('<td id="p16_4"></td>', '<td id="p16_4" align="right">'.$index.'</td>', $adjust_content);
-			$adjust_content = str_replace('<td id="p16_5"></td>', '<td id="p16_5"><input type="text" id="'.$index.'_above"></td>', $adjust_content);
-			$adjust_content = str_replace('<td id="p17_5"></td>', '<td id="p17_5"><input type="text" id="'.$index.'_below"></td>', $adjust_content);
 			mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=15");
-			$public_content .= '</table>';
-			$adjust_content .= '</table><button onclick="update(\''.$gameno.'\')">確定更新</button>';
-			$end = '</body><script src="../resource/16.js"></script></html>';
-			$file = fopen($gameno . "/public.html", "w");
-			fwrite($file, $start.$public_content.$end);
-			fclose($file);
-			$file = fopen($gameno . "/edit.html", "w");
-			fwrite($file, $start.$adjust_content.$end);
-			fclose($file);
+			makePublic($gameno);
+			makeEdit($gameno);
 			echo json_encode(array('message' => 'Success', 'gameno' => $gameno));
 		}
 		elseif ($amount > 16 && $amount <= 32) {
@@ -396,62 +251,26 @@ else {
 			for ($i = 1; $i <= 16; $i++) {
 				$single = query($gameno, $i*2-1);
 				$double = query($gameno, $i*2);
-				if ($single['unit'] == 'none') {
-					$public_content .= '<tr><td></td><td>Bye</td><td id="p'.($i*4-3).'_1"></td><td id="p'.($i*4-3).'_2"></td><td id="p'.($i*4-3).'_3"></td><td id="p'.($i*4-3).'_4"></td><td id="p'.($i*4-3).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4-2).'_1"></td><td id="p'.($i*4-2).'_2"></td><td id="p'.($i*4-2).'_3"></td><td id="p'.($i*4-2).'_4"></td><td id="p'.($i*4-2).'_5"></td></tr><tr><td>'.$double['unit'].'</td><td>'.$double['name'].'</td><td id="p'.($i*4-1).'_1"></td><td id="p'.($i*4-1).'_2"></td><td id="p'.($i*4-1).'_3"></td><td id="p'.($i*4-1).'_4"></td><td id="p'.($i*4-1).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4).'_1"></td><td id="p'.($i*4).'_2"></td><td id="p'.($i*4).'_3"></td><td id="p'.($i*4).'_4"></td><td id="p'.($i*4).'_5"></td></tr>';
-					$adjust_content .= '<tr><td></td><td>Bye</td><td id="p'.($i*4-3).'_1"></td><td id="p'.($i*4-3).'_2"></td><td id="p'.($i*4-3).'_3"></td><td id="p'.($i*4-3).'_4"></td><td id="p'.($i*4-3).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4-2).'_1"></td><td id="p'.($i*4-2).'_2"></td><td id="p'.($i*4-2).'_3"></td><td id="p'.($i*4-2).'_4"></td><td id="p'.($i*4-2).'_5"></td></tr><tr><td>'.$double['unit'].'</td><td>'.$double['name'].'</td><td id="p'.($i*4-1).'_1"></td><td id="p'.($i*4-1).'_2"></td><td id="p'.($i*4-1).'_3"></td><td id="p'.($i*4-1).'_4"></td><td id="p'.($i*4-1).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4).'_1"></td><td id="p'.($i*4).'_2"></td><td id="p'.($i*4).'_3"></td><td id="p'.($i*4).'_4"></td><td id="p'.($i*4).'_5"></td></tr>';
-				}
-				elseif ($double['unit'] == 'none') {
-					$public_content .= '<tr><td>'.$single['unit'].'</td><td>'.$single['name'].'</td><td id="p'.($i*4-3).'_1"></td><td id="p'.($i*4-3).'_2"></td><td id="p'.($i*4-3).'_3"></td><td id="p'.($i*4-3).'_4"></td><td id="p'.($i*4-3).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4-2).'_1"></td><td id="p'.($i*4-2).'_2"></td><td id="p'.($i*4-2).'_3"></td><td id="p'.($i*4-2).'_4"></td><td id="p'.($i*4-2).'_5"></td></tr><tr><td></td><td>Bye</td><td id="p'.($i*4-1).'_1"></td><td id="p'.($i*4-1).'_2"></td><td id="p'.($i*4-1).'_3"></td><td id="p'.($i*4-1).'_4"></td><td id="p'.($i*4-1).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4).'_1"></td><td id="p'.($i*4).'_2"></td><td id="p'.($i*4).'_3"></td><td id="p'.($i*4).'_4"></td><td id="p'.($i*4).'_5"></td></tr>';
-					$adjust_content .= '<tr><td>'.$single['unit'].'</td><td>'.$single['name'].'</td><td id="p'.($i*4-3).'_1"></td><td id="p'.($i*4-3).'_2"></td><td id="p'.($i*4-3).'_3"></td><td id="p'.($i*4-3).'_4"></td><td id="p'.($i*4-3).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4-2).'_1"></td><td id="p'.($i*4-2).'_2"></td><td id="p'.($i*4-2).'_3"></td><td id="p'.($i*4-2).'_4"></td><td id="p'.($i*4-2).'_5"></td></tr><tr><td></td><td>Bye</td><td id="p'.($i*4-1).'_1"></td><td id="p'.($i*4-1).'_2"></td><td id="p'.($i*4-1).'_3"></td><td id="p'.($i*4-1).'_4"></td><td id="p'.($i*4-1).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4).'_1"></td><td id="p'.($i*4).'_2"></td><td id="p'.($i*4).'_3"></td><td id="p'.($i*4).'_4"></td><td id="p'.($i*4).'_5"></td></tr>';
-				}
-				else {
-					$public_content .= '<tr><td>'.$single['unit'].'</td><td>'.$single['name'].'</td><td id="p'.($i*4-3).'_1"></td><td id="p'.($i*4-3).'_2"></td><td id="p'.($i*4-3).'_3"></td><td id="p'.($i*4-3).'_4"></td><td id="p'.($i*4-3).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4-2).'_1" align="right">'.$index.'</td><td id="p'.($i*4-2).'_2"></td><td id="p'.($i*4-2).'_3"></td><td id="p'.($i*4-2).'_4"></td><td id="p'.($i*4-2).'_5"></td></tr><tr><td>'.$double['unit'].'</td><td>'.$double['name'].'</td><td id="p'.($i*4-1).'_1"></td><td id="p'.($i*4-1).'_2"></td><td id="p'.($i*4-1).'_3"></td><td id="p'.($i*4-1).'_4"></td><td id="p'.($i*4-1).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4).'_1"></td><td id="p'.($i*4).'_2"></td><td id="p'.($i*4).'_3"></td><td id="p'.($i*4).'_4"></td><td id="p'.($i*4).'_5"></td></tr>';
-					$adjust_content .= '<tr><td>'.$single['unit'].'</td><td>'.$single['name'].'</td><td id="p'.($i*4-3).'_1"></td><td id="p'.($i*4-3).'_2"></td><td id="p'.($i*4-3).'_3"></td><td id="p'.($i*4-3).'_4"></td><td id="p'.($i*4-3).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4-2).'_1" align="right">'.$index.'</td><td id="p'.($i*4-2).'_2"><input type="text" id="'.$index.'_above"></td><td id="p'.($i*4-2).'_3"></td><td id="p'.($i*4-2).'_4"></td><td id="p'.($i*4-2).'_5"></td></tr><tr><td>'.$double['unit'].'</td><td>'.$double['name'].'</td><td id="p'.($i*4-1).'_1"></td><td id="p'.($i*4-1).'_2"><input type="text" id="'.$index.'_below"></td><td id="p'.($i*4-1).'_3"></td><td id="p'.($i*4-1).'_4"></td><td id="p'.($i*4-1).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4).'_1"></td><td id="p'.($i*4).'_2"></td><td id="p'.($i*4).'_3"></td><td id="p'.($i*4).'_4"></td><td id="p'.($i*4).'_5"></td></tr>';
+				if ($single['unit'] != 'none' && $double['unit'] != 'none') {
 					mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
 					$index++;
 				}
 			}
 			for ($i = 1; $i <= 8; $i++) {
-				$pos = $i*8-4;
-				$public_content = str_replace('<td id="p'.$pos.'_2"></td>', '<td id="p'.$pos.'_2" align="right">'.$index.'</td>', $public_content);
-				$adjust_content = str_replace('<td id="p'.$pos.'_2"></td>', '<td id="p'.$pos.'_2" align="right">'.$index.'</td>', $adjust_content);
-				$adjust_content = str_replace('<td id="p'.$pos.'_3"></td>', '<td id="p'.$pos.'_3"><input type="text" id="'.$index.'_above"></td>', $adjust_content);
-				$adjust_content = str_replace('<td id="p'.($pos+1).'_3"></td>', '<td id="p'.($pos+1).'_3"><input type="text" id="'.$index.'_below"></td>', $adjust_content);
 				mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i+16");
 				$index++;
 			}
 			for ($i = 1; $i <= 4; $i++) {
-				$pos = $i*16-8;
-				$public_content = str_replace('<td id="p'.$pos.'_3"></td>', '<td id="p'.$pos.'_3" align="right">'.$index.'</td>', $public_content);
-				$adjust_content = str_replace('<td id="p'.$pos.'_3"></td>', '<td id="p'.$pos.'_3" align="right">'.$index.'</td>', $adjust_content);
-				$adjust_content = str_replace('<td id="p'.$pos.'_4"></td>', '<td id="p'.$pos.'_4"><input type="text" id="'.$index.'_above"></td>', $adjust_content);
-				$adjust_content = str_replace('<td id="p'.($pos+1).'_4"></td>', '<td id="p'.($pos+1).'_4"><input type="text" id="'.$index.'_below"></td>', $adjust_content);
 				mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i+24");
 				$index++;
 			}
 			for ($i = 1; $i <= 2; $i++) {
-				$pos = $i*32-16;
-				$public_content = str_replace('<td id="p'.$pos.'_4"></td>', '<td id="p'.$pos.'_4" align="right">'.$index.'</td>', $public_content);
-				$adjust_content = str_replace('<td id="p'.$pos.'_4"></td>', '<td id="p'.$pos.'_4" align="right">'.$index.'</td>', $adjust_content);
-				$adjust_content = str_replace('<td id="p'.$pos.'_5"></td>', '<td id="p'.$pos.'_5"><input type="text" id="'.$index.'_above"></td>', $adjust_content);
-				$adjust_content = str_replace('<td id="p'.($pos+1).'_5"></td>', '<td id="p'.($pos+1).'_5"><input type="text" id="'.$index.'_below"></td>', $adjust_content);
 				mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i+28");
 				$index++;
 			}
-			$public_content = str_replace('<td id="p32_4"></td>', '<td id="p32_4" align="right">'.$index.'</td>', $public_content);
-			$adjust_content = str_replace('<td id="p32_4"></td>', '<td id="p32_4" align="right">'.$index.'</td>', $adjust_content);
-			$adjust_content = str_replace('<td id="p32_5"></td>', '<td id="p32_5"><input type="text" id="'.$index.'_above"></td>', $adjust_content);
-			$adjust_content = str_replace('<td id="p33_5"></td>', '<td id="p33_5"><input type="text" id="'.$index.'_below"></td>', $adjust_content);
 			mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=31");
-			$public_content .= '</table>';
-			$adjust_content .= '</table><button onclick="update(\''.$gameno.'\')">確定更新</button>';
-			$end = '</body><script src="../resource/32.js"></script></html>';
-			$file = fopen($gameno . "/public.html", "w");
-			fwrite($file, $start.$public_content.$end);
-			fclose($file);
-			$file = fopen($gameno . "/edit.html", "w");
-			fwrite($file, $start.$adjust_content.$end);
-			fclose($file);
+			makePublic($gameno);
+			makeEdit($gameno);
 			echo json_encode(array('message' => 'Success', 'gameno' => $gameno));
 		}
 		elseif ($amount > 32 && $amount <= 64) {
@@ -460,71 +279,30 @@ else {
 			for ($i = 1; $i <= 32; $i++) {
 				$single = query($gameno, $i*2-1);
 				$double = query($gameno, $i*2);
-				if ($single['unit'] == 'none') {
-					$public_content .= '<tr><td></td><td>Bye</td><td id="p'.($i*4-3).'_1"></td><td id="p'.($i*4-3).'_2"></td><td id="p'.($i*4-3).'_3"></td><td id="p'.($i*4-3).'_4"></td><td id="p'.($i*4-3).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4-2).'_1"></td><td id="p'.($i*4-2).'_2"></td><td id="p'.($i*4-2).'_3"></td><td id="p'.($i*4-2).'_4"></td><td id="p'.($i*4-2).'_5"></td></tr><tr><td>'.$double['unit'].'</td><td>'.$double['name'].'</td><td id="p'.($i*4-1).'_1"></td><td id="p'.($i*4-1).'_2"></td><td id="p'.($i*4-1).'_3"></td><td id="p'.($i*4-1).'_4"></td><td id="p'.($i*4-1).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4).'_1"></td><td id="p'.($i*4).'_2"></td><td id="p'.($i*4).'_3"></td><td id="p'.($i*4).'_4"></td><td id="p'.($i*4).'_5"></td></tr>';
-					$adjust_content .= '<tr><td></td><td>Bye</td><td id="p'.($i*4-3).'_1"></td><td id="p'.($i*4-3).'_2"></td><td id="p'.($i*4-3).'_3"></td><td id="p'.($i*4-3).'_4"></td><td id="p'.($i*4-3).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4-2).'_1"></td><td id="p'.($i*4-2).'_2"></td><td id="p'.($i*4-2).'_3"></td><td id="p'.($i*4-2).'_4"></td><td id="p'.($i*4-2).'_5"></td></tr><tr><td>'.$double['unit'].'</td><td>'.$double['name'].'</td><td id="p'.($i*4-1).'_1"></td><td id="p'.($i*4-1).'_2"></td><td id="p'.($i*4-1).'_3"></td><td id="p'.($i*4-1).'_4"></td><td id="p'.($i*4-1).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4).'_1"></td><td id="p'.($i*4).'_2"></td><td id="p'.($i*4).'_3"></td><td id="p'.($i*4).'_4"></td><td id="p'.($i*4).'_5"></td></tr>';
-				}
-				elseif ($double['unit'] == 'none') {
-					$public_content .= '<tr><td>'.$single['unit'].'</td><td>'.$single['name'].'</td><td id="p'.($i*4-3).'_1"></td><td id="p'.($i*4-3).'_2"></td><td id="p'.($i*4-3).'_3"></td><td id="p'.($i*4-3).'_4"></td><td id="p'.($i*4-3).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4-2).'_1"></td><td id="p'.($i*4-2).'_2"></td><td id="p'.($i*4-2).'_3"></td><td id="p'.($i*4-2).'_4"></td><td id="p'.($i*4-2).'_5"></td></tr><tr><td></td><td>Bye</td><td id="p'.($i*4-1).'_1"></td><td id="p'.($i*4-1).'_2"></td><td id="p'.($i*4-1).'_3"></td><td id="p'.($i*4-1).'_4"></td><td id="p'.($i*4-1).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4).'_1"></td><td id="p'.($i*4).'_2"></td><td id="p'.($i*4).'_3"></td><td id="p'.($i*4).'_4"></td><td id="p'.($i*4).'_5"></td></tr>';
-					$adjust_content .= '<tr><td>'.$single['unit'].'</td><td>'.$single['name'].'</td><td id="p'.($i*4-3).'_1"></td><td id="p'.($i*4-3).'_2"></td><td id="p'.($i*4-3).'_3"></td><td id="p'.($i*4-3).'_4"></td><td id="p'.($i*4-3).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4-2).'_1"></td><td id="p'.($i*4-2).'_2"></td><td id="p'.($i*4-2).'_3"></td><td id="p'.($i*4-2).'_4"></td><td id="p'.($i*4-2).'_5"></td></tr><tr><td></td><td>Bye</td><td id="p'.($i*4-1).'_1"></td><td id="p'.($i*4-1).'_2"></td><td id="p'.($i*4-1).'_3"></td><td id="p'.($i*4-1).'_4"></td><td id="p'.($i*4-1).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4).'_1"></td><td id="p'.($i*4).'_2"></td><td id="p'.($i*4).'_3"></td><td id="p'.($i*4).'_4"></td><td id="p'.($i*4).'_5"></td></tr>';
-				}
-				else {
-					$public_content .= '<tr><td>'.$single['unit'].'</td><td>'.$single['name'].'</td><td id="p'.($i*4-3).'_1"></td><td id="p'.($i*4-3).'_2"></td><td id="p'.($i*4-3).'_3"></td><td id="p'.($i*4-3).'_4"></td><td id="p'.($i*4-3).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4-2).'_1" align="right">'.$index.'</td><td id="p'.($i*4-2).'_2"></td><td id="p'.($i*4-2).'_3"></td><td id="p'.($i*4-2).'_4"></td><td id="p'.($i*4-2).'_5"></td></tr><tr><td>'.$double['unit'].'</td><td>'.$double['name'].'</td><td id="p'.($i*4-1).'_1"></td><td id="p'.($i*4-1).'_2"></td><td id="p'.($i*4-1).'_3"></td><td id="p'.($i*4-1).'_4"></td><td id="p'.($i*4-1).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4).'_1"></td><td id="p'.($i*4).'_2"></td><td id="p'.($i*4).'_3"></td><td id="p'.($i*4).'_4"></td><td id="p'.($i*4).'_5"></td></tr>';
-					$adjust_content .= '<tr><td>'.$single['unit'].'</td><td>'.$single['name'].'</td><td id="p'.($i*4-3).'_1"></td><td id="p'.($i*4-3).'_2"></td><td id="p'.($i*4-3).'_3"></td><td id="p'.($i*4-3).'_4"></td><td id="p'.($i*4-3).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4-2).'_1" align="right">'.$index.'</td><td id="p'.($i*4-2).'_2"><input type="text" id="'.$index.'_above"></td><td id="p'.($i*4-2).'_3"></td><td id="p'.($i*4-2).'_4"></td><td id="p'.($i*4-2).'_5"></td></tr><tr><td>'.$double['unit'].'</td><td>'.$double['name'].'</td><td id="p'.($i*4-1).'_1"></td><td id="p'.($i*4-1).'_2"><input type="text" id="'.$index.'_below"></td><td id="p'.($i*4-1).'_3"></td><td id="p'.($i*4-1).'_4"></td><td id="p'.($i*4-1).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*4).'_1"></td><td id="p'.($i*4).'_2"></td><td id="p'.($i*4).'_3"></td><td id="p'.($i*4).'_4"></td><td id="p'.($i*4).'_5"></td></tr>';
+				if ($single['unit'] != 'none' && $double['unit'] != 'none') {
 					mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
 					$index++;
 				}
 			}
 			for ($i = 1; $i <= 16; $i++) {
-				$pos = $i*8-4;
-				$public_content = str_replace('<td id="p'.$pos.'_2"></td>', '<td id="p'.$pos.'_2" align="right">'.$index.'</td>', $public_content);
-				$adjust_content = str_replace('<td id="p'.$pos.'_2"></td>', '<td id="p'.$pos.'_2" align="right">'.$index.'</td>', $adjust_content);
-				$adjust_content = str_replace('<td id="p'.$pos.'_3"></td>', '<td id="p'.$pos.'_3"><input type="text" id="'.$index.'_above"></td>', $adjust_content);
-				$adjust_content = str_replace('<td id="p'.($pos+1).'_3"></td>', '<td id="p'.($pos+1).'_3"><input type="text" id="'.$index.'_below"></td>', $adjust_content);
 				mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i+32");
 				$index++;
 			}
 			for ($i = 1; $i <= 8; $i++) {
-				$pos = $i*16-8;
-				$public_content = str_replace('<td id="p'.$pos.'_3"></td>', '<td id="p'.$pos.'_3" align="right">'.$index.'</td>', $public_content);
-				$adjust_content = str_replace('<td id="p'.$pos.'_3"></td>', '<td id="p'.$pos.'_3" align="right">'.$index.'</td>', $adjust_content);
-				$adjust_content = str_replace('<td id="p'.$pos.'_4"></td>', '<td id="p'.$pos.'_4"><input type="text" id="'.$index.'_above"></td>', $adjust_content);
-				$adjust_content = str_replace('<td id="p'.($pos+1).'_4"></td>', '<td id="p'.($pos+1).'_4"><input type="text" id="'.$index.'_below"></td>', $adjust_content);
 				mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i+48");
 				$index++;
 			}
 			for ($i = 1; $i <= 4; $i++) {
-				$pos = $i*32-16;
-				$public_content = str_replace('<td id="p'.$pos.'_4"></td>', '<td id="p'.$pos.'_4" align="right">'.$index.'</td>', $public_content);
-				$adjust_content = str_replace('<td id="p'.$pos.'_4"></td>', '<td id="p'.$pos.'_4" align="right">'.$index.'</td>', $adjust_content);
-				$adjust_content = str_replace('<td id="p'.$pos.'_5"></td>', '<td id="p'.$pos.'_5"><input type="text" id="'.$index.'_above"></td>', $adjust_content);
-				$adjust_content = str_replace('<td id="p'.($pos+1).'_5"></td>', '<td id="p'.($pos+1).'_5"><input type="text" id="'.$index.'_below"></td>', $adjust_content);
 				mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i+56");
 				$index++;
 			}
 			for ($i = 1; $i <= 2; $i++) {
-				$pos = $i*64-32;
-				$public_content = str_replace('<td id="p'.$pos.'_5"></td>', '<td id="p'.$pos.'_5" align="right">'.$index.'</td>', $public_content);
-				$adjust_content = str_replace('<td id="p'.$pos.'_5"></td>', '<td id="p'.$pos.'_5" align="right">'.$index.'</td>', $adjust_content);
-				$adjust_content = str_replace('<td id="p'.$pos.'_6"></td>', '<td id="p'.$pos.'_6"><input type="text" id="'.$index.'_above"></td>', $adjust_content);
-				$adjust_content = str_replace('<td id="p'.($pos+1).'_6"></td>', '<td id="p'.($pos+1).'_6"><input type="text" id="'.$index.'_below"></td>', $adjust_content);
 				mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i+60");
 				$index++;
 			}
-			$public_content = str_replace('<td id="p64_6"></td>', '<td id="p64_6" align="right>'.$index.'</td>', $public_content);
-			$adjust_content = str_replace('<td id="p64_6"></td>', '<td id="p64_6" align="right>'.$index.'</td>', $adjust_content);
-			$adjust_content = str_replace('<td id="p64_7"></td>', '<td id="p64_7"><input type="text" id="'.$index.'_above"></td>', $adjust_content);
-			$adjust_content = str_replace('<td id="p65_7"></td>', '<td id="p65_7"><input type="text" id="'.$index.'_below"></td>', $adjust_content);
 			mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=63");
-			$public_content .= '</table>';
-			$adjust_content .= '</table><button onclick="update(\''.$gameno.'\')">確定更新</button>';
-			$end = '</body><script src="../resource/64.js"></script></html>';
-			$file = fopen($gameno . "/public.html", "w");
-			fwrite($file, $start.$public_content.$end);
-			fclose($file);
-			$file = fopen($gameno . "/edit.html", "w");
-			fwrite($file, $start.$adjust_content.$end);
-			fclose($file);
+			makePublic($gameno);
+			makeEdit($gameno);
 			echo json_encode(array('message' => 'Success', 'gameno' => $gameno));
 		}
 		unlink($gameno . "/assign.html");
