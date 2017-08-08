@@ -1,15 +1,16 @@
 function enter() {
 	var amount = Number(document.getElementById("amount").value);
 	var gameno = document.getElementById("gameno").value;
+	var gamenm = document.getElementById("gamenm").value;
 	var type = document.getElementById("type");
-	if (amount == NaN || amount > 64 || amount < 9) {
-		alert("請輸入介於 9 ~ 64 之正整數參賽人數");
+	if (amount == NaN || amount > 128 || amount < 9) {
+		alert("請輸入介於 9 ~ 128 之正整數參賽人數");
 	}
 	else {
 		if (type[0].checked) {
 			var request = new XMLHttpRequest();
 			request.open("POST", "assign.php");
-			var data = "gameno=" + gameno + "&amount=" + amount;
+			var data = "gameno=" + gameno + "&gamenm=" + gamenm + "&amount=" + amount;
 			request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 			request.send(data);
 			request.onreadystatechange = function() {
@@ -42,15 +43,16 @@ function enter() {
 function send() {
 	var amount = Number(document.getElementById("amount").value);
 	var gameno = document.getElementById("gameno").value;
+	var gamenm = document.getElementById("gamenm").value;
 	var type = document.getElementById("type");
-	if (amount == NaN || amount > 64 || amount < 9) {
-		alert("請輸入介於 9 ~ 64 之正整數參賽人數");
+	if (amount == NaN || amount > 128 || amount < 9) {
+		alert("請輸入介於 9 ~ 128 之正整數參賽人數");
 	}
 	else {
 		if (type[0].checked) {
 			var request = new XMLHttpRequest();
 			request.open("POST", "assign.php");
-			var data = "amount=" + amount;
+			var data = "gameno=" + gameno + "&gamenm=" + gamenm + "&amount=" + amount;
 			request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 			request.send(data);
 			request.onreadystatechange = function() {
@@ -74,7 +76,7 @@ function send() {
 			}
 			var request = new XMLHttpRequest();
 			request.open("POST", "produce.php");
-			var data = "mode=auto&gameno=" + gameno + "&amount=" + amount + "&unit=" + unit + "&name=" + name;
+			var data = "mode=auto&gameno=" + gameno + "&gamenm=" + gamenm + "&amount=" + amount + "&unit=" + unit + "&name=" + name;
 			request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 			request.send(data);
 			request.onreadystatechange = function() {
@@ -95,48 +97,23 @@ function send() {
 	}
 }
 
-function public(amount, gameno) {
+function public(amount, gameno, gamenm) {
 	var unit = [];
 	var name = [];
-	if (amount > 8 && amount <= 16) {
-		for (i = 1; i <= 16; i++) {
-			if (document.getElementById("unit"+i) == null) {
-				unit[i-1] = 'none';
-				name[i-1] = 'none';
-			}
-			else {
-				unit[i-1] = document.getElementById("unit"+i).value;
-				name[i-1] = document.getElementById("name"+i).value;
-			}
+	var roundAmount = Math.pow(2, Math.ceil(Math.log2(amount)));
+	for (i = 1; i <= roundAmount; i++) {
+		if (document.getElementById("unit"+i) == null) {
+			unit[i-1] = 'none';
+			name[i-1] = 'none';
 		}
-	}
-	else if (amount > 16 && amount <= 32) {
-		for (i = 1; i <= 32; i++) {
-			if (document.getElementById("unit"+i) == null) {
-				unit[i-1] = 'none';
-				name[i-1] = 'none';
-			}
-			else {
-				unit[i-1] = document.getElementById("unit"+i).value;
-				name[i-1] = document.getElementById("name"+i).value;
-			}
-		}
-	}
-	else if (amount > 32 && amount <= 64) {
-		for (i = 1; i <= 64; i++) {
-			if (document.getElementById("unit"+i) == null) {
-				unit[i-1] = 'none';
-				name[i-1] = 'none';
-			}
-			else {
-				unit[i-1] = document.getElementById("unit"+i).value;
-				name[i-1] = document.getElementById("name"+i).value;
-			}
+		else {
+			unit[i-1] = document.getElementById("unit"+i).value;
+			name[i-1] = document.getElementById("name"+i).value;
 		}
 	}
 	var request = new XMLHttpRequest();
 	request.open("POST", "../produce.php");
-	var data = "mode=enter&gameno=" + gameno + "&amount=" + amount + "&unit=" + unit + "&name=" + name;
+	var data = "mode=enter&gameno=" + gameno + "&gamenm=" + gamenm + "&amount=" + amount + "&unit=" + unit + "&name=" + name;
 	request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	request.send(data);
 	request.onreadystatechange = function() {

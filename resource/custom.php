@@ -4,7 +4,9 @@ include_once("database.php");
 function makePublic($gameno) {
 	$start = '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>電子化賽程系統</title><link rel="stylesheet" type="text/css" href="../resource/custom.css"></head><body>';
 	$content = publicContent($gameno);
-	$end = '</body><script src="../resource/16.js"></script></html>';
+	$amount = getAmount($gameno);
+	$roundAmount = pow(2, ceil(log($amount, 2)));
+	$end = '</body><script src="../resource/'.$roundAmount.'.js"></script></html>';
 	$file = fopen($gameno . "/public.html", "w");
 	fwrite($file, $start.$content.$end);
 	fclose($file);
@@ -13,7 +15,9 @@ function makePublic($gameno) {
 function makeEdit($gameno) {
 	$start = '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>電子化賽程系統</title><link rel="stylesheet" type="text/css" href="../resource/custom.css"></head><body>';
 	$content = editContent($gameno);
-	$end = '</body><script src="../resource/16.js"></script></html>';
+	$amount = getAmount($gameno);
+	$roundAmount = pow(2, ceil(log($amount, 2)));
+	$end = '</body><script src="../resource/'.$roundAmount.'.js"></script></html>';
 	$file = fopen($gameno . "/edit.html", "w");
 	fwrite($file, $start.$content.$end);
 	fclose($file);
@@ -24,7 +28,7 @@ function publicContent($gameno) {
 	$content = '<table><tr><td>單位</td><td>名稱</td></tr>';
 	for ($i = 1; $i <= pow(2, ceil(log($amount, 2))); $i++) {
 		$query = queryPosition($gameno, $i);
-		$content .= '<tr><td>'.processUnit($query['unit']).'</td><td>'.processName($query['name']).'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td></tr>';
+		$content .= '<tr><td>'.processUnit($query['unit']).'</td><td>'.processName($query['name']).'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
 	}
 	$content = setPlayNo($gameno, $content, $amount);
 	$content .= '</table>';
@@ -36,7 +40,7 @@ function editContent($gameno) {
 	$content = '<script src="../resource/custom.js"></script><table><tr><td>單位</td><td>名稱</td></tr>';
 	for ($i = 1; $i <= pow(2, ceil(log($amount, 2))); $i++) {
 		$query = queryPosition($gameno, $i);
-		$content .= '<tr><td>'.processUnit($query['unit']).'</td><td>'.processName($query['name']).'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td></tr>';
+		$content .= '<tr><td>'.processUnit($query['unit']).'</td><td>'.processName($query['name']).'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
 	}
 	$content = setPlayNo($gameno, $content, $amount);
 	$content = setScoreInput($gameno, $content, $amount);
@@ -128,7 +132,7 @@ function queryPosition($gameno, $position) {
 function queryState($gameno, $playno) {
 	$sql = mysql_query("SELECT * FROM GAMESTATE WHERE GAMENO='$gameno' AND PLAYNO='$playno'");
 	$fetch = mysql_fetch_array($sql);
-	return array('playno' => $fetch['PLAYNO'], 'above' => $fetch['ABOVE'], 'below' => $fetch['BELOW'], 'aboveScore' => $fetch['ABOVESCORE'], 'belowScore' => $fetch['BELOWSCORE']);
+	return array('playno' => $fetch['PLAYNO'], 'above' => $fetch['ABOVE'], 'below' => $fetch['BELOW'], 'aboveScore' => $fetch['ABOVESCORE'], 'belowScore' => $fetch['BELOWSCORE'], 'winner' => $fetch['WINNER']);
 }
 
 function updateAbovePosition($playno, $amount) {
@@ -196,10 +200,9 @@ function updateBelow($playno, $publicContent, $editContent, $amount) {
 function updateGameChart($gameno) {
 	$publicContent = publicContent($gameno);
 	$editContent = editContent($gameno);
-	makePublic($gameno);
-	makeEdit($gameno);
 	$amount = getAmount($gameno);
-	for ($i = 1; $i < pow(2, ceil(log($amount, 2))); $i++) {
+	$roundAmount = pow(2, ceil(log($amount, 2)));
+	for ($i = 1; $i < $roundAmount; $i++) {
 		$state = queryState($gameno, $i);
 		if (!empty($state['aboveScore']) && !empty($state['belowScore'])) {
 			$scoreInput = scoreInputPosition($i, $amount);
@@ -207,26 +210,57 @@ function updateGameChart($gameno) {
 			$publicContent = str_replace('<td id="p'.$scoreInput['below'].'">', '<td id="p'.$scoreInput['below'].'">'.$state['belowScore'], $publicContent);
 			$editContent = str_replace('<input type="text" id="'.$state['playno'].'_above">', '<input type="text" id="'.$state['playno'].'_above" value="'.$state['aboveScore'].'">', $editContent);
 			$editContent = str_replace('<input type="text" id="'.$state['playno'].'_below">', '<input type="text" id="'.$state['playno'].'_below" value="'.$state['belowScore'].'">', $editContent);
-			if ($state['aboveScore'] > $state['belowScore']) {
-				$return = updateAbove($i, $publicContent, $editContent, $amount);
-				$publicContent = $return['public'];
-				$editContent = $return['edit'];
-			}
-			elseif ($state['aboveScore'] < $state['belowScore']) {
-				$return = updateBelow($i, $publicContent, $editContent, $amount);
-				$publicContent = $return['public'];
-				$editContent = $return['edit'];
-			}
+		}
+		if ($state['winner'] == $state['above']) {
+			$return = updateAbove($i, $publicContent, $editContent, $amount);
+			$publicContent = $return['public'];
+			$editContent = $return['edit'];
+		}
+		elseif ($state['winner'] < $state['below']) {
+			$return = updateBelow($i, $publicContent, $editContent, $amount);
+			$publicContent = $return['public'];
+			$editContent = $return['edit'];
 		}
 	}
 	unlink($gameno . "/public.html");
 	unlink($gameno . "/edit.html");
 	$start = '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>電子化賽程系統</title><link rel="stylesheet" type="text/css" href="../resource/custom.css"></head><body>';
-	$end = '</body><script src="../resource/16.js"></script></html>';
+	$end = '</body><script src="../resource/'.$roundAmount.'.js"></script></html>';
 	$file = fopen($gameno . "/public.html", "w");
 	fwrite($file, $start.$publicContent.$end);
 	fclose($file);
 	$file = fopen($gameno . "/edit.html", "w");
 	fwrite($file, $start.$editContent.$end);
 	fclose($file);
+}
+
+function updateGameState($gameno) {
+	$amount = getAmount($gameno);
+	$roundAmount = pow(2, ceil(log($amount, 2)));
+	$start = 1;
+	$next = 2;
+	$middle = $roundAmount / 2 + 1;
+	while ($middle < $roundAmount) {
+		mysql_query("UPDATE GAMESTATE SET ABOVE=(SELECT WINNER FROM GAMESTATE WHERE SYSTEMPLAYNO='$start'), BELOW=(SELECT WINNER FROM GAMESTATE WHERE SYSTEMPLAYNO='$next') WHERE GAMENO='$gameno' AND SYSTEMPLAYNO='$middle'");
+		$start += 2;
+		$next += 2;
+		$middle += 1;
+	}
+}
+
+function checkBye($gameno) {
+	$amount = getAmount($gameno);
+	$roundAmount = pow(2, ceil(log($amount, 2)));
+	$single = 1;
+	$double = 2;
+	while ($single < $roundAmount) {
+		if ((queryPosition($gameno, $single))['unit'] == none) {
+			mysql_query("UPDATE GAMESTATE SET WINNER='$double' WHERE GAMENO='$gameno'");
+		}
+		elseif ((queryPosition($gameno, $double))['unit'] == none) {
+			mysql_query("UPDATE GAMESTATE SET WINNER='$single' WHERE GAMENO='$gameno'");
+		}
+		$single += 2;
+		$double += 2;
+	}
 }

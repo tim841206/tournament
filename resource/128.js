@@ -1,5 +1,5 @@
 // layer 1
-var bound = 16;
+var bound = 64;
 var times = 4;
 var start = 1;
 var layer = 1;
@@ -22,7 +22,7 @@ while (bound >= 1) {
 	start = Math.pow(2, Math.log2(start)+1);
 	layer = layer + 1;
 }
-// layer 6
-if (document.getElementById("p32_6").classList.length == 0) {
-	document.getElementById("p32_6").classList.add("b");
+// layer 8
+if (document.getElementById("p128_8").classList.length == 0) {
+	document.getElementById("p128_8").classList.add("b");
 }

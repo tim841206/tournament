@@ -1,105 +1,53 @@
 <?php
 $gameno = $_POST['gameno'];
+$gamenm = $_POST['gamenm'];
 $amount = $_POST['amount'];
+$sql = mysql_query("SELECT * FROM GAMEMAIN WHERE GAMENO='$gameno'");
 if (!is_validAmount($amount)) {
 	echo json_encode(array('message' => 'Invalid player amount'));
 }
+elseif ($sql != false) {
+	echo json_encode(array('message' => 'Occupied game index'));
+}
 else {
+	$sql = mysql_query("SELECT * FROM GAMEMAIN WHERE GAMENO='$gameno'");
 	$arrange = array();
-	$arrange['9'] = [1,4,5,8,9,12,16];
-	$arrange['10'] = [1,5,8,9,12,16];
-	$arrange['11'] = [1,5,8,9,16];
-	$arrange['12'] = [1,8,9,16];
-	$arrange['13'] = [1,8,9];
-	$arrange['14'] = [8,9];
-	$arrange['15'] = [8];
-	$arrange['16'] = [];
-	$arrange['17'] = [1,4,5,8,9,12,13,16,17,20,21,24,25,28,32];
-	$arrange['18'] = [1,5,8,9,12,13,16,17,20,21,24,25,28,32];
-	$arrange['19'] = [1,5,8,9,12,13,16,17,20,24,25,28,32];
-	$arrange['20'] = [1,5,8,9,13,16,17,20,24,25,28,32];
-	$arrange['21'] = [1,5,8,9,13,16,17,20,24,25,32];
-	$arrange['22'] = [1,8,9,13,16,17,20,24,25,32];
-	$arrange['23'] = [1,8,9,13,16,17,24,25,32];
-	$arrange['24'] = [1,8,9,16,17,24,25,32];
-	$arrange['25'] = [1,8,9,16,17,24,32];
-	$arrange['26'] = [1,9,16,17,24,32];
-	$arrange['27'] = [1,9,16,17,32];
-	$arrange['28'] = [1,16,17,32];
-	$arrange['29'] = [1,16,17];
-	$arrange['30'] = [16,17];
-	$arrange['31'] = [16];
-	$arrange['32'] = [];
-	$arrange['33'] = [1,4,5,8,9,12,13,16,17,20,21,24,25,28,29,32,33,36,37,40,41,44,45,48,49,52,56,57,60,61,64];
-	$arrange['34'] = [1,4,5,8,9,13,16,17,20,21,24,25,28,29,32,33,36,37,40,41,44,45,48,49,52,56,57,60,61,64];
-	$arrange['35'] = [1,4,5,8,9,13,16,17,20,21,24,25,28,29,32,33,36,37,40,41,44,48,49,52,56,57,60,61,64];
-	$arrange['36'] = [1,4,5,8,9,13,16,17,21,24,25,28,29,32,33,36,37,40,41,44,48,49,52,56,57,60,61,64];
-	$arrange['37'] = [1,4,5,8,9,13,16,17,21,24,25,28,29,32,33,36,37,40,41,44,48,49,52,56,57,60,64];
-	$arrange['38'] = [1,5,8,9,13,16,17,21,24,25,28,29,32,33,36,37,40,41,44,48,49,52,56,57,60,64];
-	$arrange['39'] = [1,5,8,9,13,16,17,21,24,25,28,29,32,33,36,40,41,44,48,49,52,56,57,60,64];
-	$arrange['40'] = [1,5,8,9,13,16,17,21,24,25,29,32,33,36,40,41,44,48,49,52,56,57,60,64];
-	$arrange['41'] = [1,5,8,9,13,16,17,21,24,25,29,32,33,36,40,41,44,48,49,56,57,60,64];
-	$arrange['42'] = [1,5,8,9,16,17,21,24,25,29,32,33,36,40,41,44,48,49,56,57,60,64];
-	$arrange['43'] = [1,5,8,9,16,17,21,24,25,29,32,33,36,40,41,48,49,56,57,60,64];
-	$arrange['44'] = [1,5,8,9,16,17,24,25,29,32,33,36,40,41,48,49,56,57,60,64];
-	$arrange['45'] = [1,5,8,9,16,17,24,25,29,32,33,36,40,41,48,49,56,57,64];
-	$arrange['46'] = [1,8,9,16,17,24,25,29,32,33,36,40,41,48,49,56,57,64];
-	$arrange['47'] = [1,8,9,16,17,24,25,29,32,33,40,41,48,49,56,57,64];
-	$arrange['48'] = [1,8,9,16,17,24,25,32,33,40,41,48,49,56,57,64];
-	$arrange['49'] = [1,8,9,16,17,24,25,32,33,40,41,48,49,56,64];
-	$arrange['50'] = [1,9,16,17,24,25,32,33,40,41,48,49,56,64];
-	$arrange['51'] = [1,9,16,17,24,25,32,33,40,48,49,56,64];
-	$arrange['52'] = [1,9,16,17,25,32,33,40,48,49,56,64];
-	$arrange['53'] = [1,9,16,17,25,32,33,40,48,49,64];
-	$arrange['54'] = [1,16,17,25,32,33,40,48,49,64];
-	$arrange['55'] = [1,16,17,25,32,33,48,49,64];
-	$arrange['56'] = [1,16,17,32,33,48,49,64];
-	$arrange['57'] = [1,16,17,32,33,48,64];
-	$arrange['58'] = [1,17,32,33,48,64];
-	$arrange['59'] = [1,17,32,33,64];
-	$arrange['60'] = [1,32,33,64];
-	$arrange['61'] = [1,32,33];
-	$arrange['62'] = [32,33];
-	$arrange['63'] = [32];
-	$arrange['64'] = [];
+	$roundAmount = pow(2, ceil(log($amount, 2)));
+	$arrange = array();
+	if ($roundAmount == 16) {
+		$order16 = [8,9,1,16,5,12,4,13];
+		$arrange = array_slice($order16, 0, $roundAmount-$amount);
+	}
+	elseif ($roundAmount == 32) {
+		$order32 = [16,17,1,31,9,24,8,25,13,20,4,29,12,21,5,28];
+		$arrange = array_slice($order32, 0, $roundAmount-$amount);
+	}
+	elseif ($roundAmount == 64) {
+		$order64 = [32,33,1,64,17,48,16,49,25,40,8,57,24,41,9,56,29,36,4,61,20,45,13,52,28,37,5,60,21,44,12,53];
+		$arrange = array_slice($order64, 0, $roundAmount-$amount);
+	}
+	elseif ($roundAmount == 128) {
+		$order128 = [64,65,1,128,33,96,32,97,49,80,16,113,48,81,17,112,57,72,8,121,40,89,25,104,56,73,9,120,41,88,24,105,61,68,4,125,36,93,29,100,53,76,12,117,44,85,21,108,60,69,5,124,37,92,28,101,52,77,13,116,45,84,20,109];
+		$arrange = array_slice($order128, 0, $roundAmount-$amount);
+	}
 	$start = '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>電子化賽程系統</title><link rel="stylesheet" type="text/css" href="../resource/custom.css"><script src="../resource/custom.js"></script></head><body>';
-	$end = '';
 	$content = '<table><tr><td>單位</td><td>名稱</td></tr>';
-	if ($amount > 8 && $amount <= 16) {
-		for ($i = 1; $i <= 16; $i++) {
-			if (in_array($i, $arrange[$amount])) {
-				$content .= '<tr><td></td><td>Bye</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td></tr>';
-			}
-			else {
-				$content .= '<tr><td><input type="text" id="unit'.$i.'"></td><td><input type="text" id="name'.$i.'"></td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td></tr>';
-			}
+	for ($i = 1; $i <= $roundAmount; $i++) {
+		if (in_array($i, $arrange)) {
+			$content .= '<tr><td></td><td>Bye</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
 		}
-		$end = '</body><script src="../resource/16.js"></script></html>';
-	}
-	elseif ($amount > 16 && $amount <= 32) {
-		for ($i = 1; $i <= 32; $i++) {
-			if (in_array($i, $arrange[$amount])) {
-				$content .= '<tr><td></td><td>Bye</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td></tr>';
-			}
-			else {
-				$content .= '<tr><td><input type="text" id="unit'.$i.'"></td><td><input type="text" id="name'.$i.'"></td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td></tr>';
-			}
+		else {
+			$content .= '<tr><td><input type="text" id="unit'.$i.'"></td><td><input type="text" id="name'.$i.'"></td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
 		}
-		$end = '</body><script src="../resource/32.js"></script></html>';
 	}
-	elseif ($amount > 32 && $amount <= 64) {
-		for ($i = 1; $i <= 64; $i++) {
-			if (in_array($i, $arrange[$amount])) {
-				$content .= '<tr><td></td><td>Bye</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td></tr>';
-			}
-			else {
-				$content .= '<tr><td><input type="text" id="unit'.$i.'"></td><td><input type="text" id="name'.$i.'"></td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td></tr>';
-			}
-		}
-		$end = '</body><script src="../resource/64.js"></script></html>';
+	$end = '</body><script src="../resource/'.$roundAmount.'.js"></script></html>';
+	$content .= '</table><button onclick="public('.$amount.', \''.$gameno.'\', \''.$gamenm.'\')">確定輸出</button>';
+	if (is_dir($gameno)) {
+		unlink($gameno . "/assign.html");
 	}
-	$content .= '</table><button onclick="public('.$amount.', \''.$gameno.'\')">確定輸出</button>';
-	mkdir($gameno);
+	else {
+		mkdir($gameno);
+	}
 	$file = fopen($gameno . "/assign.html", "w");
 	fwrite($file, $start.$content.$end);
 	fclose($file);
