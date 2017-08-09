@@ -284,3 +284,12 @@ function clearBye($gameno) {
 		$double += 2;
 	}
 }
+
+function makeGame($gameno) {
+	$start = '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>電子化賽程系統</title><script src="../resource/custom.js"></script></head><body>';
+	$content = '<p id="gameState"></p>';
+	$end = '</body><script>updateGame(\''.$gameno.'\')</script></html>';
+	$file = fopen($gameno . "/game.html", "w");
+	fwrite($file, $start.$content.$end);
+	fclose($file);
+}

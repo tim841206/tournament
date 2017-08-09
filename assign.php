@@ -61,7 +61,7 @@ else {
 }
 
 function is_validAmount($amount) {
-	if ((ceil($amount) == floor($amount)) && $amount >= 9 && $amount <= 64) {
+	if ((ceil($amount) == floor($amount)) && $amount >= 9 && $amount <= 128) {
 		return true;
 	}
 	else {

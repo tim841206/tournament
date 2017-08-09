@@ -61,90 +61,28 @@ else {
 				mysql_query("INSERT INTO GAMEPOSITION (GAMENO, POSITION, UNIT, NAME) VALUES ('$gameno', '$i', '$temp_unit', '$temp_name')");
 			}
 		}
-		// process chart
 		if (!is_dir($gameno)) {
 			mkdir($gameno);
 		}
-		if ($amount > 8 && $amount <= 16) {
-			createGameState(16, $gameno);
-			$index = 1;
-			for ($i = 1; $i <= 8; $i++) {
-				$single = queryPosition($gameno, $i*2-1);
-				$double = queryPosition($gameno, $i*2);
-				if ($single['unit'] != 'none' && $double['unit'] != 'none') {
-					mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
-					$index++;
-				}
-			}
-			for ($i = 9; $i <= 15; $i++) {
+		createGameState($roundAmount, $gameno);
+		$index = 1;
+		for ($i = 1; $i <= $roundAmount/2; $i++) {
+			$single = queryPosition($gameno, $i*2-1);
+			$double = queryPosition($gameno, $i*2);
+			if ($single['unit'] != 'none' && $double['unit'] != 'none') {
 				mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
 				$index++;
 			}
-			makePublic($gameno);
-			makeEdit($gameno);
-			clearBye($gameno);
-			echo json_encode(array('message' => 'Success', 'gameno' => $gameno));
 		}
-		elseif ($amount > 16 && $amount <= 32) {
-			createGameState(32, $gameno);
-			$index = 1;
-			for ($i = 1; $i <= 16; $i++) {
-				$single = queryPosition($gameno, $i*2-1);
-				$double = queryPosition($gameno, $i*2);
-				if ($single['unit'] != 'none' && $double['unit'] != 'none') {
-					mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
-					$index++;
-				}
-			}
-			for ($i = 17; $i <= 31; $i++) {
-				mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
-				$index++;
-			}
-			makePublic($gameno);
-			makeEdit($gameno);
-			clearBye($gameno);
-			echo json_encode(array('message' => 'Success', 'gameno' => $gameno));
+		for ($i = $roundAmount/2+1; $i < $roundAmount; $i++) {
+			mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
+			$index++;
 		}
-		elseif ($amount > 32 && $amount <= 64) {
-			createGameState(64, $gameno);
-			$index = 1;
-			for ($i = 1; $i <= 32; $i++) {
-				$single = queryPosition($gameno, $i*2-1);
-				$double = queryPosition($gameno, $i*2);
-				if ($single['unit'] != 'none' && $double['unit'] != 'none') {
-					mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
-					$index++;
-				}
-			}
-			for ($i = 33; $i <= 63; $i++) {
-				mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
-				$index++;
-			}
-			makePublic($gameno);
-			makeEdit($gameno);
-			clearBye($gameno);
-			echo json_encode(array('message' => 'Success', 'gameno' => $gameno));
-		}
-		elseif ($amount > 64 && $amount <= 128) {
-			createGameState(128, $gameno);
-			$index = 1;
-			for ($i = 1; $i <= 64; $i++) {
-				$single = queryPosition($gameno, $i*2-1);
-				$double = queryPosition($gameno, $i*2);
-				if ($single['unit'] != 'none' && $double['unit'] != 'none') {
-					mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
-					$index++;
-				}
-			}
-			for ($i = 65; $i <= 127; $i++) {
-				mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
-				$index++;
-			}
-			makePublic($gameno);
-			makeEdit($gameno);
-			clearBye($gameno);
-			echo json_encode(array('message' => 'Success', 'gameno' => $gameno));
-		}
+		makePublic($gameno);
+		makeEdit($gameno);
+		clearBye($gameno);
+		echo json_encode(array('message' => 'Success', 'gameno' => $gameno));
+		makeGame($gameno);
 	}
 	elseif ($mode == 'enter') {
 		for ($i = 1; $i <= $roundAmount; $i++) {
@@ -152,93 +90,31 @@ else {
 			$temp_name = $name[$i-1];
 			mysql_query("INSERT INTO GAMEPOSITION (GAMENO, POSITION, UNIT, NAME) VALUES ('$gameno', '$i', '$temp_unit', '$temp_name')");
 		}
-		// process chart
-		if ($amount > 8 && $amount <= 16) {
-			createGameState(16, $gameno);
-			$index = 1;
-			for ($i = 1; $i <= 8; $i++) {
-				$single = queryPosition($gameno, $i*2-1);
-				$double = queryPosition($gameno, $i*2);
-				if ($single['unit'] != 'none' && $double['unit'] != 'none') {
-					mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
-					$index++;
-				}
-			}
-			for ($i = 9; $i <= 15; $i++) {
+		createGameState($roundAmount, $gameno);
+		$index = 1;
+		for ($i = 1; $i <= $roundAmount/2; $i++) {
+			$single = queryPosition($gameno, $i*2-1);
+			$double = queryPosition($gameno, $i*2);
+			if ($single['unit'] != 'none' && $double['unit'] != 'none') {
 				mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
 				$index++;
 			}
-			makePublic($gameno);
-			makeEdit($gameno);
-			clearBye($gameno);
-			echo json_encode(array('message' => 'Success', 'gameno' => $gameno));
 		}
-		elseif ($amount > 16 && $amount <= 32) {
-			createGameState(32, $gameno);
-			$index = 1;
-			for ($i = 1; $i <= 16; $i++) {
-				$single = queryPosition($gameno, $i*2-1);
-				$double = queryPosition($gameno, $i*2);
-				if ($single['unit'] != 'none' && $double['unit'] != 'none') {
-					mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
-					$index++;
-				}
-			}
-			for ($i = 17; $i <= 31; $i++) {
-				mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
-				$index++;
-			}
-			makePublic($gameno);
-			makeEdit($gameno);
-			clearBye($gameno);
-			echo json_encode(array('message' => 'Success', 'gameno' => $gameno));
+		for ($i = $roundAmount/2+1; $i < $roundAmount; $i++) {
+			mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
+			$index++;
 		}
-		elseif ($amount > 32 && $amount <= 64) {
-			createGameState(64, $gameno);
-			$index = 1;
-			for ($i = 1; $i <= 32; $i++) {
-				$single = queryPosition($gameno, $i*2-1);
-				$double = queryPosition($gameno, $i*2);
-				if ($single['unit'] != 'none' && $double['unit'] != 'none') {
-					mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
-					$index++;
-				}
-			}
-			for ($i = 33; $i <= 63; $i++) {
-				mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
-				$index++;
-			}
-			makePublic($gameno);
-			makeEdit($gameno);
-			clearBye($gameno);
-			echo json_encode(array('message' => 'Success', 'gameno' => $gameno));
-		}
-		elseif ($amount > 64 && $amount <= 128) {
-			createGameState(128, $gameno);
-			$index = 1;
-			for ($i = 1; $i <= 64; $i++) {
-				$single = queryPosition($gameno, $i*2-1);
-				$double = queryPosition($gameno, $i*2);
-				if ($single['unit'] != 'none' && $double['unit'] != 'none') {
-					mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
-					$index++;
-				}
-			}
-			for ($i = 65; $i <= 127; $i++) {
-				mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
-				$index++;
-			}
-			makePublic($gameno);
-			makeEdit($gameno);
-			clearBye($gameno);
-			echo json_encode(array('message' => 'Success', 'gameno' => $gameno));
-		}
+		makePublic($gameno);
+		makeEdit($gameno);
+		clearBye($gameno);
+		echo json_encode(array('message' => 'Success', 'gameno' => $gameno));
 		unlink($gameno . "/assign.html");
+		makeGame($gameno);
 	}
 }
 
 function is_validAmount($amount) {
-	if ((ceil($amount) == floor($amount)) && $amount >= 9 && $amount <= 64) {
+	if ((ceil($amount) == floor($amount)) && $amount >= 9 && $amount <= 128) {
 		return true;
 	}
 	else {

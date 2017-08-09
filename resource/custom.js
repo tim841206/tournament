@@ -177,13 +177,30 @@ function update(gameno) {
 
 function games() {
 	var request = new XMLHttpRequest();
-	request.open("GET", "search.php?type=view");
+	request.open("GET", "../search.php?type=view");
 	request.send();
 	request.onreadystatechange = function() {
 		if (request.readyState === 4 && request.status === 200) {
 			var data = JSON.parse(request.responseText);
 			if (data.message == 'Success') {
 				document.getElementById("games").innerHTML = data.content;
+			}
+			else {
+				alert(data.message);
+			}
+		}
+	}
+}
+
+function updateGame(gameno) {
+	var request = new XMLHttpRequest();
+	request.open("GET", "../search.php?type=update&gameno="+gameno);
+	request.send();
+	request.onreadystatechange = function() {
+		if (request.readyState === 4 && request.status === 200) {
+			var data = JSON.parse(request.responseText);
+			if (data.message == 'Success') {
+				document.getElementById("gameState").innerHTML = data.content;
 			}
 			else {
 				alert(data.message);
