@@ -3,7 +3,13 @@ function enter() {
 	var gameno = document.getElementById("gameno").value;
 	var gamenm = document.getElementById("gamenm").value;
 	var type = document.getElementById("type");
-	if (amount == NaN || amount > 128 || amount < 9) {
+	if (gameno.length == 0) {
+		alert("請輸入競賽編號");
+	}
+	else if (gamenm.length == 0) {
+		alert("請輸入競賽名稱");
+	}
+	else if (amount == NaN || amount > 128 || amount < 9) {
 		alert("請輸入介於 9 ~ 128 之正整數參賽人數");
 	}
 	else {
@@ -45,7 +51,13 @@ function send() {
 	var gameno = document.getElementById("gameno").value;
 	var gamenm = document.getElementById("gamenm").value;
 	var type = document.getElementById("type");
-	if (amount == NaN || amount > 128 || amount < 9) {
+	if (gameno.length == 0) {
+		alert("請輸入競賽編號");
+	}
+	else if (gamenm.length == 0) {
+		alert("請輸入競賽名稱");
+	}
+	else if (amount == NaN || amount > 128 || amount < 9) {
 		alert("請輸入介於 9 ~ 128 之正整數參賽人數");
 	}
 	else {
@@ -155,6 +167,23 @@ function update(gameno) {
 			if (data.message == 'Success') {
 				alert("成功更新");
 				location.reload();
+			}
+			else {
+				alert(data.message);
+			}
+		}
+	}
+}
+
+function games() {
+	var request = new XMLHttpRequest();
+	request.open("GET", "search.php?type=view");
+	request.send();
+	request.onreadystatechange = function() {
+		if (request.readyState === 4 && request.status === 200) {
+			var data = JSON.parse(request.responseText);
+			if (data.message == 'Success') {
+				document.getElementById("games").innerHTML = data.content;
 			}
 			else {
 				alert(data.message);

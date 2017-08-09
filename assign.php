@@ -3,7 +3,13 @@ $gameno = $_POST['gameno'];
 $gamenm = $_POST['gamenm'];
 $amount = $_POST['amount'];
 $sql = mysql_query("SELECT * FROM GAMEMAIN WHERE GAMENO='$gameno'");
-if (!is_validAmount($amount)) {
+if (empty($gameno)) {
+	echo json_encode(array('message' => 'Empty game index'));
+}
+elseif (empty($gamenm)) {
+	echo json_encode(array('message' => 'Empty game name'));
+}
+elseif (!is_validAmount($amount)) {
 	echo json_encode(array('message' => 'Invalid player amount'));
 }
 elseif ($sql != false) {

@@ -135,6 +135,17 @@ function queryState($gameno, $playno) {
 	return array('playno' => $fetch['PLAYNO'], 'above' => $fetch['ABOVE'], 'below' => $fetch['BELOW'], 'aboveScore' => $fetch['ABOVESCORE'], 'belowScore' => $fetch['BELOWSCORE'], 'winner' => $fetch['WINNER']);
 }
 
+function createGameState($amount, $gameno) {
+	for ($i = 1; $i < $amount; $i++) {
+		if ($i <= $amount/2) {
+			mysql_query("INSERT INTO GAMESTATE (GAMENO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$gameno', $i, $i*2-1, $i*2)");
+		}
+		else {
+			mysql_query("INSERT INTO GAMESTATE (GAMENO, SYSTEMPLAYNO) VALUES ('$gameno', $i)");
+		}
+	}
+}
+
 function updateAbovePosition($playno, $amount) {
 	$bound = pow(2, ceil(log($amount, 2))-1);
 	$layer = 1;
@@ -198,6 +209,7 @@ function updateBelow($playno, $publicContent, $editContent, $amount) {
 }
 
 function updateGameChart($gameno) {
+	updateGameState($gameno);
 	$publicContent = publicContent($gameno);
 	$editContent = editContent($gameno);
 	$amount = getAmount($gameno);
@@ -211,12 +223,12 @@ function updateGameChart($gameno) {
 			$editContent = str_replace('<input type="text" id="'.$state['playno'].'_above">', '<input type="text" id="'.$state['playno'].'_above" value="'.$state['aboveScore'].'">', $editContent);
 			$editContent = str_replace('<input type="text" id="'.$state['playno'].'_below">', '<input type="text" id="'.$state['playno'].'_below" value="'.$state['belowScore'].'">', $editContent);
 		}
-		if ($state['winner'] == $state['above']) {
+		if (!empty($state['winner']) && ($state['winner'] == $state['above'])) {
 			$return = updateAbove($i, $publicContent, $editContent, $amount);
 			$publicContent = $return['public'];
 			$editContent = $return['edit'];
 		}
-		elseif ($state['winner'] < $state['below']) {
+		elseif (!empty($state['winner']) && ($state['winner'] == $state['below'])) {
 			$return = updateBelow($i, $publicContent, $editContent, $amount);
 			$publicContent = $return['public'];
 			$editContent = $return['edit'];
@@ -241,23 +253,31 @@ function updateGameState($gameno) {
 	$next = 2;
 	$middle = $roundAmount / 2 + 1;
 	while ($middle < $roundAmount) {
-		mysql_query("UPDATE GAMESTATE SET ABOVE=(SELECT WINNER FROM GAMESTATE WHERE SYSTEMPLAYNO='$start'), BELOW=(SELECT WINNER FROM GAMESTATE WHERE SYSTEMPLAYNO='$next') WHERE GAMENO='$gameno' AND SYSTEMPLAYNO='$middle'");
+		$sql1 = mysql_query("SELECT WINNER FROM GAMESTATE WHERE GAMENO='$gameno' AND SYSTEMPLAYNO='$start'");
+		$fetch1 = mysql_fetch_array($sql1);
+		$above = $fetch1['WINNER'];
+		$sql2 = mysql_query("SELECT WINNER FROM GAMESTATE WHERE GAMENO='$gameno' AND SYSTEMPLAYNO='$next'");
+		$fetch2 = mysql_fetch_array($sql2);
+		$below = $fetch2['WINNER'];
+		mysql_query("UPDATE GAMESTATE SET ABOVE='$above', BELOW='$below' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO='$middle'");
 		$start += 2;
 		$next += 2;
 		$middle += 1;
 	}
 }
 
-function checkBye($gameno) {
+function clearBye($gameno) {
 	$amount = getAmount($gameno);
 	$roundAmount = pow(2, ceil(log($amount, 2)));
 	$single = 1;
 	$double = 2;
 	while ($single < $roundAmount) {
-		if ((queryPosition($gameno, $single))['unit'] == none) {
+		$querySingle = queryPosition($gameno, $single);
+		$queryDouble = queryPosition($gameno, $double);
+		if ($querySingle['unit'] == 'none') {
 			mysql_query("UPDATE GAMESTATE SET WINNER='$double' WHERE GAMENO='$gameno'");
 		}
-		elseif ((queryPosition($gameno, $double))['unit'] == none) {
+		elseif ($queryDouble['unit'] == 'none') {
 			mysql_query("UPDATE GAMESTATE SET WINNER='$single' WHERE GAMENO='$gameno'");
 		}
 		$single += 2;

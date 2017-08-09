@@ -7,7 +7,9 @@
 		<script src="resource/custom.js"></script>
 	</head>
 	<body>
-	<div>
+	<h2>電子化賽程系統</h2>
+	<div style="width: 45%; display: inline-block; vertical-align: top;">
+		<h3>新增競賽</h3>
 		<table>
 			<tr><th colspan="2">請輸入競賽編號</th></tr>
 			<tr><td colspan="2"><input type="text" id="gameno"></td></tr>
@@ -21,6 +23,11 @@
 		<button onclick="enter()">確定</button>
 		<div id="players" style="display: none;">
 		</div>
+	</div>
+	<div style="width: 50%; display: inline-block; vertical-align: top;">
+		<h3>查詢競賽</h3>
+		<p id="games"></p>
+		<script>games();</script>
 	</div>
 	</body>
 </html>
