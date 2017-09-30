@@ -8,6 +8,9 @@
 	</head>
 	<body>
 	<h2>電子化賽程系統</h2>
+	<div align="right">
+		[memberArea]
+	</div>
 	<div style="width: 45%; display: inline-block; vertical-align: top;">
 		<h3>新增競賽</h3>
 		<table>
@@ -17,6 +20,8 @@
 			<tr><td colspan="2"><input type="text" id="gamenm"></td></tr>
 			<tr><th colspan="2">請輸入參賽人數</th></tr>
 			<tr><td colspan="2"><input type="number" id="amount" value="16" min="9"></td></tr>
+			<tr><th colspan="2">請選擇競賽方式</th></tr>
+			<tr><td><form id="method"><input type="radio" name="method" value="a">單淘汰</td><td><input type="radio" name="method" value="b">先循環後單淘汰</form></td></tr>
 			<tr><th colspan="2">請選擇賽程排列方式</th></tr>
 			<tr><td><form id="type"><input type="radio" name="type" value="a">手動排籤</td><td><input type="radio" name="type" value="b">系統抽籤</form></td></tr>
 		</table>

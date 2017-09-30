@@ -2,13 +2,14 @@
 include_once("resource/database.php");
 include_once("resource/custom.php");
 
+$account = $_COOKIE['account'];
 $mode = $_POST['mode'];
 $amount = $_POST['amount'];
 $gameno = $_POST['gameno'];
 $gamenm = $_POST['gamenm'];
 $unit = explode(',', $_POST['unit']);
 $name = explode(',', $_POST['name']);
-$sql = mysql_query("SELECT * FROM GAMEMAIN WHERE GAMENO='$gameno'");
+$sql = mysql_query("SELECT * FROM GAMEMAIN WHERE USERNO='$account' AND GAMENO='$gameno'");
 $fetch = mysql_num_rows($sql);
 if (empty($gameno)) {
 	echo json_encode(array('message' => 'Empty game index'));
@@ -20,12 +21,12 @@ elseif (!is_validAmount($amount)) {
 	echo json_encode(array('message' => 'Invalid player amount'));
 }
 elseif ($fetch != 0) {
-	echo json_encode(array('message' => 'Occupied game index'));
+	echo json_encode(array('message' => 'Used game index'));
 }
 else {
 	date_default_timezone_set('Asia/Taipei');
 	$date = date("Y-m-d H:i:s");
-	mysql_query("INSERT INTO GAMEMAIN (GAMENO, GAMENM, AMOUNT, CREATEDATE, UPDATEDATE) VALUES ('$gameno', '$gamenm', '$amount', '$date', '$date')");
+	mysql_query("INSERT INTO GAMEMAIN (USERNO, GAMENO, GAMENM, GAMETYPE, AMOUNT, CREATEDATE, UPDATEDATE) VALUES ('$account', '$gameno', '$gamenm', 'A', '$amount', '$date', '$date')");
 	$roundAmount = pow(2, ceil(log($amount, 2)));
 	if ($mode == 'auto') {
 		$rand = array();
@@ -52,13 +53,13 @@ else {
 		}
 		for ($i = 1; $i <= $roundAmount; $i++) {
 			if (in_array($i, $arrange)) {
-				mysql_query("INSERT INTO GAMEPOSITION (GAMENO, POSITION, UNIT, NAME) VALUES ('$gameno', '$i', 'none', 'none')");
+				mysql_query("INSERT INTO GAMEPOSITION (USERNO, GAMENO, POSITION, UNIT, NAME) VALUES ('$account', '$gameno', '$i', 'none', 'none')");
 			}
 			else {
 				$temp = array_pop($rand);
 				$temp_unit = $unit[$temp];
 				$temp_name = $name[$temp];
-				mysql_query("INSERT INTO GAMEPOSITION (GAMENO, POSITION, UNIT, NAME) VALUES ('$gameno', '$i', '$temp_unit', '$temp_name')");
+				mysql_query("INSERT INTO GAMEPOSITION (USERNO, GAMENO, POSITION, UNIT, NAME) VALUES ('$account', '$gameno', '$i', '$temp_unit', '$temp_name')");
 			}
 		}
 		if (!is_dir($gameno)) {
@@ -70,12 +71,12 @@ else {
 			$single = queryPosition($gameno, $i*2-1);
 			$double = queryPosition($gameno, $i*2);
 			if ($single['unit'] != 'none' && $double['unit'] != 'none') {
-				mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
+				mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
 				$index++;
 			}
 		}
 		for ($i = $roundAmount/2+1; $i < $roundAmount; $i++) {
-			mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
+			mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
 			$index++;
 		}
 		makePublic($gameno);
@@ -88,7 +89,7 @@ else {
 		for ($i = 1; $i <= $roundAmount; $i++) {
 			$temp_unit = $unit[$i-1];
 			$temp_name = $name[$i-1];
-			mysql_query("INSERT INTO GAMEPOSITION (GAMENO, POSITION, UNIT, NAME) VALUES ('$gameno', '$i', '$temp_unit', '$temp_name')");
+			mysql_query("INSERT INTO GAMEPOSITION (USERNO, GAMENO, POSITION, UNIT, NAME) VALUES ('$account', '$gameno', '$i', '$temp_unit', '$temp_name')");
 		}
 		createGameState($roundAmount, $gameno);
 		$index = 1;
@@ -96,20 +97,20 @@ else {
 			$single = queryPosition($gameno, $i*2-1);
 			$double = queryPosition($gameno, $i*2);
 			if ($single['unit'] != 'none' && $double['unit'] != 'none') {
-				mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
+				mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
 				$index++;
 			}
 		}
 		for ($i = $roundAmount/2+1; $i < $roundAmount; $i++) {
-			mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
+			mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
 			$index++;
 		}
-		makePublic($gameno);
-		makeEdit($gameno);
-		clearBye($gameno);
-		echo json_encode(array('message' => 'Success', 'gameno' => $gameno));
-		unlink($gameno . "/assign.html");
-		makeGame($gameno);
+		makePublic($account, $gameno);
+		makeEdit($account, $gameno);
+		clearBye($account, $gameno);
+		echo json_encode(array('message' => 'Success', 'route' => $account.'/'.$gameno.'/edit.html'));
+		unlink($account.'/'.$gameno."/assign.html");
+		makeGame($account, $gameno);
 	}
 }
 
