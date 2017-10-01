@@ -19,5 +19,5 @@ for ($i = 1; $i < count($above); $i++) {
 date_default_timezone_set('Asia/Taipei');
 $date = date("Y-m-d H:i:s");
 mysql_query("UPDATE GAMEMAIN SET UPDATEDATE='$date' WHERE USERNO='$account' AND GAMENO='$gameno'");
-updateGameChart($gameno);
+updateGameChart($account, $gameno);
 echo json_encode(array('message' => 'Success'));

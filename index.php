@@ -7,8 +7,11 @@ if (isset($_POST['event'])) {
 		if ($return['message'] == 'Success') {
 			setcookie('account', $_POST['account']);
 			setcookie('token', $return['token']);
+			echo json_encode(array('message' => $return['message']));
 		}
-		echo json_encode(array('message' => $return['message']));
+		else {
+			echo json_encode(array('message' => $return));
+		}
 	}
 	elseif ($_POST['event'] == 'logon') {
 		$return = logon($_POST['account'], $_POST['password']);
@@ -16,8 +19,19 @@ if (isset($_POST['event'])) {
 			setcookie('account', $_POST['account']);
 			setcookie('token', $return['token']);
 			mkdir($_POST['account']);
+			echo json_encode(array('message' => $return['message']));
 		}
-		echo json_encode(array('message' => $return['message']));
+		else {
+			echo json_encode(array('message' => $return));
+		}
+	}
+	elseif ($_POST['event'] == 'logout') {
+		$return = logout($_COOKIE['account']);
+		if ($return == 'Success') {
+			setcookie("account", "", time() - 3600);
+			setcookie("token", "", time() - 3600);
+		}
+		echo json_encode(array('message' => $return));
 	}
 	else {
 		echo 'Invalid event called';
@@ -26,7 +40,7 @@ if (isset($_POST['event'])) {
 
 elseif (isset($_COOKIE['account']) && isset($_COOKIE['token'])) {
 	$content = file_get_contents("index.html");
-	$content = str_replace('[memberArea]', $_COOKIE['account'].'，你好', $content);
+	$content = str_replace('[memberArea]', $_COOKIE['account'].'，你好 <button onclick="logout()">登出</button>', $content);
 	echo $content;
 }
 

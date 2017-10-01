@@ -113,12 +113,14 @@ else {
 			$game++;
 		}
 		for ($i = 1; $i < $distribute['round']; $i++) {
-			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO) VALUES ('$account', '$gameno', '$play', '$play')");
+			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO) VALUES ('$account', '$gameno', 3*$gap+$i, 3*$gap+$i)");
+		}
+		if (!is_dir($account.'/'.$gameno)) {
+			mkdir($account.'/'.$gameno);
 		}
 		makePublic($account, $gameno);
 		makeEdit($account, $gameno);
-		echo json_encode(array('message' => 'Success', 'gameno' => $gameno));
-		unlink($account.'/'.$gameno."/assign.html");
+		echo json_encode(array('message' => 'Success', 'route' => $account.'/'.$gameno.'/edit.html'));
 		makeGame($account, $gameno);
 	}
 	elseif ($mode == 'enter') {

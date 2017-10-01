@@ -62,14 +62,14 @@ else {
 				mysql_query("INSERT INTO GAMEPOSITION (USERNO, GAMENO, POSITION, UNIT, NAME) VALUES ('$account', '$gameno', '$i', '$temp_unit', '$temp_name')");
 			}
 		}
-		if (!is_dir($gameno)) {
-			mkdir($gameno);
+		if (!is_dir($account.'/'.$gameno)) {
+			mkdir($account.'/'.$gameno);
 		}
-		createGameState($roundAmount, $gameno);
+		createGameState($account, $gameno, $roundAmount);
 		$index = 1;
 		for ($i = 1; $i <= $roundAmount/2; $i++) {
-			$single = queryPosition($gameno, $i*2-1);
-			$double = queryPosition($gameno, $i*2);
+			$single = queryPosition($account, $gameno, $i*2-1);
+			$double = queryPosition($account, $gameno, $i*2);
 			if ($single['unit'] != 'none' && $double['unit'] != 'none') {
 				mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
 				$index++;
@@ -79,11 +79,11 @@ else {
 			mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
 			$index++;
 		}
-		makePublic($gameno);
-		makeEdit($gameno);
-		clearBye($gameno);
-		echo json_encode(array('message' => 'Success', 'gameno' => $gameno));
-		makeGame($gameno);
+		makePublic($account, $gameno);
+		makeEdit($account, $gameno);
+		clearBye($account, $gameno);
+		echo json_encode(array('message' => 'Success', 'route' => $account.'/'.$gameno.'/edit.html'));
+		makeGame($account, $gameno);
 	}
 	elseif ($mode == 'enter') {
 		for ($i = 1; $i <= $roundAmount; $i++) {
@@ -91,11 +91,11 @@ else {
 			$temp_name = $name[$i-1];
 			mysql_query("INSERT INTO GAMEPOSITION (USERNO, GAMENO, POSITION, UNIT, NAME) VALUES ('$account', '$gameno', '$i', '$temp_unit', '$temp_name')");
 		}
-		createGameState($roundAmount, $gameno);
+		createGameState($account, $gameno, $roundAmount);
 		$index = 1;
 		for ($i = 1; $i <= $roundAmount/2; $i++) {
-			$single = queryPosition($gameno, $i*2-1);
-			$double = queryPosition($gameno, $i*2);
+			$single = queryPosition($account, $gameno, $i*2-1);
+			$double = queryPosition($account, $gameno, $i*2);
 			if ($single['unit'] != 'none' && $double['unit'] != 'none') {
 				mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
 				$index++;

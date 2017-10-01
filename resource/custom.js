@@ -42,6 +42,26 @@ function logon() {
 	}
 }
 
+function logout() {
+	var request = new XMLHttpRequest();
+	request.open("POST", "index.php");
+	var data = "event=logout";
+	request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	request.send(data);
+	request.onreadystatechange = function() {
+		if (request.readyState === 4 && request.status === 200) {
+			alert(request.responseText);
+			var data = JSON.parse(request.responseText);
+			if (data.message == 'Success') {
+				location.assign("index.php");
+			}
+			else {
+				alert(data.message);
+			}
+		}
+	}
+}
+
 function enter() {
 	var amount = Number(document.getElementById("amount").value);
 	var gameno = document.getElementById("gameno").value;
@@ -232,6 +252,7 @@ function send() {
 				request.send(data);
 				request.onreadystatechange = function() {
 					if (request.readyState === 4 && request.status === 200) {
+						alert(request.responseText);
 						var data = JSON.parse(request.responseText);
 						if (data.message == 'Success') {
 							location.assign(data.route);
@@ -273,6 +294,7 @@ function public(amount, gameno, gamenm) {
 	request.send(data);
 	request.onreadystatechange = function() {
 		if (request.readyState === 4 && request.status === 200) {
+			alert(request.responseText);
 			var data = JSON.parse(request.responseText);
 			if (data.message == 'Success') {
 				location.assign("edit.html");
@@ -326,7 +348,7 @@ function update(gameno) {
 		}
 	}
 	var request = new XMLHttpRequest();
-	request.open("POST", "../update.php");
+	request.open("POST", "../../update.php");
 	var data = "gameno=" + gameno + "&above=" + above + "&below=" + below;
 	request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	request.send(data);

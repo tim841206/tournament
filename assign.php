@@ -13,7 +13,7 @@ elseif (empty($gamenm)) {
 elseif (!is_validAmount($amount)) {
 	echo json_encode(array('message' => 'Invalid player amount'));
 }
-elseif (mysql_num_rows($sql) != 0) {
+elseif ($sql != false) {
 	echo json_encode(array('message' => 'Used game index'));
 }
 else {

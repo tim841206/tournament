@@ -41,7 +41,7 @@ function publicContent($account, $gameno) {
 
 function editContent($account, $gameno) {
 	$amount = getAmount($account, $gameno);
-	$content = '<script src="../resource/custom.js"></script><table><tr><td>單位</td><td>名稱</td></tr>';
+	$content = '<script src="../../resource/custom.js"></script><table><tr><td>單位</td><td>名稱</td></tr>';
 	for ($i = 1; $i <= pow(2, ceil(log($amount, 2))); $i++) {
 		$query = queryPosition($account, $account, $gameno, $i);
 		$content .= '<tr><td>'.processUnit($query['unit']).'</td><td>'.processName($query['name']).'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
@@ -54,10 +54,10 @@ function editContent($account, $gameno) {
 
 function cyclePublicContent($account, $gameno) {
 	$amount = getAmount($account, $gameno);
+	$content = '<script src="../../resource/custom.js"></script>';
 	$distribute = distribute($amount);
 	$gap = 2 * ($distribute['4_1'] + $distribute['4_2']) + $distribute['3_1'] + $distribute['3_2'];
 	$label = array(' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG', 'AH', 'AI', 'AJ', 'AK', 'AL', 'AM', 'AN', 'AO', 'AP', 'AQ', 'AR', 'AS', 'AT', 'AU', 'AV', 'AW', 'AX', 'AY', 'AZ');
-	$content = '';
 	$total = 1;
 	$game = 1;
 	$pos = 1;
@@ -175,20 +175,21 @@ function cyclePublicContent($account, $gameno) {
 		$pos += 3;
 	}
 	shuffle($up);
+	$content .= '<table><tr><td>單位</td><td>名稱</td></tr>';
 	for ($i = 1; $i <= $distribute['round']; $i++) {
 		$content .= '<tr><td id="unit'.$i.'">'.array_pop($up).'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
 	}
-	// $content = setPlayNo($account, $gameno, $content, $distribute['round']);
+	$content = cycleSetPlayNo($account, $gameno, $content, $distribute['round']);
 	$content .= '</table><button onclick="window.open(\'game.html\')">賽程表</button>';
 	return $content;
 }
 
 function cycleEditContent($account, $gameno) {
 	$amount = getAmount($account, $gameno);
+	$content = '<script src="../../resource/custom.js"></script>';
 	$distribute = distribute($amount);
 	$gap = 2 * ($distribute['4_1'] + $distribute['4_2']) + $distribute['3_1'] + $distribute['3_2'];
 	$label = array(' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG', 'AH', 'AI', 'AJ', 'AK', 'AL', 'AM', 'AN', 'AO', 'AP', 'AQ', 'AR', 'AS', 'AT', 'AU', 'AV', 'AW', 'AX', 'AY', 'AZ');
-	$content = '';
 	$total = 1;
 	$game = 1;
 	$pos = 1;
@@ -306,11 +307,12 @@ function cycleEditContent($account, $gameno) {
 		$pos += 3;
 	}
 	shuffle($up);
+	$content .= '<table><tr><td>單位</td><td>名稱</td></tr>';
 	for ($i = 1; $i <= $distribute['round']; $i++) {
 		$content .= '<tr><td id="unit'.$i.'">'.array_pop($up).'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
 	}
-	// $content = setPlayNo($account, $gameno, $content, $distribute['round']);
-	// $content = setScoreInput($account, $gameno, $content, $distribute['round']);
+	$content = cycleSetPlayNo($account, $gameno, $content, $distribute['round']);
+	$content = cycleSetScoreInput($account, $gameno, $content, $distribute['round']);
 	$content .= '</table><button onclick="update(\''.$gameno.'\')">確定更新</button><button onclick="window.open(\'game.html\')">賽程表</button>';
 	return $content;
 }
@@ -342,15 +344,28 @@ function setPlayNo($account, $gameno, $content, $amount) {
 	return $content;
 }
 
+function cycleSetPlayNo($account, $gameno, $content, $amount) {
+	$distribute = distribute(getAmount($account, $gameno));
+	$gap = 3 * (2 * ($distribute['4_1'] + $distribute['4_2']) + $distribute['3_1'] + $distribute['3_2']);
+	$sql = mysql_query("SELECT * FROM GAMESTATE WHERE USERNO='$account' AND GAMENO='$gameno'");
+	while ($fetch = mysql_fetch_array($sql)) {
+		if ($fetch['SYSTEMPLAYNO'] > $gap) {
+			$position = playNoPosition($fetch['SYSTEMPLAYNO'] - $gap, $amount);
+			$content = str_replace('<td id="p'.$position.'">', '<td id="p'.$position.'" align="right">'.$fetch['PLAYNO'], $content);
+		}
+	}
+	return $content;
+}
+
 function playNoPosition($playno, $amount) {
 	$bound = pow(2, ceil(log($amount, 2))-1);
 	$layer = 1;
 	$times = 4;
 	while ($playno > $bound) {
-		$playno -= $bound;
-		$bound /= 2;
-		$times *= 2;
-		$layer += 1;
+		$playno = $playno - $bound;
+		$bound = $bound / 2;
+		$times = $times * 2;
+		$layer = $layer + 1;
 	}
 	$pos = $playno * $times - $times / 2;
 	return $pos.'_'.$layer;
@@ -361,6 +376,20 @@ function setScoreInput($account, $gameno, $content, $amount) {
 	while ($fetch = mysql_fetch_array($sql)) {
 		$scoreInput = scoreInputPosition($fetch['SYSTEMPLAYNO'], $amount);
 		if (!empty($fetch['PLAYNO'])) {
+			$content = str_replace('<td id="p'.$scoreInput['above'].'">', '<td id="p'.$scoreInput['above'].'"><input type="text" id="'.$fetch['PLAYNO'].'_above">', $content);
+			$content = str_replace('<td id="p'.$scoreInput['below'].'">', '<td id="p'.$scoreInput['below'].'"><input type="text" id="'.$fetch['PLAYNO'].'_below">', $content);
+		}
+	}
+	return $content;
+}
+
+function cycleSetScoreInput($account, $gameno, $content, $amount) {
+	$distribute = distribute(getAmount($account, $gameno));
+	$gap = 3 * (2 * ($distribute['4_1'] + $distribute['4_2']) + $distribute['3_1'] + $distribute['3_2']);
+	$sql = mysql_query("SELECT * FROM GAMESTATE WHERE USERNO='$account' AND GAMENO='$gameno'");
+	while ($fetch = mysql_fetch_array($sql)) {
+		if ($fetch['SYSTEMPLAYNO'] > $gap) {
+			$scoreInput = scoreInputPosition($fetch['SYSTEMPLAYNO'] - $gap, $amount);
 			$content = str_replace('<td id="p'.$scoreInput['above'].'">', '<td id="p'.$scoreInput['above'].'"><input type="text" id="'.$fetch['PLAYNO'].'_above">', $content);
 			$content = str_replace('<td id="p'.$scoreInput['below'].'">', '<td id="p'.$scoreInput['below'].'"><input type="text" id="'.$fetch['PLAYNO'].'_below">', $content);
 		}
@@ -509,8 +538,8 @@ function updateGameChart($account, $gameno) {
 	}
 	unlink($account.'/'.$gameno."/public.html");
 	unlink($account.'/'.$gameno."/edit.html");
-	$start = '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>電子化賽程系統</title><link rel="stylesheet" type="text/css" href="../resource/custom.css"></head><body>';
-	$end = '</body><script src="../resource/'.$roundAmount.'.js"></script></html>';
+	$start = '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>電子化賽程系統</title><link rel="stylesheet" type="text/css" href="../../resource/custom.css"></head><body>';
+	$end = '</body><script src="../../resource/'.$roundAmount.'.js"></script></html>';
 	$file = fopen($account.'/'.$gameno."/public.html", "w");
 	fwrite($file, $start.$publicContent.$end);
 	fclose($file);
@@ -677,6 +706,26 @@ function logon($account, $password) {
 		$sql2 = "INSERT INTO USERMAS (USERNO, TOKEN, PASSWORD, CREATEDATE, LOGINDATE, AUTHDATE) VALUES ('$account', '$token', '$password', '$date', '$date', '$date')";
 		if (mysql_query($sql2)) {
 			return array('message' => 'Success', 'token' => $token);
+		}
+		else {
+			return 'Database operation error';
+		}
+	}
+}
+
+function logout($account) {
+	$sql1 = mysql_query("SELECT * FROM USERMAS WHERE USERNO='$account'");
+	$fetch1 = mysql_fetch_array($sql1);
+	if (empty($account)) {
+		return '請輸入帳號';
+	}
+	elseif (mysql_num_rows($sql1) == 0) {
+		return '未註冊的帳號';
+	}
+	else {
+		$sql2 = "UPDATE USERMAS SET TOKEN='' WHERE USERNO='$account'";
+		if (mysql_query($sql2)) {
+			return 'Success';
 		}
 		else {
 			return 'Database operation error';
