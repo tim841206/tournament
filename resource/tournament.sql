@@ -31,6 +31,7 @@ CREATE TABLE `GAMEMAIN` (
   `GAMENO` varchar(15) COLLATE utf8_bin NOT NULL,
   `GAMENM` varchar(30) COLLATE utf8_bin NOT NULL,
   `GAMETYPE` varchar(1) COLLATE utf8_bin NOT NULL,
+  `PLAYTYPE` varchar(1) COLLATE utf8_bin NOT NULL,
   `CREATEDATE` datetime NOT NULL,
   `UPDATEDATE` datetime NOT NULL,
   `AMOUNT` int(11) NOT NULL
@@ -46,8 +47,9 @@ CREATE TABLE `GAMEPOSITION` (
   `USERNO` varchar(15) COLLATE utf8_bin NOT NULL,
   `GAMENO` varchar(15) COLLATE utf8_bin NOT NULL,
   `POSITION` int(11) NOT NULL,
+  `PLAYERNO` varchar(1) COLLATE utf8_bin DEFAULT NULL,
   `UNIT` varchar(30) COLLATE utf8_bin NOT NULL,
-  `NAME` varchar(30) COLLATE utf8_bin NOT NULL
+  `NAME` varchar(30) COLLATE utf8_bin DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
@@ -107,7 +109,7 @@ ALTER TABLE `GAMEMAIN`
 -- 資料表索引 `GAMEPOSITION`
 --
 ALTER TABLE `GAMEPOSITION`
-  ADD PRIMARY KEY (`USERNO`, `GAMENO`, `POSITION`);
+  ADD PRIMARY KEY (`USERNO`, `GAMENO`, `POSITION`, `PLAYERNO`);
 
 --
 -- 資料表索引 `GAMESTATE`

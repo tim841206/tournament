@@ -27,7 +27,7 @@
 
 .content {
 	width: 250px;
-	height: 250px;
+	height: 290px;
 	display: inline-block;
 	padding: 25px;
 }
@@ -46,6 +46,10 @@
 
 .separater {
 	width: 42px;
+	display: inline-block;
+}
+
+.group {
 	display: inline-block;
 }
 

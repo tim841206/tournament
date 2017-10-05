@@ -19,11 +19,23 @@
 			<tr><th colspan="2">請輸入競賽名稱</th></tr>
 			<tr><td colspan="2"><input type="text" id="gamenm"></td></tr>
 			<tr><th colspan="2">請輸入參賽人數</th></tr>
-			<tr><td colspan="2"><input type="number" id="amount" value="16" min="9"></td></tr>
+			<tr><td colspan="2"><input type="number" id="amount" value="16"></td></tr>
+			<tr><th colspan="2">請選擇競賽組別</th></tr>
+			<tr><form id="people">
+				<td><input type="radio" name="people" value="a">單打</td>
+				<td><input type="radio" name="people" value="b">雙打</td>
+				<td><input type="radio" name="people" value="c">團體</td>
+			</form></tr>
 			<tr><th colspan="2">請選擇競賽方式</th></tr>
-			<tr><td><form id="method"><input type="radio" name="method" value="a">單淘汰</td><td><input type="radio" name="method" value="b">先循環後單淘汰</form></td></tr>
+			<tr><form id="method">
+				<td><input type="radio" name="method" value="a">單淘汰</td>
+				<td colspan="2"><input type="radio" name="method" value="b">先循環後單淘汰</td>
+			</form></tr>
 			<tr><th colspan="2">請選擇賽程排列方式</th></tr>
-			<tr><td><form id="type"><input type="radio" name="type" value="a">手動排籤</td><td><input type="radio" name="type" value="b">系統抽籤</form></td></tr>
+			<tr><form id="type">
+				<td><input type="radio" name="type" value="a">手動排籤</td>
+				<td><input type="radio" name="type" value="b">系統抽籤</td>
+			</form></tr>
 		</table>
 		<button onclick="enter()">確定</button>
 		<div id="players" style="display: none;">

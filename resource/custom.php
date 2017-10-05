@@ -29,10 +29,21 @@ function makeEdit($account, $gameno) {
 
 function publicContent($account, $gameno) {
 	$amount = getAmount($account, $gameno);
+	$playtype = getPlaytype($account, $gameno);
 	$content = '<table><tr><td>單位</td><td>名稱</td></tr>';
 	for ($i = 1; $i <= pow(2, ceil(log($amount, 2))); $i++) {
-		$query = queryPosition($account, $gameno, $i);
-		$content .= '<tr><td>'.processUnit($query['unit']).'</td><td>'.processName($query['name']).'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+		if ($playtype == 'A') {
+			$query = queryContentSingle($account, $gameno, $i);
+			$content .= '<tr><td>'.processUnit($query['unit']).'</td><td>'.processName($query['name']).'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+		}
+		elseif ($playtype == 'B') {
+			$query = queryContentDouble($account, $gameno, $i);
+			$content .= '<tr><td>'.processUnit($query['unitu']).'</td><td>'.processName($query['nameu']).'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td>'.processUnit($query['unitd']).'</td><td>'.processName($query['named']).'</td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+		}
+		elseif ($playtype == 'C') {
+			$query = queryContentGroup($account, $gameno, $i);
+			$content .= '<tr><td>'.processName($query).'</td><td></td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+		}
 	}
 	$content = setPlayNo($account, $gameno, $content, $amount);
 	$content .= '</table><button onclick="window.open(\'game.html\')">賽程表</button>';
@@ -41,10 +52,21 @@ function publicContent($account, $gameno) {
 
 function editContent($account, $gameno) {
 	$amount = getAmount($account, $gameno);
+	$playtype = getPlaytype($account, $gameno);
 	$content = '<script src="../../resource/custom.js"></script><table><tr><td>單位</td><td>名稱</td></tr>';
 	for ($i = 1; $i <= pow(2, ceil(log($amount, 2))); $i++) {
-		$query = queryPosition($account, $account, $gameno, $i);
-		$content .= '<tr><td>'.processUnit($query['unit']).'</td><td>'.processName($query['name']).'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+		if ($playtype == 'A') {
+			$query = queryContentSingle($account, $gameno, $i);
+			$content .= '<tr><td>'.processUnit($query['unit']).'</td><td>'.processName($query['name']).'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+		}
+		elseif ($playtype == 'B') {
+			$query = queryContentDouble($account, $gameno, $i);
+			$content .= '<tr><td>'.processUnit($query['unitu']).'</td><td>'.processName($query['nameu']).'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td>'.processUnit($query['unitd']).'</td><td>'.processName($query['named']).'</td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+		}
+		elseif ($playtype == 'C') {
+			$query = queryContentGroup($account, $gameno, $i);
+			$content .= '<tr><td>'.processName($query).'</td><td></td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+		}
 	}
 	$content = setPlayNo($account, $gameno, $content, $amount);
 	$content = setScoreInput($account, $gameno, $content, $amount);
@@ -54,6 +76,7 @@ function editContent($account, $gameno) {
 
 function cyclePublicContent($account, $gameno) {
 	$amount = getAmount($account, $gameno);
+	$playtype = getPlaytype($account, $gameno);
 	$content = '<script src="../../resource/custom.js"></script>';
 	$distribute = distribute($amount);
 	$gap = 2 * ($distribute['4_1'] + $distribute['4_2']) + $distribute['3_1'] + $distribute['3_2'];
@@ -63,11 +86,67 @@ function cyclePublicContent($account, $gameno) {
 	$pos = 1;
 	$up = array();
 	for ($i = 1; $i <= $distribute['4_2']; $i++) {
-		$query1 = queryPosition($account, $gameno, $pos);
-		$query2 = queryPosition($account, $gameno, $pos+1);
-		$query3 = queryPosition($account, $gameno, $pos+2);
-		$query4 = queryPosition($account, $gameno, $pos+3);
-		$square = file_get_contents("resource/square_view.html");
+		if ($playtype == 'A') {
+			$query1 = queryContentSingle($account, $gameno, $pos);
+			$query2 = queryContentSingle($account, $gameno, $pos+1);
+			$query3 = queryContentSingle($account, $gameno, $pos+2);
+			$query4 = queryContentSingle($account, $gameno, $pos+3);
+			$square = file_get_contents("resource/single_square_view.html");
+			$square = str_replace('[pos1]', $pos, $square);
+			$square = str_replace('[pos2]', $pos+1, $square);
+			$square = str_replace('[pos3]', $pos+2, $square);
+			$square = str_replace('[pos4]', $pos+3, $square);
+			$square = str_replace('[unit'.$pos.']', $query1['unit'], $square);
+			$square = str_replace('[name'.$pos.']', $query1['name'], $square);
+			$square = str_replace('[unit'.($pos+1).']', $query2['unit'], $square);
+			$square = str_replace('[name'.($pos+1).']', $query2['name'], $square);
+			$square = str_replace('[unit'.($pos+2).']', $query3['unit'], $square);
+			$square = str_replace('[name'.($pos+2).']', $query3['name'], $square);
+			$square = str_replace('[unit'.($pos+3).']', $query4['unit'], $square);
+			$square = str_replace('[name'.($pos+3).']', $query4['name'], $square);
+		}
+		elseif ($playtype == 'B') {
+			$query1 = queryContentDouble($account, $gameno, $pos);
+			$query2 = queryContentDouble($account, $gameno, $pos+1);
+			$query3 = queryContentDouble($account, $gameno, $pos+2);
+			$query4 = queryContentDouble($account, $gameno, $pos+3);
+			$square = file_get_contents("resource/double_square_view.html");
+			$square = str_replace('[pos1]', $pos, $square);
+			$square = str_replace('[pos2]', $pos+1, $square);
+			$square = str_replace('[pos3]', $pos+2, $square);
+			$square = str_replace('[pos4]', $pos+3, $square);
+			$square = str_replace('[unit'.$pos.'u]', $query1['unitu'], $square);
+			$square = str_replace('[unit'.$pos.'d]', $query1['unitd'], $square);
+			$square = str_replace('[name'.$pos.'u]', $query1['nameu'], $square);
+			$square = str_replace('[name'.$pos.'d]', $query1['named'], $square);
+			$square = str_replace('[unit'.($pos+1).'u]', $query2['unitu'], $square);
+			$square = str_replace('[unit'.($pos+1).'d]', $query2['unitd'], $square);
+			$square = str_replace('[name'.($pos+1).'u]', $query2['nameu'], $square);
+			$square = str_replace('[name'.($pos+1).'d]', $query2['named'], $square);
+			$square = str_replace('[unit'.($pos+2).'u]', $query3['unitu'], $square);
+			$square = str_replace('[unit'.($pos+2).'d]', $query3['unitd'], $square);
+			$square = str_replace('[name'.($pos+2).'u]', $query3['nameu'], $square);
+			$square = str_replace('[name'.($pos+2).'d]', $query3['named'], $square);
+			$square = str_replace('[unit'.($pos+3).'u]', $query4['unitu'], $square);
+			$square = str_replace('[unit'.($pos+3).'d]', $query4['unitd'], $square);
+			$square = str_replace('[name'.($pos+3).'u]', $query4['nameu'], $square);
+			$square = str_replace('[name'.($pos+3).'d]', $query4['named'], $square);
+		}
+		elseif ($playtype == 'C') {
+			$query1 = queryContentGroup($account, $gameno, $pos);
+			$query2 = queryContentGroup($account, $gameno, $pos+1);
+			$query3 = queryContentGroup($account, $gameno, $pos+2);
+			$query4 = queryContentGroup($account, $gameno, $pos+3);
+			$square = file_get_contents("resource/group_square_view.html");
+			$square = str_replace('[pos1]', $pos, $square);
+			$square = str_replace('[pos2]', $pos+1, $square);
+			$square = str_replace('[pos3]', $pos+2, $square);
+			$square = str_replace('[pos4]', $pos+3, $square);
+			$square = str_replace('[unit'.$pos.']', $query1, $square);
+			$square = str_replace('[unit'.($pos+1).']', $query2, $square);
+			$square = str_replace('[unit'.($pos+2).']', $query3, $square);
+			$square = str_replace('[unit'.($pos+3).']', $query4, $square);
+		}
 		$square = str_replace('[label]', $label[$total], $square);
 		$square = str_replace('[game1]', $game, $square);
 		$square = str_replace('[game2]', $gap + $game, $square);
@@ -75,18 +154,6 @@ function cyclePublicContent($account, $gameno) {
 		$square = str_replace('[game4]', 2*$gap + $game+1, $square);
 		$square = str_replace('[game5]', $gap + $game+1, $square);
 		$square = str_replace('[game6]', $game+1, $square);
-		$square = str_replace('[pos1]', $pos, $square);
-		$square = str_replace('[pos2]', $pos+1, $square);
-		$square = str_replace('[pos3]', $pos+2, $square);
-		$square = str_replace('[pos4]', $pos+3, $square);
-		$square = str_replace('[unit'.$pos.']', $query1['unit'], $square);
-		$square = str_replace('[name'.$pos.']', $query1['name'], $square);
-		$square = str_replace('[unit'.($pos+1).']', $query2['unit'], $square);
-		$square = str_replace('[name'.($pos+1).']', $query2['name'], $square);
-		$square = str_replace('[unit'.($pos+2).']', $query3['unit'], $square);
-		$square = str_replace('[name'.($pos+2).']', $query3['name'], $square);
-		$square = str_replace('[unit'.($pos+3).']', $query4['unit'], $square);
-		$square = str_replace('[name'.($pos+3).']', $query4['name'], $square);
 		$content .= $square;
 		array_push($up, $label[$total].'冠');
 		array_push($up, $label[$total].'亞');
@@ -95,11 +162,67 @@ function cyclePublicContent($account, $gameno) {
 		$pos += 4;
 	}
 	for ($i = 1; $i <= $distribute['4_1']; $i++) {
-		$query1 = queryPosition($account, $gameno, $pos);
-		$query2 = queryPosition($account, $gameno, $pos+1);
-		$query3 = queryPosition($account, $gameno, $pos+2);
-		$query4 = queryPosition($account, $gameno, $pos+3);
-		$square = file_get_contents("resource/square_view.html");
+		if ($playtype == 'A') {
+			$query1 = queryContentSingle($account, $gameno, $pos);
+			$query2 = queryContentSingle($account, $gameno, $pos+1);
+			$query3 = queryContentSingle($account, $gameno, $pos+2);
+			$query4 = queryContentSingle($account, $gameno, $pos+3);
+			$square = file_get_contents("resource/single_square_view.html");
+			$square = str_replace('[pos1]', $pos, $square);
+			$square = str_replace('[pos2]', $pos+1, $square);
+			$square = str_replace('[pos3]', $pos+2, $square);
+			$square = str_replace('[pos4]', $pos+3, $square);
+			$square = str_replace('[unit'.$pos.']', $query1['unit'], $square);
+			$square = str_replace('[name'.$pos.']', $query1['name'], $square);
+			$square = str_replace('[unit'.($pos+1).']', $query2['unit'], $square);
+			$square = str_replace('[name'.($pos+1).']', $query2['name'], $square);
+			$square = str_replace('[unit'.($pos+2).']', $query3['unit'], $square);
+			$square = str_replace('[name'.($pos+2).']', $query3['name'], $square);
+			$square = str_replace('[unit'.($pos+3).']', $query4['unit'], $square);
+			$square = str_replace('[name'.($pos+3).']', $query4['name'], $square);
+		}
+		elseif ($playtype == 'B') {
+			$query1 = queryContentDouble($account, $gameno, $pos);
+			$query2 = queryContentDouble($account, $gameno, $pos+1);
+			$query3 = queryContentDouble($account, $gameno, $pos+2);
+			$query4 = queryContentDouble($account, $gameno, $pos+3);
+			$square = file_get_contents("resource/double_square_view.html");
+			$square = str_replace('[pos1]', $pos, $square);
+			$square = str_replace('[pos2]', $pos+1, $square);
+			$square = str_replace('[pos3]', $pos+2, $square);
+			$square = str_replace('[pos4]', $pos+3, $square);
+			$square = str_replace('[unit'.$pos.'u]', $query1['unitu'], $square);
+			$square = str_replace('[unit'.$pos.'d]', $query1['unitd'], $square);
+			$square = str_replace('[name'.$pos.'u]', $query1['nameu'], $square);
+			$square = str_replace('[name'.$pos.'d]', $query1['named'], $square);
+			$square = str_replace('[unit'.($pos+1).'u]', $query2['unitu'], $square);
+			$square = str_replace('[unit'.($pos+1).'d]', $query2['unitd'], $square);
+			$square = str_replace('[name'.($pos+1).'u]', $query2['nameu'], $square);
+			$square = str_replace('[name'.($pos+1).'d]', $query2['named'], $square);
+			$square = str_replace('[unit'.($pos+2).'u]', $query3['unitu'], $square);
+			$square = str_replace('[unit'.($pos+2).'d]', $query3['unitd'], $square);
+			$square = str_replace('[name'.($pos+2).'u]', $query3['nameu'], $square);
+			$square = str_replace('[name'.($pos+2).'d]', $query3['named'], $square);
+			$square = str_replace('[unit'.($pos+3).'u]', $query4['unitu'], $square);
+			$square = str_replace('[unit'.($pos+3).'d]', $query4['unitd'], $square);
+			$square = str_replace('[name'.($pos+3).'u]', $query4['nameu'], $square);
+			$square = str_replace('[name'.($pos+3).'d]', $query4['named'], $square);
+		}
+		elseif ($playtype == 'C') {
+			$query1 = queryContentGroup($account, $gameno, $pos);
+			$query2 = queryContentGroup($account, $gameno, $pos+1);
+			$query3 = queryContentGroup($account, $gameno, $pos+2);
+			$query4 = queryContentGroup($account, $gameno, $pos+3);
+			$square = file_get_contents("resource/group_square_view.html");
+			$square = str_replace('[pos1]', $pos, $square);
+			$square = str_replace('[pos2]', $pos+1, $square);
+			$square = str_replace('[pos3]', $pos+2, $square);
+			$square = str_replace('[pos4]', $pos+3, $square);
+			$square = str_replace('[unit'.$pos.']', $query1, $square);
+			$square = str_replace('[unit'.($pos+1).']', $query2, $square);
+			$square = str_replace('[unit'.($pos+2).']', $query3, $square);
+			$square = str_replace('[unit'.($pos+3).']', $query4, $square);
+		}
 		$square = str_replace('[label]', $label[$total], $square);
 		$square = str_replace('[game1]', $game, $square);
 		$square = str_replace('[game2]', $gap + $game, $square);
@@ -107,18 +230,6 @@ function cyclePublicContent($account, $gameno) {
 		$square = str_replace('[game4]', 2*$gap + $game+1, $square);
 		$square = str_replace('[game5]', $gap + $game+1, $square);
 		$square = str_replace('[game6]', $game+1, $square);
-		$square = str_replace('[pos1]', $pos, $square);
-		$square = str_replace('[pos2]', $pos+1, $square);
-		$square = str_replace('[pos3]', $pos+2, $square);
-		$square = str_replace('[pos4]', $pos+3, $square);
-		$square = str_replace('[unit'.$pos.']', $query1['unit'], $square);
-		$square = str_replace('[name'.$pos.']', $query1['name'], $square);
-		$square = str_replace('[unit'.($pos+1).']', $query2['unit'], $square);
-		$square = str_replace('[name'.($pos+1).']', $query2['name'], $square);
-		$square = str_replace('[unit'.($pos+2).']', $query3['unit'], $square);
-		$square = str_replace('[name'.($pos+2).']', $query3['name'], $square);
-		$square = str_replace('[unit'.($pos+3).']', $query4['unit'], $square);
-		$square = str_replace('[name'.($pos+3).']', $query4['name'], $square);
 		$content .= $square;
 		array_push($up, $label[$total].'冠');
 		$total++;
@@ -126,23 +237,58 @@ function cyclePublicContent($account, $gameno) {
 		$pos += 4;
 	}
 	for ($i = 1; $i <= $distribute['3_1']; $i++) {
-		$query1 = queryPosition($account, $gameno, $pos);
-		$query2 = queryPosition($account, $gameno, $pos+1);
-		$query3 = queryPosition($account, $gameno, $pos+2);
-		$triangle = file_get_contents("resource/triangle_view.html");
+		if ($playtype == 'A') {
+			$query1 = queryContentSingle($account, $gameno, $pos);
+			$query2 = queryContentSingle($account, $gameno, $pos+1);
+			$query3 = queryContentSingle($account, $gameno, $pos+2);
+			$triangle = file_get_contents("resource/single_triangle_view.html");
+			$triangle = str_replace('[pos1]', $pos, $triangle);
+			$triangle = str_replace('[pos2]', $pos+1, $triangle);
+			$triangle = str_replace('[pos3]', $pos+2, $triangle);
+			$triangle = str_replace('[unit'.$pos.']', $query1['unit'], $triangle);
+			$triangle = str_replace('[name'.$pos.']', $query1['name'], $triangle);
+			$triangle = str_replace('[unit'.($pos+1).']', $query2['unit'], $triangle);
+			$triangle = str_replace('[name'.($pos+1).']', $query2['name'], $triangle);
+			$triangle = str_replace('[unit'.($pos+2).']', $query3['unit'], $triangle);
+			$triangle = str_replace('[name'.($pos+2).']', $query3['name'], $triangle);
+		}
+		elseif ($playtype == 'B') {
+			$query1 = queryContentDouble($account, $gameno, $pos);
+			$query2 = queryContentDouble($account, $gameno, $pos+1);
+			$query3 = queryContentDouble($account, $gameno, $pos+2);
+			$triangle = file_get_contents("resource/double_triangle_view.html");
+			$triangle = str_replace('[pos1]', $pos, $triangle);
+			$triangle = str_replace('[pos2]', $pos+1, $triangle);
+			$triangle = str_replace('[pos3]', $pos+2, $triangle);
+			$triangle = str_replace('[unit'.$pos.'u]', $query1['unitu'], $triangle);
+			$triangle = str_replace('[unit'.$pos.'d]', $query1['unitd'], $triangle);
+			$triangle = str_replace('[name'.$pos.'u]', $query1['nameu'], $triangle);
+			$triangle = str_replace('[name'.$pos.'d]', $query1['named'], $triangle);
+			$triangle = str_replace('[unit'.($pos+1).'u]', $query2['unitu'], $triangle);
+			$triangle = str_replace('[unit'.($pos+1).'d]', $query2['unitd'], $triangle);
+			$triangle = str_replace('[name'.($pos+1).'u]', $query2['nameu'], $triangle);
+			$triangle = str_replace('[name'.($pos+1).'d]', $query2['named'], $triangle);
+			$triangle = str_replace('[unit'.($pos+2).'u]', $query3['unitu'], $triangle);
+			$triangle = str_replace('[unit'.($pos+2).'d]', $query3['unitd'], $triangle);
+			$triangle = str_replace('[name'.($pos+2).'u]', $query3['nameu'], $triangle);
+			$triangle = str_replace('[name'.($pos+2).'d]', $query3['named'], $triangle);
+		}
+		elseif ($playtype == 'C') {
+			$query1 = queryContentGroup($account, $gameno, $pos);
+			$query2 = queryContentGroup($account, $gameno, $pos+1);
+			$query3 = queryContentGroup($account, $gameno, $pos+2);
+			$triangle = file_get_contents("resource/group_triangle_view.html");
+			$triangle = str_replace('[pos1]', $pos, $triangle);
+			$triangle = str_replace('[pos2]', $pos+1, $triangle);
+			$triangle = str_replace('[pos3]', $pos+2, $triangle);
+			$triangle = str_replace('[unit'.$pos.']', $query1, $triangle);
+			$triangle = str_replace('[unit'.($pos+1).']', $query2, $triangle);
+			$triangle = str_replace('[unit'.($pos+2).']', $query3, $triangle);
+		}
 		$triangle = str_replace('[label]', $label[$total], $triangle);
 		$triangle = str_replace('[game1]', $game, $triangle);
 		$triangle = str_replace('[game2]', $gap + $game, $triangle);
 		$triangle = str_replace('[game3]', 2*$gap + $game, $triangle);
-		$triangle = str_replace('[pos1]', $pos, $triangle);
-		$triangle = str_replace('[pos2]', $pos+1, $triangle);
-		$triangle = str_replace('[pos3]', $pos+2, $triangle);
-		$triangle = str_replace('[unit'.$pos.']', $query1['unit'], $triangle);
-		$triangle = str_replace('[name'.$pos.']', $query1['name'], $triangle);
-		$triangle = str_replace('[unit'.($pos+1).']', $query2['unit'], $triangle);
-		$triangle = str_replace('[name'.($pos+1).']', $query2['name'], $triangle);
-		$triangle = str_replace('[unit'.($pos+2).']', $query3['unit'], $triangle);
-		$triangle = str_replace('[name'.($pos+2).']', $query3['name'], $triangle);
 		$content .= $triangle;
 		array_push($up, $label[$total].'冠');
 		$total++;
@@ -150,23 +296,58 @@ function cyclePublicContent($account, $gameno) {
 		$pos += 3;
 	}
 	for ($i = 1; $i <= $distribute['3_2']; $i++) {
-		$query1 = queryPosition($account, $gameno, $pos);
-		$query2 = queryPosition($account, $gameno, $pos+1);
-		$query3 = queryPosition($account, $gameno, $pos+2);
-		$triangle = file_get_contents("resource/triangle_view.html");
+		if ($playtype == 'A') {
+			$query1 = queryContentSingle($account, $gameno, $pos);
+			$query2 = queryContentSingle($account, $gameno, $pos+1);
+			$query3 = queryContentSingle($account, $gameno, $pos+2);
+			$triangle = file_get_contents("resource/single_triangle_view.html");
+			$triangle = str_replace('[pos1]', $pos, $triangle);
+			$triangle = str_replace('[pos2]', $pos+1, $triangle);
+			$triangle = str_replace('[pos3]', $pos+2, $triangle);
+			$triangle = str_replace('[unit'.$pos.']', $query1['unit'], $triangle);
+			$triangle = str_replace('[name'.$pos.']', $query1['name'], $triangle);
+			$triangle = str_replace('[unit'.($pos+1).']', $query2['unit'], $triangle);
+			$triangle = str_replace('[name'.($pos+1).']', $query2['name'], $triangle);
+			$triangle = str_replace('[unit'.($pos+2).']', $query3['unit'], $triangle);
+			$triangle = str_replace('[name'.($pos+2).']', $query3['name'], $triangle);
+		}
+		elseif ($playtype == 'B') {
+			$query1 = queryContentDouble($account, $gameno, $pos);
+			$query2 = queryContentDouble($account, $gameno, $pos+1);
+			$query3 = queryContentDouble($account, $gameno, $pos+2);
+			$triangle = file_get_contents("resource/double_triangle_view.html");
+			$triangle = str_replace('[pos1]', $pos, $triangle);
+			$triangle = str_replace('[pos2]', $pos+1, $triangle);
+			$triangle = str_replace('[pos3]', $pos+2, $triangle);
+			$triangle = str_replace('[unit'.$pos.'u]', $query1['unitu'], $triangle);
+			$triangle = str_replace('[unit'.$pos.'d]', $query1['unitd'], $triangle);
+			$triangle = str_replace('[name'.$pos.'u]', $query1['nameu'], $triangle);
+			$triangle = str_replace('[name'.$pos.'d]', $query1['named'], $triangle);
+			$triangle = str_replace('[unit'.($pos+1).'u]', $query2['unitu'], $triangle);
+			$triangle = str_replace('[unit'.($pos+1).'d]', $query2['unitd'], $triangle);
+			$triangle = str_replace('[name'.($pos+1).'u]', $query2['nameu'], $triangle);
+			$triangle = str_replace('[name'.($pos+1).'d]', $query2['named'], $triangle);
+			$triangle = str_replace('[unit'.($pos+2).'u]', $query3['unitu'], $triangle);
+			$triangle = str_replace('[unit'.($pos+2).'d]', $query3['unitd'], $triangle);
+			$triangle = str_replace('[name'.($pos+2).'u]', $query3['nameu'], $triangle);
+			$triangle = str_replace('[name'.($pos+2).'d]', $query3['named'], $triangle);
+		}
+		elseif ($playtype == 'C') {
+			$query1 = queryContentGroup($account, $gameno, $pos);
+			$query2 = queryContentGroup($account, $gameno, $pos+1);
+			$query3 = queryContentGroup($account, $gameno, $pos+2);
+			$triangle = file_get_contents("resource/group_triangle_view.html");
+			$triangle = str_replace('[pos1]', $pos, $triangle);
+			$triangle = str_replace('[pos2]', $pos+1, $triangle);
+			$triangle = str_replace('[pos3]', $pos+2, $triangle);
+			$triangle = str_replace('[unit'.$pos.']', $query1, $triangle);
+			$triangle = str_replace('[unit'.($pos+1).']', $query2, $triangle);
+			$triangle = str_replace('[unit'.($pos+2).']', $query3, $triangle);
+		}
 		$triangle = str_replace('[label]', $label[$total], $triangle);
 		$triangle = str_replace('[game1]', $game, $triangle);
 		$triangle = str_replace('[game2]', $gap + $game, $triangle);
 		$triangle = str_replace('[game3]', 2*$gap + $game, $triangle);
-		$triangle = str_replace('[pos1]', $pos, $triangle);
-		$triangle = str_replace('[pos2]', $pos+1, $triangle);
-		$triangle = str_replace('[pos3]', $pos+2, $triangle);
-		$triangle = str_replace('[unit'.$pos.']', $query1['unit'], $triangle);
-		$triangle = str_replace('[name'.$pos.']', $query1['name'], $triangle);
-		$triangle = str_replace('[unit'.($pos+1).']', $query2['unit'], $triangle);
-		$triangle = str_replace('[name'.($pos+1).']', $query2['name'], $triangle);
-		$triangle = str_replace('[unit'.($pos+2).']', $query3['unit'], $triangle);
-		$triangle = str_replace('[name'.($pos+2).']', $query3['name'], $triangle);
 		$content .= $triangle;
 		array_push($up, $label[$total].'冠');
 		array_push($up, $label[$total].'亞');
@@ -186,6 +367,7 @@ function cyclePublicContent($account, $gameno) {
 
 function cycleEditContent($account, $gameno) {
 	$amount = getAmount($account, $gameno);
+	$playtype = getPlaytype($account, $gameno);
 	$content = '<script src="../../resource/custom.js"></script>';
 	$distribute = distribute($amount);
 	$gap = 2 * ($distribute['4_1'] + $distribute['4_2']) + $distribute['3_1'] + $distribute['3_2'];
@@ -195,11 +377,67 @@ function cycleEditContent($account, $gameno) {
 	$pos = 1;
 	$up = array();
 	for ($i = 1; $i <= $distribute['4_2']; $i++) {
-		$query1 = queryPosition($account, $gameno, $pos);
-		$query2 = queryPosition($account, $gameno, $pos+1);
-		$query3 = queryPosition($account, $gameno, $pos+2);
-		$query4 = queryPosition($account, $gameno, $pos+3);
-		$square = file_get_contents("resource/square_edit.html");
+		if ($playtype == 'A') {
+			$query1 = queryContentSingle($account, $gameno, $pos);
+			$query2 = queryContentSingle($account, $gameno, $pos+1);
+			$query3 = queryContentSingle($account, $gameno, $pos+2);
+			$query4 = queryContentSingle($account, $gameno, $pos+3);
+			$square = file_get_contents("resource/single_square_edit.html");
+			$square = str_replace('[pos1]', $pos, $square);
+			$square = str_replace('[pos2]', $pos+1, $square);
+			$square = str_replace('[pos3]', $pos+2, $square);
+			$square = str_replace('[pos4]', $pos+3, $square);
+			$square = str_replace('[unit'.$pos.']', $query1['unit'], $square);
+			$square = str_replace('[name'.$pos.']', $query1['name'], $square);
+			$square = str_replace('[unit'.($pos+1).']', $query2['unit'], $square);
+			$square = str_replace('[name'.($pos+1).']', $query2['name'], $square);
+			$square = str_replace('[unit'.($pos+2).']', $query3['unit'], $square);
+			$square = str_replace('[name'.($pos+2).']', $query3['name'], $square);
+			$square = str_replace('[unit'.($pos+3).']', $query4['unit'], $square);
+			$square = str_replace('[name'.($pos+3).']', $query4['name'], $square);
+		}
+		elseif ($playtype == 'B') {
+			$query1 = queryContentDouble($account, $gameno, $pos);
+			$query2 = queryContentDouble($account, $gameno, $pos+1);
+			$query3 = queryContentDouble($account, $gameno, $pos+2);
+			$query4 = queryContentDouble($account, $gameno, $pos+3);
+			$square = file_get_contents("resource/double_square_edit.html");
+			$square = str_replace('[pos1]', $pos, $square);
+			$square = str_replace('[pos2]', $pos+1, $square);
+			$square = str_replace('[pos3]', $pos+2, $square);
+			$square = str_replace('[pos4]', $pos+3, $square);
+			$square = str_replace('[unit'.$pos.'u]', $query1['unitu'], $square);
+			$square = str_replace('[unit'.$pos.'d]', $query1['unitd'], $square);
+			$square = str_replace('[name'.$pos.'u]', $query1['nameu'], $square);
+			$square = str_replace('[name'.$pos.'d]', $query1['named'], $square);
+			$square = str_replace('[unit'.($pos+1).'u]', $query2['unitu'], $square);
+			$square = str_replace('[unit'.($pos+1).'d]', $query2['unitd'], $square);
+			$square = str_replace('[name'.($pos+1).'u]', $query2['nameu'], $square);
+			$square = str_replace('[name'.($pos+1).'d]', $query2['named'], $square);
+			$square = str_replace('[unit'.($pos+2).'u]', $query3['unitu'], $square);
+			$square = str_replace('[unit'.($pos+2).'d]', $query3['unitd'], $square);
+			$square = str_replace('[name'.($pos+2).'u]', $query3['nameu'], $square);
+			$square = str_replace('[name'.($pos+2).'d]', $query3['named'], $square);
+			$square = str_replace('[unit'.($pos+3).'u]', $query4['unitu'], $square);
+			$square = str_replace('[unit'.($pos+3).'d]', $query4['unitd'], $square);
+			$square = str_replace('[name'.($pos+3).'u]', $query4['nameu'], $square);
+			$square = str_replace('[name'.($pos+3).'d]', $query4['named'], $square);
+		}
+		elseif ($playtype == 'C') {
+			$query1 = queryContentGroup($account, $gameno, $pos);
+			$query2 = queryContentGroup($account, $gameno, $pos+1);
+			$query3 = queryContentGroup($account, $gameno, $pos+2);
+			$query4 = queryContentGroup($account, $gameno, $pos+3);
+			$square = file_get_contents("resource/group_square_edit.html");
+			$square = str_replace('[pos1]', $pos, $square);
+			$square = str_replace('[pos2]', $pos+1, $square);
+			$square = str_replace('[pos3]', $pos+2, $square);
+			$square = str_replace('[pos4]', $pos+3, $square);
+			$square = str_replace('[unit'.$pos.']', $query1, $square);
+			$square = str_replace('[unit'.($pos+1).']', $query2, $square);
+			$square = str_replace('[unit'.($pos+2).']', $query3, $square);
+			$square = str_replace('[unit'.($pos+3).']', $query4, $square);
+		}
 		$square = str_replace('[label]', $label[$total], $square);
 		$square = str_replace('[game1]', $game, $square);
 		$square = str_replace('[game2]', $gap + $game, $square);
@@ -207,18 +445,6 @@ function cycleEditContent($account, $gameno) {
 		$square = str_replace('[game4]', 2*$gap + $game+1, $square);
 		$square = str_replace('[game5]', $gap + $game+1, $square);
 		$square = str_replace('[game6]', $game+1, $square);
-		$square = str_replace('[pos1]', $pos, $square);
-		$square = str_replace('[pos2]', $pos+1, $square);
-		$square = str_replace('[pos3]', $pos+2, $square);
-		$square = str_replace('[pos4]', $pos+3, $square);
-		$square = str_replace('[unit'.$pos.']', $query1['unit'], $square);
-		$square = str_replace('[name'.$pos.']', $query1['name'], $square);
-		$square = str_replace('[unit'.($pos+1).']', $query2['unit'], $square);
-		$square = str_replace('[name'.($pos+1).']', $query2['name'], $square);
-		$square = str_replace('[unit'.($pos+2).']', $query3['unit'], $square);
-		$square = str_replace('[name'.($pos+2).']', $query3['name'], $square);
-		$square = str_replace('[unit'.($pos+3).']', $query4['unit'], $square);
-		$square = str_replace('[name'.($pos+3).']', $query4['name'], $square);
 		$content .= $square;
 		array_push($up, $label[$total].'冠');
 		array_push($up, $label[$total].'亞');
@@ -227,11 +453,67 @@ function cycleEditContent($account, $gameno) {
 		$pos += 4;
 	}
 	for ($i = 1; $i <= $distribute['4_1']; $i++) {
-		$query1 = queryPosition($account, $gameno, $pos);
-		$query2 = queryPosition($account, $gameno, $pos+1);
-		$query3 = queryPosition($account, $gameno, $pos+2);
-		$query4 = queryPosition($account, $gameno, $pos+3);
-		$square = file_get_contents("resource/square_edit.html");
+		if ($playtype == 'A') {
+			$query1 = queryContentSingle($account, $gameno, $pos);
+			$query2 = queryContentSingle($account, $gameno, $pos+1);
+			$query3 = queryContentSingle($account, $gameno, $pos+2);
+			$query4 = queryContentSingle($account, $gameno, $pos+3);
+			$square = file_get_contents("resource/single_square_edit.html");
+			$square = str_replace('[pos1]', $pos, $square);
+			$square = str_replace('[pos2]', $pos+1, $square);
+			$square = str_replace('[pos3]', $pos+2, $square);
+			$square = str_replace('[pos4]', $pos+3, $square);
+			$square = str_replace('[unit'.$pos.']', $query1['unit'], $square);
+			$square = str_replace('[name'.$pos.']', $query1['name'], $square);
+			$square = str_replace('[unit'.($pos+1).']', $query2['unit'], $square);
+			$square = str_replace('[name'.($pos+1).']', $query2['name'], $square);
+			$square = str_replace('[unit'.($pos+2).']', $query3['unit'], $square);
+			$square = str_replace('[name'.($pos+2).']', $query3['name'], $square);
+			$square = str_replace('[unit'.($pos+3).']', $query4['unit'], $square);
+			$square = str_replace('[name'.($pos+3).']', $query4['name'], $square);
+		}
+		elseif ($playtype == 'B') {
+			$query1 = queryContentDouble($account, $gameno, $pos);
+			$query2 = queryContentDouble($account, $gameno, $pos+1);
+			$query3 = queryContentDouble($account, $gameno, $pos+2);
+			$query4 = queryContentDouble($account, $gameno, $pos+3);
+			$square = file_get_contents("resource/double_square_edit.html");
+			$square = str_replace('[pos1]', $pos, $square);
+			$square = str_replace('[pos2]', $pos+1, $square);
+			$square = str_replace('[pos3]', $pos+2, $square);
+			$square = str_replace('[pos4]', $pos+3, $square);
+			$square = str_replace('[unit'.$pos.'u]', $query1['unitu'], $square);
+			$square = str_replace('[unit'.$pos.'d]', $query1['unitd'], $square);
+			$square = str_replace('[name'.$pos.'u]', $query1['nameu'], $square);
+			$square = str_replace('[name'.$pos.'d]', $query1['named'], $square);
+			$square = str_replace('[unit'.($pos+1).'u]', $query2['unitu'], $square);
+			$square = str_replace('[unit'.($pos+1).'d]', $query2['unitd'], $square);
+			$square = str_replace('[name'.($pos+1).'u]', $query2['nameu'], $square);
+			$square = str_replace('[name'.($pos+1).'d]', $query2['named'], $square);
+			$square = str_replace('[unit'.($pos+2).'u]', $query3['unitu'], $square);
+			$square = str_replace('[unit'.($pos+2).'d]', $query3['unitd'], $square);
+			$square = str_replace('[name'.($pos+2).'u]', $query3['nameu'], $square);
+			$square = str_replace('[name'.($pos+2).'d]', $query3['named'], $square);
+			$square = str_replace('[unit'.($pos+3).'u]', $query4['unitu'], $square);
+			$square = str_replace('[unit'.($pos+3).'d]', $query4['unitd'], $square);
+			$square = str_replace('[name'.($pos+3).'u]', $query4['nameu'], $square);
+			$square = str_replace('[name'.($pos+3).'d]', $query4['named'], $square);
+		}
+		elseif ($playtype == 'C') {
+			$query1 = queryContentGroup($account, $gameno, $pos);
+			$query2 = queryContentGroup($account, $gameno, $pos+1);
+			$query3 = queryContentGroup($account, $gameno, $pos+2);
+			$query4 = queryContentGroup($account, $gameno, $pos+3);
+			$square = file_get_contents("resource/group_square_edit.html");
+			$square = str_replace('[pos1]', $pos, $square);
+			$square = str_replace('[pos2]', $pos+1, $square);
+			$square = str_replace('[pos3]', $pos+2, $square);
+			$square = str_replace('[pos4]', $pos+3, $square);
+			$square = str_replace('[unit'.$pos.']', $query1, $square);
+			$square = str_replace('[unit'.($pos+1).']', $query2, $square);
+			$square = str_replace('[unit'.($pos+2).']', $query3, $square);
+			$square = str_replace('[unit'.($pos+3).']', $query4, $square);
+		}
 		$square = str_replace('[label]', $label[$total], $square);
 		$square = str_replace('[game1]', $game, $square);
 		$square = str_replace('[game2]', $gap + $game, $square);
@@ -239,18 +521,6 @@ function cycleEditContent($account, $gameno) {
 		$square = str_replace('[game4]', 2*$gap + $game+1, $square);
 		$square = str_replace('[game5]', $gap + $game+1, $square);
 		$square = str_replace('[game6]', $game+1, $square);
-		$square = str_replace('[pos1]', $pos, $square);
-		$square = str_replace('[pos2]', $pos+1, $square);
-		$square = str_replace('[pos3]', $pos+2, $square);
-		$square = str_replace('[pos4]', $pos+3, $square);
-		$square = str_replace('[unit'.$pos.']', $query1['unit'], $square);
-		$square = str_replace('[name'.$pos.']', $query1['name'], $square);
-		$square = str_replace('[unit'.($pos+1).']', $query2['unit'], $square);
-		$square = str_replace('[name'.($pos+1).']', $query2['name'], $square);
-		$square = str_replace('[unit'.($pos+2).']', $query3['unit'], $square);
-		$square = str_replace('[name'.($pos+2).']', $query3['name'], $square);
-		$square = str_replace('[unit'.($pos+3).']', $query4['unit'], $square);
-		$square = str_replace('[name'.($pos+3).']', $query4['name'], $square);
 		$content .= $square;
 		array_push($up, $label[$total].'冠');
 		$total++;
@@ -258,23 +528,58 @@ function cycleEditContent($account, $gameno) {
 		$pos += 4;
 	}
 	for ($i = 1; $i <= $distribute['3_1']; $i++) {
-		$query1 = queryPosition($account, $gameno, $pos);
-		$query2 = queryPosition($account, $gameno, $pos+1);
-		$query3 = queryPosition($account, $gameno, $pos+2);
-		$triangle = file_get_contents("resource/triangle_edit.html");
+		if ($playtype == 'A') {
+			$query1 = queryContentSingle($account, $gameno, $pos);
+			$query2 = queryContentSingle($account, $gameno, $pos+1);
+			$query3 = queryContentSingle($account, $gameno, $pos+2);
+			$triangle = file_get_contents("resource/single_triangle_edit.html");
+			$triangle = str_replace('[pos1]', $pos, $triangle);
+			$triangle = str_replace('[pos2]', $pos+1, $triangle);
+			$triangle = str_replace('[pos3]', $pos+2, $triangle);
+			$triangle = str_replace('[unit'.$pos.']', $query1['unit'], $triangle);
+			$triangle = str_replace('[name'.$pos.']', $query1['name'], $triangle);
+			$triangle = str_replace('[unit'.($pos+1).']', $query2['unit'], $triangle);
+			$triangle = str_replace('[name'.($pos+1).']', $query2['name'], $triangle);
+			$triangle = str_replace('[unit'.($pos+2).']', $query3['unit'], $triangle);
+			$triangle = str_replace('[name'.($pos+2).']', $query3['name'], $triangle);
+		}
+		elseif ($playtype == 'B') {
+			$query1 = queryContentDouble($account, $gameno, $pos);
+			$query2 = queryContentDouble($account, $gameno, $pos+1);
+			$query3 = queryContentDouble($account, $gameno, $pos+2);
+			$triangle = file_get_contents("resource/double_triangle_edit.html");
+			$triangle = str_replace('[pos1]', $pos, $triangle);
+			$triangle = str_replace('[pos2]', $pos+1, $triangle);
+			$triangle = str_replace('[pos3]', $pos+2, $triangle);
+			$triangle = str_replace('[unit'.$pos.']u', $query1['unitu'], $triangle);
+			$triangle = str_replace('[unit'.$pos.']d', $query1['unitd'], $triangle);
+			$triangle = str_replace('[name'.$pos.']u', $query1['nameu'], $triangle);
+			$triangle = str_replace('[name'.$pos.']d', $query1['named'], $triangle);
+			$triangle = str_replace('[unit'.($pos+1).']u', $query2['unitu'], $triangle);
+			$triangle = str_replace('[unit'.($pos+1).']d', $query2['unitd'], $triangle);
+			$triangle = str_replace('[name'.($pos+1).']u', $query2['nameu'], $triangle);
+			$triangle = str_replace('[name'.($pos+1).']d', $query2['named'], $triangle);
+			$triangle = str_replace('[unit'.($pos+2).']u', $query3['unitu'], $triangle);
+			$triangle = str_replace('[unit'.($pos+2).']d', $query3['unitd'], $triangle);
+			$triangle = str_replace('[name'.($pos+2).']u', $query3['nameu'], $triangle);
+			$triangle = str_replace('[name'.($pos+2).']d', $query3['named'], $triangle);
+		}
+		elseif ($playtype == 'C') {
+			$query1 = queryContentGroup($account, $gameno, $pos);
+			$query2 = queryContentGroup($account, $gameno, $pos+1);
+			$query3 = queryContentGroup($account, $gameno, $pos+2);
+			$triangle = file_get_contents("resource/group_triangle_edit.html");
+			$triangle = str_replace('[pos1]', $pos, $triangle);
+			$triangle = str_replace('[pos2]', $pos+1, $triangle);
+			$triangle = str_replace('[pos3]', $pos+2, $triangle);
+			$triangle = str_replace('[unit'.$pos.']', $query1, $triangle);
+			$triangle = str_replace('[unit'.($pos+1).']', $query2, $triangle);
+			$triangle = str_replace('[unit'.($pos+2).']', $query3, $triangle);
+		}
 		$triangle = str_replace('[label]', $label[$total], $triangle);
 		$triangle = str_replace('[game1]', $game, $triangle);
 		$triangle = str_replace('[game2]', $gap + $game, $triangle);
 		$triangle = str_replace('[game3]', 2*$gap + $game, $triangle);
-		$triangle = str_replace('[pos1]', $pos, $triangle);
-		$triangle = str_replace('[pos2]', $pos+1, $triangle);
-		$triangle = str_replace('[pos3]', $pos+2, $triangle);
-		$triangle = str_replace('[unit'.$pos.']', $query1['unit'], $triangle);
-		$triangle = str_replace('[name'.$pos.']', $query1['name'], $triangle);
-		$triangle = str_replace('[unit'.($pos+1).']', $query2['unit'], $triangle);
-		$triangle = str_replace('[name'.($pos+1).']', $query2['name'], $triangle);
-		$triangle = str_replace('[unit'.($pos+2).']', $query3['unit'], $triangle);
-		$triangle = str_replace('[name'.($pos+2).']', $query3['name'], $triangle);
 		$content .= $triangle;
 		array_push($up, $label[$total].'冠');
 		$total++;
@@ -282,23 +587,58 @@ function cycleEditContent($account, $gameno) {
 		$pos += 3;
 	}
 	for ($i = 1; $i <= $distribute['3_2']; $i++) {
-		$query1 = queryPosition($account, $gameno, $pos);
-		$query2 = queryPosition($account, $gameno, $pos+1);
-		$query3 = queryPosition($account, $gameno, $pos+2);
-		$triangle = file_get_contents("resource/triangle_edit.html");
+		if ($playtype == 'A') {
+			$query1 = queryContentSingle($account, $gameno, $pos);
+			$query2 = queryContentSingle($account, $gameno, $pos+1);
+			$query3 = queryContentSingle($account, $gameno, $pos+2);
+			$triangle = file_get_contents("resource/single_triangle_edit.html");
+			$triangle = str_replace('[pos1]', $pos, $triangle);
+			$triangle = str_replace('[pos2]', $pos+1, $triangle);
+			$triangle = str_replace('[pos3]', $pos+2, $triangle);
+			$triangle = str_replace('[unit'.$pos.']', $query1['unit'], $triangle);
+			$triangle = str_replace('[name'.$pos.']', $query1['name'], $triangle);
+			$triangle = str_replace('[unit'.($pos+1).']', $query2['unit'], $triangle);
+			$triangle = str_replace('[name'.($pos+1).']', $query2['name'], $triangle);
+			$triangle = str_replace('[unit'.($pos+2).']', $query3['unit'], $triangle);
+			$triangle = str_replace('[name'.($pos+2).']', $query3['name'], $triangle);
+		}
+		elseif ($playtype == 'B') {
+			$query1 = queryContentDouble($account, $gameno, $pos);
+			$query2 = queryContentDouble($account, $gameno, $pos+1);
+			$query3 = queryContentDouble($account, $gameno, $pos+2);
+			$triangle = file_get_contents("resource/double_triangle_edit.html");
+			$triangle = str_replace('[pos1]', $pos, $triangle);
+			$triangle = str_replace('[pos2]', $pos+1, $triangle);
+			$triangle = str_replace('[pos3]', $pos+2, $triangle);
+			$triangle = str_replace('[unit'.$pos.']u', $query1['unitu'], $triangle);
+			$triangle = str_replace('[unit'.$pos.']d', $query1['unitd'], $triangle);
+			$triangle = str_replace('[name'.$pos.']u', $query1['nameu'], $triangle);
+			$triangle = str_replace('[name'.$pos.']d', $query1['named'], $triangle);
+			$triangle = str_replace('[unit'.($pos+1).']u', $query2['unitu'], $triangle);
+			$triangle = str_replace('[unit'.($pos+1).']d', $query2['unitd'], $triangle);
+			$triangle = str_replace('[name'.($pos+1).']u', $query2['nameu'], $triangle);
+			$triangle = str_replace('[name'.($pos+1).']d', $query2['named'], $triangle);
+			$triangle = str_replace('[unit'.($pos+2).']u', $query3['unitu'], $triangle);
+			$triangle = str_replace('[unit'.($pos+2).']d', $query3['unitd'], $triangle);
+			$triangle = str_replace('[name'.($pos+2).']u', $query3['nameu'], $triangle);
+			$triangle = str_replace('[name'.($pos+2).']d', $query3['named'], $triangle);
+		}
+		elseif ($playtype == 'C') {
+			$query1 = queryContentGroup($account, $gameno, $pos);
+			$query2 = queryContentGroup($account, $gameno, $pos+1);
+			$query3 = queryContentGroup($account, $gameno, $pos+2);
+			$triangle = file_get_contents("resource/group_triangle_edit.html");
+			$triangle = str_replace('[pos1]', $pos, $triangle);
+			$triangle = str_replace('[pos2]', $pos+1, $triangle);
+			$triangle = str_replace('[pos3]', $pos+2, $triangle);
+			$triangle = str_replace('[unit'.$pos.']', $query1, $triangle);
+			$triangle = str_replace('[unit'.($pos+1).']', $query2, $triangle);
+			$triangle = str_replace('[unit'.($pos+2).']', $query3, $triangle);
+		}
 		$triangle = str_replace('[label]', $label[$total], $triangle);
 		$triangle = str_replace('[game1]', $game, $triangle);
 		$triangle = str_replace('[game2]', $gap + $game, $triangle);
 		$triangle = str_replace('[game3]', 2*$gap + $game, $triangle);
-		$triangle = str_replace('[pos1]', $pos, $triangle);
-		$triangle = str_replace('[pos2]', $pos+1, $triangle);
-		$triangle = str_replace('[pos3]', $pos+2, $triangle);
-		$triangle = str_replace('[unit'.$pos.']', $query1['unit'], $triangle);
-		$triangle = str_replace('[name'.$pos.']', $query1['name'], $triangle);
-		$triangle = str_replace('[unit'.($pos+1).']', $query2['unit'], $triangle);
-		$triangle = str_replace('[name'.($pos+1).']', $query2['name'], $triangle);
-		$triangle = str_replace('[unit'.($pos+2).']', $query3['unit'], $triangle);
-		$triangle = str_replace('[name'.($pos+2).']', $query3['name'], $triangle);
 		$content .= $triangle;
 		array_push($up, $label[$total].'冠');
 		array_push($up, $label[$total].'亞');
@@ -425,10 +765,36 @@ function getGametype($account, $gameno) {
 	return $fetch[0];
 }
 
-function queryPosition($account, $gameno, $position) {
+function getPlaytype($account, $gameno) {
+	$sql = mysql_query("SELECT PLAYTYPE FROM GAMEMAIN WHERE USERNO='$account' AND GAMENO='$gameno'");
+	$fetch = mysql_fetch_row($sql);
+	return $fetch[0];
+}
+
+function translatePlaytype($playtype) {
+	if ($playtype == 'A') return "單打";
+	elseif ($playtype == 'B') return "雙打";
+	elseif ($playtype == 'C') return "團體";
+}
+
+function queryContentSingle($account, $gameno, $position) {
 	$sql = mysql_query("SELECT * FROM GAMEPOSITION WHERE USERNO='$account' AND GAMENO='$gameno' AND POSITION='$position'");
 	$fetch = mysql_fetch_array($sql);
 	return array('unit' => $fetch['UNIT'], 'name' => $fetch['NAME']);
+}
+
+function queryContentDouble($account, $gameno, $position) {
+	$sql1 = mysql_query("SELECT * FROM GAMEPOSITION WHERE USERNO='$account' AND GAMENO='$gameno' AND POSITION='$position' AND PLAYERNO=1");
+	$fetch1 = mysql_fetch_array($sql1);
+	$sql2 = mysql_query("SELECT * FROM GAMEPOSITION WHERE USERNO='$account' AND GAMENO='$gameno' AND POSITION='$position' AND PLAYERNO=2");
+	$fetch2 = mysql_fetch_array($sql2);
+	return array('unitu' => $fetch1['UNIT'], 'nameu' => $fetch1['NAME'], 'unitd' => $fetch2['UNIT'], 'named' => $fetch2['NAME']);
+}
+
+function queryContentGroup($account, $gameno, $position) {
+	$sql = mysql_query("SELECT * FROM GAMEPOSITION WHERE USERNO='$account' AND GAMENO='$gameno' AND POSITION='$position'");
+	$fetch = mysql_fetch_array($sql);
+	return $fetch['UNIT'];
 }
 
 function queryState($account, $gameno, $playno) {
@@ -574,8 +940,8 @@ function clearBye($account, $gameno) {
 	$single = 1;
 	$double = 2;
 	while ($single < $roundAmount) {
-		$querySingle = queryPosition($account, $gameno, $single);
-		$queryDouble = queryPosition($account, $gameno, $double);
+		$querySingle = queryContentSingle($account, $gameno, $single);
+		$queryDouble = queryContentSingle($account, $gameno, $double);
 		if ($querySingle['unit'] == 'none') {
 			mysql_query("UPDATE GAMESTATE SET WINNER='$double' WHERE USERNO='$account' AND GAMENO='$gameno'");
 		}
@@ -590,7 +956,7 @@ function clearBye($account, $gameno) {
 function makeGame($account, $gameno) {
 	$start = '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>電子化賽程系統</title><script src="../../resource/custom.js"></script></head><body>';
 	$content = '<p id="gameState"></p>';
-	$end = '</body><script>updateGame(\''.$account.'\', \''.$gameno.'\')</script></html>';
+	$end = '</body><button onclick="location.assign(\'../../resource/output.php?account='.$account.'&gameno='.$gameno.'&name=123\')">輸出主審單</button><script>updateGame(\''.$account.'\', \''.$gameno.'\')</script></html>';
 	$file = fopen($account.'/'.$gameno."/game.html", "w");
 	fwrite($file, $start.$content.$end);
 	fclose($file);
@@ -645,19 +1011,6 @@ function distribute($amount) {
 	return array('3_1' => $_3_1, '3_2' => $_3_2, '4_1' => $_4_1, '4_2' => $_4_2, 'round' => $temp_m);
 }
 
-function curl_post($post) {
-	$ch = curl_init();
-	$protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") ? "https" : "http";
-	curl_setopt($ch, CURLOPT_URL, $protocol.'://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['SCRIPT_NAME']).'/resource/custom.php');
-	curl_setopt($ch, CURLOPT_POST, true);
-	curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-	curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-	$result = curl_exec($ch);
-	curl_close($ch);
-	return $result;
-}
-
 function login($account, $password) {
 	$sql1 = mysql_query("SELECT * FROM USERMAS WHERE USERNO='$account'");
 	$fetch1 = mysql_fetch_array($sql1);
@@ -681,7 +1034,7 @@ function login($account, $password) {
 			return array('message' => 'Success', 'token' => $token);
 		}
 		else {
-			return 'Database operation error';
+			return '資料庫錯誤';
 		}
 	}
 }
@@ -708,7 +1061,7 @@ function logon($account, $password) {
 			return array('message' => 'Success', 'token' => $token);
 		}
 		else {
-			return 'Database operation error';
+			return '資料庫錯誤';
 		}
 	}
 }
@@ -728,7 +1081,7 @@ function logout($account) {
 			return 'Success';
 		}
 		else {
-			return 'Database operation error';
+			return '資料庫錯誤';
 		}
 	}
 }

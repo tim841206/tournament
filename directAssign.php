@@ -3,6 +3,7 @@ $account = $_COOKIE['account'];
 $gameno = $_POST['gameno'];
 $gamenm = $_POST['gamenm'];
 $amount = $_POST['amount'];
+$playtype = $_POST['playtype'];
 $sql = mysql_query("SELECT * FROM GAMEMAIN WHERE USERNO='$account' AND GAMENO='$gameno'");
 if (empty($gameno)) {
 	echo json_encode(array('message' => 'Empty game index'));
@@ -43,13 +44,23 @@ else {
 			$content .= '<tr><td></td><td>Bye</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
 		}
 		else {
-			$content .= '<tr><td><input type="text" id="unit'.$i.'"></td><td><input type="text" id="name'.$i.'"></td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+			if ($playtype == 'A') {
+				$content .= '<tr><td><input type="text" id="unit'.$i.'"></td><td><input type="text" id="name'.$i.'"></td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+			}
+			elseif ($playtype == 'B') {
+				$content .= '<tr><td><input type="text" id="unit'.$i.'u"></td><td><input type="text" id="name'.$i.'u"></td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td><input type="text" id="unit'.$i.'d"></td><td><input type="text" id="name'.$i.'d"></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+			}
+			elseif ($playtype == 'C') {
+				$content .= '<tr><td><input type="text" id="unit'.$i.'"></td><td></td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+			}
 		}
 	}
-	$content .= '</table><button onclick="public('.$amount.', \''.$gameno.'\', \''.$gamenm.'\')">確定輸出</button>';
+	$content .= '</table><button onclick="public('.$amount.', \''.$gameno.'\', \''.$gamenm.'\', \''.$playtype.'\')">確定輸出</button>';
 	$end = '</body><script src="../../resource/'.$roundAmount.'.js"></script></html>';
 	if (is_dir($account.'/'.$gameno)) {
-		unlink($account.'/'.$gameno."/assign.html");
+		if (is_file($account.'/'.$gameno."/assign.html")) {
+			unlink($account.'/'.$gameno."/assign.html");
+		}
 	}
 	else {
 		mkdir($account.'/'.$gameno);

@@ -5,6 +5,7 @@ $account = $_COOKIE['account'];
 $gameno = $_POST['gameno'];
 $gamenm = $_POST['gamenm'];
 $amount = $_POST['amount'];
+$playtype = $_POST['playtype'];
 $sql = mysql_query("SELECT * FROM GAMEMAIN WHERE USERNO='$account' AND GAMENO='$gameno'");
 if (empty($gameno)) {
 	echo json_encode(array('message' => 'Empty game index'));
@@ -29,7 +30,15 @@ else {
 	$pos = 1;
 	$up = array();
 	for ($i = 1; $i <= $distribute['4_2']; $i++) {
-		$square = file_get_contents("resource/square_assign.html");
+		if ($playtype == 'A') {
+			$square = file_get_contents("resource/single_square_assign.html");
+		}
+		elseif ($playtype == 'B') {
+			$square = file_get_contents("resource/double_square_assign.html");
+		}
+		elseif ($playtype == 'C') {
+			$square = file_get_contents("resource/group_square_assign.html");
+		}
 		$square = str_replace('[label]', $label[$total], $square);
 		$square = str_replace('[game1]', $game, $square);
 		$square = str_replace('[game2]', $gap + $game, $square);
@@ -49,7 +58,15 @@ else {
 		$pos += 4;
 	}
 	for ($i = 1; $i <= $distribute['4_1']; $i++) {
-		$square = file_get_contents("resource/square_assign.html");
+		if ($playtype == 'A') {
+			$square = file_get_contents("resource/single_square_assign.html");
+		}
+		elseif ($playtype == 'B') {
+			$square = file_get_contents("resource/double_square_assign.html");
+		}
+		elseif ($playtype == 'C') {
+			$square = file_get_contents("resource/group_square_assign.html");
+		}
 		$square = str_replace('[label]', $label[$total], $square);
 		$square = str_replace('[game1]', $game, $square);
 		$square = str_replace('[game2]', $gap + $game, $square);
@@ -68,7 +85,15 @@ else {
 		$pos += 4;
 	}
 	for ($i = 1; $i <= $distribute['3_1']; $i++) {
-		$triangle = file_get_contents("resource/triangle_assign.html");
+		if ($playtype == 'A') {
+			$square = file_get_contents("resource/single_triangle_assign.html");
+		}
+		elseif ($playtype == 'B') {
+			$square = file_get_contents("resource/double_triangle_assign.html");
+		}
+		elseif ($playtype == 'C') {
+			$square = file_get_contents("resource/group_triangle_assign.html");
+		}
 		$triangle = str_replace('[label]', $label[$total], $triangle);
 		$triangle = str_replace('[game1]', $game, $triangle);
 		$triangle = str_replace('[game2]', $gap + $game, $triangle);
@@ -83,7 +108,15 @@ else {
 		$pos += 3;
 	}
 	for ($i = 1; $i <= $distribute['3_2']; $i++) {
-		$triangle = file_get_contents("resource/triangle_assign.html");
+		if ($playtype == 'A') {
+			$square = file_get_contents("resource/single_triangle_assign.html");
+		}
+		elseif ($playtype == 'B') {
+			$square = file_get_contents("resource/double_triangle_assign.html");
+		}
+		elseif ($playtype == 'C') {
+			$square = file_get_contents("resource/group_triangle_assign.html");
+		}
 		$triangle = str_replace('[label]', $label[$total], $triangle);
 		$triangle = str_replace('[game1]', $game, $triangle);
 		$triangle = str_replace('[game2]', $gap + $game, $triangle);
@@ -102,10 +135,12 @@ else {
 	for ($i = 1; $i <= $distribute['round']; $i++) {
 		$content .= '<tr><td id="unit'.$i.'">'.array_pop($up).'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
 	}
-	$content .= '</table><button onclick="cyclePublic('.$amount.', \''.$gameno.'\', \''.$gamenm.'\')">確定輸出</button>';
+	$content .= '</table><button onclick="cyclePublic('.$amount.', \''.$gameno.'\', \''.$gamenm.'\', \''.$playtype.'\')">確定輸出</button>';
 	$end = '</body><script src="../../resource/'.$distribute['round'].'.js"></script></html>';
 	if (is_dir($account.'/'.$gameno)) {
-		unlink($account.'/'.$gameno."/cycleAssign.html");
+		if (is_file($account.'/'.$gameno."/cycleAssign.html")) {
+			unlink($account.'/'.$gameno."/cycleAssign.html");
+		}
 	}
 	else {
 		mkdir($account.'/'.$gameno);
