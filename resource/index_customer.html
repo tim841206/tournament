@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>電子化賽程系統</title>
+		<script src="resource/custom.js"></script>
+	</head>
+	<body>
+	<h2>電子化賽程系統</h2>
+	<div align="right">
+		帳號：<input type="text" id="account"><br>
+		密碼：<input type="password" id="password"><br>
+		<button onclick="login()">登入</button><button onclick="logon()">註冊</button>
+	</div>
+	<div style="vertical-align: top; text-align: center;">
+		<h3>查詢競賽</h3>
+		<p id="games"></p>
+		<script>games();</script>
+	</div>
+	</body>
+</html>

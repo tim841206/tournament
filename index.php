@@ -1,4 +1,5 @@
 <?php
+include_once("resource/database.php");
 include_once("resource/custom.php");
 
 if (isset($_POST['event'])) {
@@ -38,15 +39,44 @@ if (isset($_POST['event'])) {
 	}
 }
 
+elseif (isset($_GET['host']) && isset($_GET['gameno'])) {
+	$host = $_GET['host'];
+	$gameno = $_GET['gameno'];
+	$sql = mysql_query("SELECT * FROM USERMAS WHERE USERNO='$host'");
+	$fetch = mysql_fetch_array($sql);
+	if (isset($_COOKIE['account']) && isset($_COOKIE['token']) && $_COOKIE['account'] == $host && $_COOKIE['token'] == $fetch['TOKEN']) {
+		if (isset($_GET['type']) && $_GET['type'] == 'assign') {
+			$content = file_get_contents($host."/".$gameno."/assign.html");
+			echo $content;
+		}
+		elseif (isset($_GET['type']) && $_GET['type'] == 'game') {
+			$content = file_get_contents($host."/".$gameno."/game.html");
+			echo $content;
+		}
+		else {
+			$content = file_get_contents($host."/".$gameno."/edit.html");
+			echo $content;
+		}
+	}
+	else {
+		if (isset($_GET['type']) && $_GET['type'] == 'game') {
+			$content = file_get_contents($host."/".$gameno."/game.html");
+			echo $content;
+		}
+		else {
+			$content = file_get_contents($host."/".$gameno."/public.html");
+			echo $content;
+		}
+	}
+}
+
 elseif (isset($_COOKIE['account']) && isset($_COOKIE['token'])) {
-	$content = file_get_contents("index.html");
-	$content = str_replace('[memberArea]', $_COOKIE['account'].'，你好 <button onclick="logout()">登出</button>', $content);
+	$content = file_get_contents("resource/index_member.html");
+	$content = str_replace('[memberArea]', $_COOKIE['account'], $content);
 	echo $content;
 }
 
 else {
-	$content = file_get_contents("index.html");
-	$enter = '帳號：<input type="text" id="account"><br>密碼：<input type="password" id="password"><br><button onclick="login()">登入</button><button onclick="logon()">註冊</button>';
-	$content = str_replace('[memberArea]', $enter, $content);
+	$content = file_get_contents("resource/index_customer.html");
 	echo $content;
 }

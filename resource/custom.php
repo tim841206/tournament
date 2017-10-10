@@ -3,12 +3,12 @@ include_once("database.php");
 
 function makePublic($account, $gameno) {
 	$type = getGametype($account, $gameno);
-	$start = ($type == 'A') ? '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>電子化賽程系統</title><link rel="stylesheet" type="text/css" href="../../resource/custom.css"></head><body>' : '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>電子化賽程系統</title><link rel="stylesheet" type="text/css" href="../../resource/tournament.css"><link rel="stylesheet" type="text/css" href="../../resource/custom.css"></head><body>';
+	$start = ($type == 'A') ? '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>電子化賽程系統</title><link rel="stylesheet" type="text/css" href="resource/custom.css"></head><body>' : '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>電子化賽程系統</title><link rel="stylesheet" type="text/css" href="resource/tournament.css"><link rel="stylesheet" type="text/css" href="resource/custom.css"></head><body>';
 	$content = ($type == 'A') ? publicContent($account, $gameno) : cyclePublicContent($account, $gameno);
 	$amount = getAmount($account, $gameno);
 	$distribute = distribute($amount);
 	$roundAmount = ($type == 'A') ? pow(2, ceil(log($amount, 2))) : $distribute['round'];
-	$end = '</body><script src="../../resource/'.$roundAmount.'.js"></script></html>';
+	$end = '</body><script src="resource/'.$roundAmount.'.js"></script></html>';
 	$file = fopen($account.'/'.$gameno."/public.html", "w");
 	fwrite($file, $start.$content.$end);
 	fclose($file);
@@ -16,12 +16,12 @@ function makePublic($account, $gameno) {
 
 function makeEdit($account, $gameno) {
 	$type = getGametype($account, $gameno);
-	$start = ($type == 'A') ? '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>電子化賽程系統</title><link rel="stylesheet" type="text/css" href="../../resource/custom.css"></head><body>' : '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>電子化賽程系統</title><link rel="stylesheet" type="text/css" href="../../resource/tournament.css"><link rel="stylesheet" type="text/css" href="../../resource/custom.css"></head><body>';
+	$start = ($type == 'A') ? '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>電子化賽程系統</title><link rel="stylesheet" type="text/css" href="resource/custom.css"></head><body>' : '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>電子化賽程系統</title><link rel="stylesheet" type="text/css" href="resource/tournament.css"><link rel="stylesheet" type="text/css" href="resource/custom.css"></head><body>';
 	$content = ($type == 'A') ? editContent($account, $gameno) : cycleEditContent($account, $gameno);
 	$amount = getAmount($account, $gameno);
 	$distribute = distribute($amount);
 	$roundAmount = ($type == 'A') ? pow(2, ceil(log($amount, 2))) : $distribute['round'];
-	$end = '</body><script src="../../resource/'.$roundAmount.'.js"></script></html>';
+	$end = '</body><script src="resource/'.$roundAmount.'.js"></script></html>';
 	$file = fopen($account.'/'.$gameno . "/edit.html", "w");
 	fwrite($file, $start.$content.$end);
 	fclose($file);
@@ -46,14 +46,14 @@ function publicContent($account, $gameno) {
 		}
 	}
 	$content = setPlayNo($account, $gameno, $content, $amount);
-	$content .= '</table><button onclick="window.open(\'game.html\')">賽程表</button>';
+	$content .= '</table><button onclick="window.open(\'index.php?host='.$account.'&gameno='.$gameno.'&type=game\')">賽程表</button>';
 	return $content;
 }
 
 function editContent($account, $gameno) {
 	$amount = getAmount($account, $gameno);
 	$playtype = getPlaytype($account, $gameno);
-	$content = '<script src="../../resource/custom.js"></script><table><tr><td>單位</td><td>名稱</td></tr>';
+	$content = '<script src="resource/custom.js"></script><table><tr><td>單位</td><td>名稱</td></tr>';
 	for ($i = 1; $i <= pow(2, ceil(log($amount, 2))); $i++) {
 		if ($playtype == 'A') {
 			$query = queryContentSingle($account, $gameno, $i);
@@ -70,14 +70,14 @@ function editContent($account, $gameno) {
 	}
 	$content = setPlayNo($account, $gameno, $content, $amount);
 	$content = setScoreInput($account, $gameno, $content, $amount);
-	$content .= '</table><button onclick="update(\''.$gameno.'\')">確定更新</button><button onclick="window.open(\'game.html\')">賽程表</button>';
+	$content .= '</table><button onclick="update(\''.$gameno.'\')">確定更新</button><button onclick="window.open(\'index.php?host='.$account.'&gameno='.$gameno.'&type=game\')">賽程表</button>';
 	return $content;
 }
 
 function cyclePublicContent($account, $gameno) {
 	$amount = getAmount($account, $gameno);
 	$playtype = getPlaytype($account, $gameno);
-	$content = '<script src="../../resource/custom.js"></script>';
+	$content = '<script src="resource/custom.js"></script>';
 	$distribute = distribute($amount);
 	$gap = 2 * ($distribute['4_1'] + $distribute['4_2']) + $distribute['3_1'] + $distribute['3_2'];
 	$label = array(' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG', 'AH', 'AI', 'AJ', 'AK', 'AL', 'AM', 'AN', 'AO', 'AP', 'AQ', 'AR', 'AS', 'AT', 'AU', 'AV', 'AW', 'AX', 'AY', 'AZ');
@@ -149,11 +149,11 @@ function cyclePublicContent($account, $gameno) {
 		}
 		$square = str_replace('[label]', $label[$total], $square);
 		$square = str_replace('[game1]', $game, $square);
-		$square = str_replace('[game2]', $gap + $game, $square);
-		$square = str_replace('[game3]', 2*$gap + $game, $square);
-		$square = str_replace('[game4]', 2*$gap + $game+1, $square);
-		$square = str_replace('[game5]', $gap + $game+1, $square);
-		$square = str_replace('[game6]', $game+1, $square);
+		$square = str_replace('[game2]', $game+1, $square);
+		$square = str_replace('[game3]', $gap + $game, $square);
+		$square = str_replace('[game4]', $gap + $game+1, $square);
+		$square = str_replace('[game5]', 2*$gap + $game, $square);
+		$square = str_replace('[game6]', 2*$gap + $game+1, $square);
 		$content .= $square;
 		array_push($up, $label[$total].'冠');
 		array_push($up, $label[$total].'亞');
@@ -225,11 +225,11 @@ function cyclePublicContent($account, $gameno) {
 		}
 		$square = str_replace('[label]', $label[$total], $square);
 		$square = str_replace('[game1]', $game, $square);
-		$square = str_replace('[game2]', $gap + $game, $square);
-		$square = str_replace('[game3]', 2*$gap + $game, $square);
-		$square = str_replace('[game4]', 2*$gap + $game+1, $square);
-		$square = str_replace('[game5]', $gap + $game+1, $square);
-		$square = str_replace('[game6]', $game+1, $square);
+		$square = str_replace('[game2]', $game+1, $square);
+		$square = str_replace('[game3]', $gap + $game, $square);
+		$square = str_replace('[game4]', $gap + $game+1, $square);
+		$square = str_replace('[game5]', 2*$gap + $game, $square);
+		$square = str_replace('[game6]', 2*$gap + $game+1, $square);
 		$content .= $square;
 		array_push($up, $label[$total].'冠');
 		$total++;
@@ -358,17 +358,17 @@ function cyclePublicContent($account, $gameno) {
 	shuffle($up);
 	$content .= '<table><tr><td>單位</td><td>名稱</td></tr>';
 	for ($i = 1; $i <= $distribute['round']; $i++) {
-		$content .= '<tr><td id="unit'.$i.'">'.array_pop($up).'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+		$content .= '<tr><td id="unit'.$i.'">'.array_pop($up).'</td><td></td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
 	}
 	$content = cycleSetPlayNo($account, $gameno, $content, $distribute['round']);
-	$content .= '</table><button onclick="window.open(\'game.html\')">賽程表</button>';
+	$content .= '</table><button onclick="window.open(\'index.php?host='.$account.'&gameno='.$gameno.'&type=game\')">賽程表</button>';
 	return $content;
 }
 
 function cycleEditContent($account, $gameno) {
 	$amount = getAmount($account, $gameno);
 	$playtype = getPlaytype($account, $gameno);
-	$content = '<script src="../../resource/custom.js"></script>';
+	$content = '<script src="resource/custom.js"></script>';
 	$distribute = distribute($amount);
 	$gap = 2 * ($distribute['4_1'] + $distribute['4_2']) + $distribute['3_1'] + $distribute['3_2'];
 	$label = array(' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG', 'AH', 'AI', 'AJ', 'AK', 'AL', 'AM', 'AN', 'AO', 'AP', 'AQ', 'AR', 'AS', 'AT', 'AU', 'AV', 'AW', 'AX', 'AY', 'AZ');
@@ -440,11 +440,11 @@ function cycleEditContent($account, $gameno) {
 		}
 		$square = str_replace('[label]', $label[$total], $square);
 		$square = str_replace('[game1]', $game, $square);
-		$square = str_replace('[game2]', $gap + $game, $square);
-		$square = str_replace('[game3]', 2*$gap + $game, $square);
-		$square = str_replace('[game4]', 2*$gap + $game+1, $square);
-		$square = str_replace('[game5]', $gap + $game+1, $square);
-		$square = str_replace('[game6]', $game+1, $square);
+		$square = str_replace('[game2]', $game+1, $square);
+		$square = str_replace('[game3]', $gap + $game, $square);
+		$square = str_replace('[game4]', $gap + $game+1, $square);
+		$square = str_replace('[game5]', 2*$gap + $game, $square);
+		$square = str_replace('[game6]', 2*$gap + $game+1, $square);
 		$content .= $square;
 		array_push($up, $label[$total].'冠');
 		array_push($up, $label[$total].'亞');
@@ -516,11 +516,11 @@ function cycleEditContent($account, $gameno) {
 		}
 		$square = str_replace('[label]', $label[$total], $square);
 		$square = str_replace('[game1]', $game, $square);
-		$square = str_replace('[game2]', $gap + $game, $square);
-		$square = str_replace('[game3]', 2*$gap + $game, $square);
-		$square = str_replace('[game4]', 2*$gap + $game+1, $square);
-		$square = str_replace('[game5]', $gap + $game+1, $square);
-		$square = str_replace('[game6]', $game+1, $square);
+		$square = str_replace('[game2]', $game+1, $square);
+		$square = str_replace('[game3]', $gap + $game, $square);
+		$square = str_replace('[game4]', $gap + $game+1, $square);
+		$square = str_replace('[game5]', 2*$gap + $game, $square);
+		$square = str_replace('[game6]', 2*$gap + $game+1, $square);
 		$content .= $square;
 		array_push($up, $label[$total].'冠');
 		$total++;
@@ -649,11 +649,11 @@ function cycleEditContent($account, $gameno) {
 	shuffle($up);
 	$content .= '<table><tr><td>單位</td><td>名稱</td></tr>';
 	for ($i = 1; $i <= $distribute['round']; $i++) {
-		$content .= '<tr><td id="unit'.$i.'">'.array_pop($up).'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+		$content .= '<tr><td id="unit'.$i.'">'.array_pop($up).'</td><td></td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
 	}
 	$content = cycleSetPlayNo($account, $gameno, $content, $distribute['round']);
 	$content = cycleSetScoreInput($account, $gameno, $content, $distribute['round']);
-	$content .= '</table><button onclick="update(\''.$gameno.'\')">確定更新</button><button onclick="window.open(\'game.html\')">賽程表</button>';
+	$content .= '</table><button onclick="update(\''.$gameno.'\')">確定更新</button><button onclick="window.open(\'index.php?host='.$account.'&gameno='.$gameno.'&type=game\')">賽程表</button>';
 	return $content;
 }
 
@@ -798,7 +798,7 @@ function queryContentGroup($account, $gameno, $position) {
 }
 
 function queryState($account, $gameno, $playno) {
-	$sql = mysql_query("SELECT * FROM GAMESTATE WHERE USERNO='$account' AND GAMENO='$gameno' AND PLAYNO='$playno'");
+	$sql = mysql_query("SELECT * FROM GAMESTATE WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO='$playno'");
 	$fetch = mysql_fetch_array($sql);
 	return array('playno' => $fetch['PLAYNO'], 'above' => $fetch['ABOVE'], 'below' => $fetch['BELOW'], 'aboveScore' => $fetch['ABOVESCORE'], 'belowScore' => $fetch['BELOWSCORE'], 'winner' => $fetch['WINNER']);
 }
@@ -877,35 +877,77 @@ function updateBelow($playno, $publicContent, $editContent, $amount) {
 }
 
 function updateGameChart($account, $gameno) {
-	updateGameState($account, $gameno);
-	$publicContent = publicContent($account, $gameno);
-	$editContent = editContent($account, $gameno);
+	$type = getGametype($account, $gameno);
 	$amount = getAmount($account, $gameno);
-	$roundAmount = pow(2, ceil(log($amount, 2)));
-	for ($i = 1; $i < $roundAmount; $i++) {
-		$state = queryState($account, $gameno, $i);
-		if (!empty($state['aboveScore']) && !empty($state['belowScore'])) {
-			$scoreInput = scoreInputPosition($i, $amount);
-			$publicContent = str_replace('<td id="p'.$scoreInput['above'].'">', '<td id="p'.$scoreInput['above'].'">'.$state['aboveScore'], $publicContent);
-			$publicContent = str_replace('<td id="p'.$scoreInput['below'].'">', '<td id="p'.$scoreInput['below'].'">'.$state['belowScore'], $publicContent);
-			$editContent = str_replace('<input type="text" id="'.$state['playno'].'_above">', '<input type="text" id="'.$state['playno'].'_above" value="'.$state['aboveScore'].'">', $editContent);
-			$editContent = str_replace('<input type="text" id="'.$state['playno'].'_below">', '<input type="text" id="'.$state['playno'].'_below" value="'.$state['belowScore'].'">', $editContent);
+	if ($type == 'A') {
+		updateGameState($account, $gameno);
+		$publicContent = publicContent($account, $gameno);
+		$editContent = editContent($account, $gameno);
+		$roundAmount = pow(2, ceil(log($amount, 2)));
+		for ($i = 1; $i < $roundAmount; $i++) {
+			$state = queryState($account, $gameno, $i);
+			if (!empty($state['aboveScore']) && !empty($state['belowScore'])) {
+				$scoreInput = scoreInputPosition($i, $amount);
+				$publicContent = str_replace('<td id="p'.$scoreInput['above'].'">', '<td id="p'.$scoreInput['above'].'">'.$state['aboveScore'], $publicContent);
+				$publicContent = str_replace('<td id="p'.$scoreInput['below'].'">', '<td id="p'.$scoreInput['below'].'">'.$state['belowScore'], $publicContent);
+				$editContent = str_replace('<input type="text" id="'.$state['playno'].'_above">', '<input type="text" id="'.$state['playno'].'_above" value="'.$state['aboveScore'].'">', $editContent);
+				$editContent = str_replace('<input type="text" id="'.$state['playno'].'_below">', '<input type="text" id="'.$state['playno'].'_below" value="'.$state['belowScore'].'">', $editContent);
+			}
+			if (!empty($state['winner']) && ($state['winner'] == $state['above'])) {
+				$return = updateAbove($i, $publicContent, $editContent, $amount);
+				$publicContent = $return['public'];
+				$editContent = $return['edit'];
+			}
+			elseif (!empty($state['winner']) && ($state['winner'] == $state['below'])) {
+				$return = updateBelow($i, $publicContent, $editContent, $amount);
+				$publicContent = $return['public'];
+				$editContent = $return['edit'];
+			}
 		}
-		if (!empty($state['winner']) && ($state['winner'] == $state['above'])) {
-			$return = updateAbove($i, $publicContent, $editContent, $amount);
-			$publicContent = $return['public'];
-			$editContent = $return['edit'];
-		}
-		elseif (!empty($state['winner']) && ($state['winner'] == $state['below'])) {
-			$return = updateBelow($i, $publicContent, $editContent, $amount);
-			$publicContent = $return['public'];
-			$editContent = $return['edit'];
+	}
+	else {
+		$publicContent = cyclePublicContent($account, $gameno);
+		$editContent = cycleEditContent($account, $gameno);
+		$distribute = distribute($amount);
+		$roundAmount = $distribute['round'];
+		$gap = 3 * ($distribute['3_1'] + $distribute['3_2']) + 6 * ($distribute['4_1'] + $distribute['4_2']);
+		$total = $gap + $roundAmount;
+		for ($i = 1; $i < $total; $i++) {
+			$state = queryState($account, $gameno, $i);
+			if ($i <= $gap) {
+				if (!empty($state['aboveScore']) && !empty($state['belowScore'])) {
+					$scoreInput = scoreInputPosition($i, $amount);
+					$publicContent = str_replace('<td id="p'.$scoreInput['above'].'">', '<td id="p'.$scoreInput['above'].'">'.$state['aboveScore'], $publicContent);
+					$publicContent = str_replace('<td id="p'.$scoreInput['below'].'">', '<td id="p'.$scoreInput['below'].'">'.$state['belowScore'], $publicContent);
+					$editContent = str_replace('<input type="text" id="'.$state['playno'].'_above">', '<input type="text" id="'.$state['playno'].'_above" value="'.$state['aboveScore'].'">', $editContent);
+					$editContent = str_replace('<input type="text" id="'.$state['playno'].'_below">', '<input type="text" id="'.$state['playno'].'_below" value="'.$state['belowScore'].'">', $editContent);
+				}
+			}
+			else {
+				if (!empty($state['aboveScore']) && !empty($state['belowScore'])) {
+					$scoreInput = scoreInputPosition($i-$gap, $roundAmount);
+					$publicContent = str_replace('<td id="p'.$scoreInput['above'].'">', '<td id="p'.$scoreInput['above'].'">'.$state['aboveScore'], $publicContent);
+					$publicContent = str_replace('<td id="p'.$scoreInput['below'].'">', '<td id="p'.$scoreInput['below'].'">'.$state['belowScore'], $publicContent);
+					$editContent = str_replace('<input type="text" id="'.$state['playno'].'_above">', '<input type="text" id="'.$state['playno'].'_above" value="'.$state['aboveScore'].'">', $editContent);
+					$editContent = str_replace('<input type="text" id="'.$state['playno'].'_below">', '<input type="text" id="'.$state['playno'].'_below" value="'.$state['belowScore'].'">', $editContent);
+				}
+				if (!empty($state['winner']) && ($state['winner'] == $state['above'])) {
+					$return = updateAbove($i-$gap, $publicContent, $editContent, $roundAmount);
+					$publicContent = $return['public'];
+					$editContent = $return['edit'];
+				}
+				elseif (!empty($state['winner']) && ($state['winner'] == $state['below'])) {
+					$return = updateBelow($i-$gap, $publicContent, $editContent, $roundAmount);
+					$publicContent = $return['public'];
+					$editContent = $return['edit'];
+				}
+			}
 		}
 	}
 	unlink($account.'/'.$gameno."/public.html");
 	unlink($account.'/'.$gameno."/edit.html");
-	$start = '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>電子化賽程系統</title><link rel="stylesheet" type="text/css" href="../../resource/custom.css"></head><body>';
-	$end = '</body><script src="../../resource/'.$roundAmount.'.js"></script></html>';
+	$start = ($type == 'A') ? '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>電子化賽程系統</title><link rel="stylesheet" type="text/css" href="resource/custom.css"></head><body>' : '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>電子化賽程系統</title><link rel="stylesheet" type="text/css" href="resource/custom.css"><link rel="stylesheet" type="text/css" href="resource/tournament.css"></head><body>';
+	$end = '</body><script src="resource/'.$roundAmount.'.js"></script></html>';
 	$file = fopen($account.'/'.$gameno."/public.html", "w");
 	fwrite($file, $start.$publicContent.$end);
 	fclose($file);
@@ -936,27 +978,52 @@ function updateGameState($account, $gameno) {
 
 function clearBye($account, $gameno) {
 	$amount = getAmount($account, $gameno);
+	$playtype = getPlaytype($account, $gameno);
 	$roundAmount = pow(2, ceil(log($amount, 2)));
 	$single = 1;
 	$double = 2;
+	$playno = 1;
 	while ($single < $roundAmount) {
-		$querySingle = queryContentSingle($account, $gameno, $single);
-		$queryDouble = queryContentSingle($account, $gameno, $double);
-		if ($querySingle['unit'] == 'none') {
-			mysql_query("UPDATE GAMESTATE SET WINNER='$double' WHERE USERNO='$account' AND GAMENO='$gameno'");
+		if ($playtype == 'A') {
+			$querySingle = queryContentSingle($account, $gameno, $single);
+			$queryDouble = queryContentSingle($account, $gameno, $double);
+			if ($querySingle['unit'] == 'none') {
+				mysql_query("UPDATE GAMESTATE SET WINNER='$double' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO='$playno'");
+			}
+			elseif ($queryDouble['unit'] == 'none') {
+				mysql_query("UPDATE GAMESTATE SET WINNER='$single' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO='$playno'");
+			}
 		}
-		elseif ($queryDouble['unit'] == 'none') {
-			mysql_query("UPDATE GAMESTATE SET WINNER='$single' WHERE USERNO='$account' AND GAMENO='$gameno'");
+		elseif ($playtype == 'B') {
+			$querySingle = queryContentDouble($account, $gameno, $single);
+			$queryDouble = queryContentDouble($account, $gameno, $double);
+			if ($querySingle['unitu'] == 'none') {
+				mysql_query("UPDATE GAMESTATE SET WINNER='$double' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO='$playno'");
+			}
+			elseif ($queryDouble['unitu'] == 'none') {
+				mysql_query("UPDATE GAMESTATE SET WINNER='$single' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO='$playno'");
+			}
+		}
+		elseif ($playtype == 'C') {
+			$querySingle = queryContentGroup($account, $gameno, $single);
+			$queryDouble = queryContentGroup($account, $gameno, $double);
+			if ($querySingle == 'none') {
+				mysql_query("UPDATE GAMESTATE SET WINNER='$double' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO='$playno'");
+			}
+			elseif ($queryDouble == 'none') {
+				mysql_query("UPDATE GAMESTATE SET WINNER='$single' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO='$playno'");
+			}
 		}
 		$single += 2;
 		$double += 2;
+		$playno++;
 	}
 }
 
 function makeGame($account, $gameno) {
-	$start = '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>電子化賽程系統</title><script src="../../resource/custom.js"></script></head><body>';
+	$start = '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>電子化賽程系統</title><script src="resource/custom.js"></script></head><body>';
 	$content = '<p id="gameState"></p>';
-	$end = '</body><button onclick="location.assign(\'../../resource/output.php?account='.$account.'&gameno='.$gameno.'&name=123\')">輸出主審單</button><script>updateGame(\''.$account.'\', \''.$gameno.'\')</script></html>';
+	$end = '</body><button onclick="location.assign(\'resource/output.php?account='.$account.'&gameno='.$gameno.'&name=123\')">輸出主審單</button><script>updateGame(\''.$account.'\', \''.$gameno.'\')</script></html>';
 	$file = fopen($account.'/'.$gameno."/game.html", "w");
 	fwrite($file, $start.$content.$end);
 	fclose($file);
@@ -1028,8 +1095,7 @@ function login($account, $password) {
 	}
 	else {
 		$token = get_token();
-		$encrypted_token = md5($account.$token);
-		$sql2 = "UPDATE USERMAS SET TOKEN='$encrypted_token' WHERE USERNO='$account'";
+		$sql2 = "UPDATE USERMAS SET TOKEN='$token' WHERE USERNO='$account'";
 		if (mysql_query($sql2)) {
 			return array('message' => 'Success', 'token' => $token);
 		}
@@ -1055,7 +1121,6 @@ function logon($account, $password) {
 		date_default_timezone_set('Asia/Taipei');
 		$date = date("Y-m-d H:i:s");
 		$token = get_token();
-		$encrypted_token = md5($account.$token);
 		$sql2 = "INSERT INTO USERMAS (USERNO, TOKEN, PASSWORD, CREATEDATE, LOGINDATE, AUTHDATE) VALUES ('$account', '$token', '$password', '$date', '$date', '$date')";
 		if (mysql_query($sql2)) {
 			return array('message' => 'Success', 'token' => $token);

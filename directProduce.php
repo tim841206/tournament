@@ -128,7 +128,7 @@ else {
 		makePublic($account, $gameno);
 		makeEdit($account, $gameno);
 		clearBye($account, $gameno);
-		echo json_encode(array('message' => 'Success', 'route' => $account.'/'.$gameno.'/edit.html'));
+		echo json_encode(array('message' => 'Success', 'host' => $account, 'gameno' => $gameno));
 		makeGame($account, $gameno);
 	}
 	elseif ($mode == 'enter') {
@@ -140,8 +140,8 @@ else {
 			}
 			elseif ($playtype == 'B') {
 				$temp_unitu = $unitu[$i-1];
-				$temp_unitd = $unitd[$i-1];
 				$temp_nameu = $nameu[$i-1];
+				$temp_unitd = $unitd[$i-1];
 				$temp_named = $named[$i-1];
 				mysql_query("INSERT INTO GAMEPOSITION (USERNO, GAMENO, POSITION, PLAYERNO, UNIT, NAME) VALUES ('$account', '$gameno', '$i', '1', '$temp_unitu', '$temp_nameu')");
 				mysql_query("INSERT INTO GAMEPOSITION (USERNO, GAMENO, POSITION, PLAYERNO, UNIT, NAME) VALUES ('$account', '$gameno', '$i', '2', '$temp_unitd', '$temp_named')");
@@ -186,14 +186,14 @@ else {
 		makePublic($account, $gameno);
 		makeEdit($account, $gameno);
 		clearBye($account, $gameno);
-		echo json_encode(array('message' => 'Success', 'route' => $account.'/'.$gameno.'/edit.html'));
+		echo json_encode(array('message' => 'Success', 'host' => $account, 'gameno' => $gameno));
 		unlink($account.'/'.$gameno."/assign.html");
 		makeGame($account, $gameno);
 	}
 }
 
 function is_validAmount($amount) {
-	if ((ceil($amount) == floor($amount)) && $amount >= 9 && $amount <= 128) {
+	if ((ceil($amount) == floor($amount)) && $amount >= 4 && $amount <= 128) {
 		return true;
 	}
 	else {

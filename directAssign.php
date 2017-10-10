@@ -37,7 +37,7 @@ else {
 		$order128 = [64,65,1,128,33,96,32,97,49,80,16,113,48,81,17,112,57,72,8,121,40,89,25,104,56,73,9,120,41,88,24,105,61,68,4,125,36,93,29,100,53,76,12,117,44,85,21,108,60,69,5,124,37,92,28,101,52,77,13,116,45,84,20,109];
 		$arrange = array_slice($order128, 0, $roundAmount-$amount);
 	}
-	$start = '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>電子化賽程系統</title><link rel="stylesheet" type="text/css" href="../../resource/custom.css"><script src="../../resource/custom.js"></script></head><body>';
+	$start = '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>電子化賽程系統</title><link rel="stylesheet" type="text/css" href="resource/custom.css"><script src="resource/custom.js"></script></head><body>';
 	$content = '<table><tr><td>單位</td><td>名稱</td></tr>';
 	for ($i = 1; $i <= $roundAmount; $i++) {
 		if (in_array($i, $arrange)) {
@@ -56,7 +56,7 @@ else {
 		}
 	}
 	$content .= '</table><button onclick="public('.$amount.', \''.$gameno.'\', \''.$gamenm.'\', \''.$playtype.'\')">確定輸出</button>';
-	$end = '</body><script src="../../resource/'.$roundAmount.'.js"></script></html>';
+	$end = '</body><script src="resource/'.$roundAmount.'.js"></script></html>';
 	if (is_dir($account.'/'.$gameno)) {
 		if (is_file($account.'/'.$gameno."/assign.html")) {
 			unlink($account.'/'.$gameno."/assign.html");
@@ -68,7 +68,7 @@ else {
 	$file = fopen($account.'/'.$gameno."/assign.html", "w");
 	fwrite($file, $start.$content.$end);
 	fclose($file);
-	echo json_encode(array('message' => 'Success', 'route' => $account.'/'.$gameno.'/assign.html'));
+	echo json_encode(array('message' => 'Success', 'host' => $account, 'gameno' => $gameno, 'type' => 'assign'));
 }
 
 function is_validAmount($amount) {

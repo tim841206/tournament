@@ -9,10 +9,10 @@
 	<body>
 	<h2>電子化賽程系統</h2>
 	<div align="right">
-		[memberArea]
+		[memberArea]，你好 <button onclick="logout()">登出</button>
 	</div>
-	<div style="width: 45%; display: inline-block; vertical-align: top;">
-		<h3>新增競賽</h3>
+	<div style="width: 25%; display: inline-block; vertical-align: top;">
+		<h3 style="text-align: center;">新增競賽</h3>
 		<table>
 			<tr><th colspan="2">請輸入競賽編號</th></tr>
 			<tr><td colspan="2"><input type="text" id="gameno"></td></tr>
@@ -41,7 +41,7 @@
 		<div id="players" style="display: none;">
 		</div>
 	</div>
-	<div style="width: 50%; display: inline-block; vertical-align: top;">
+	<div style="width: 50%; display: inline-block; vertical-align: top; text-align: center;">
 		<h3>查詢競賽</h3>
 		<p id="games"></p>
 		<script>games();</script>

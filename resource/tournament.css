@@ -255,28 +255,20 @@
 .square-game2 {
 	text-align: center;
 	position: absolute;
-	top: 83px;
-	left: 30px;
+	top: 168px;
+	left: 115px;
 	width: 20px;
 }
 
 .square-game3 {
 	text-align: center;
 	position: absolute;
-	top: 60px;
-	left: 91px;
+	top: 83px;
+	left: 30px;
 	width: 20px;
 }
 
 .square-game4 {
-	text-align: center;
-	position: absolute;
-	top: 60px;
-	left: 139px;
-	width: 20px;
-}
-
-.square-game5 {
 	text-align: center;
 	position: absolute;
 	top: 83px;
@@ -284,10 +276,18 @@
 	width: 20px;
 }
 
+.square-game5 {
+	text-align: center;
+	position: absolute;
+	top: 60px;
+	left: 91px;
+	width: 20px;
+}
+
 .square-game6 {
 	text-align: center;
 	position: absolute;
-	top: 168px;
-	left: 115px;
+	top: 60px;
+	left: 139px;
 	width: 20px;
 }

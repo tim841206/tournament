@@ -19,29 +19,89 @@ function output($account, $gameno, $name) {
 	$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
 	
 	$pdf->AddPage();
-	$pdf->SetFont('cid0jp', 'B', 20);
+	$pdf->SetFont('msungstdlight', 'B', 16);
 
 	$sql = mysql_query("SELECT * FROM GAMESTATE WHERE USERNO='$account' AND GAMENO='$gameno' AND PLAYNO!='NULL'");
 	while ($fetch = mysql_fetch_array($sql)) {
-		$query1 = queryPosition($account, $gameno, $fetch['ABOVE']);
-		$query2 = queryPosition($account, $gameno, $fetch['BELOW']);
-		$tbl = '<table border="1" cellpadding="2" cellspacing="2" align="center">
-		<tr nobr="true">
-		<td>'.$name.' 第 '.$fetch['PLAYNO'].' 場次<br>時間 ________<br>第 ___ 場地</td>
-		<td>'.$query1['unit'].'  '.$query1['name'].'</td>
-		<td>'.$query2['unit'].'  '.$query2['name'].'</td>
-		</tr>
-		<tr nobr="true">
-		<td>得分</td>
-		<td></td>
-		<td></td>
-		</tr>
-		<tr nobr="true">
-		<td>裁判簽名</td>
-		<td colspan="2"></td>
-		</tr>
-		</table>';
-		$pdf->writeHTML($tbl, true, false, false, false, '');
+		$playtype = getPlaytype($account, $gameno);
+		if ($playtype == 'A') {
+			$query1 = queryContentSingle($account, $gameno, $fetch['ABOVE']);
+			$query2 = queryContentSingle($account, $gameno, $fetch['BELOW']);
+			$tbl = '<table border="1" cellpadding="2" cellspacing="2" align="center">
+			<tr nobr="true">
+			<td>'.$name.' 第 '.$fetch['PLAYNO'].' 場次<br>第 __ 場地 時間 ______</td>
+			<td>'.$query1['unit'].'  '.$query1['name'].'</td>
+			<td>'.$query2['unit'].'  '.$query2['name'].'</td>
+			</tr>
+			<tr nobr="true">
+			<td>得分</td>
+			<td></td>
+			<td></td>
+			</tr>
+			<tr nobr="true">
+			<td>勝方簽名</td>
+			<td></td>
+			<td></td>
+			</tr>
+			<tr nobr="true">
+			<td>裁判簽名</td>
+			<td colspan="2"></td>
+			</tr>
+			</table>';
+			$pdf->writeHTML($tbl, true, false, false, false, '');
+		}
+		elseif ($playtype == 'B') {
+			$query1 = queryContentDouble($account, $gameno, $fetch['ABOVE']);
+			$query2 = queryContentDouble($account, $gameno, $fetch['BELOW']);
+			$tbl = '<table border="1" cellpadding="2" cellspacing="2" align="center">
+			<tr nobr="true">
+			<td>'.$name.' 第 '.$fetch['PLAYNO'].' 場次<br>第 __ 場地 時間 ______</td>
+			<td>'.$query1['unitu'].'  '.$query1['nameu'].'<br>'.$query1['unitd'].'  '.$query1['named'].'</td>
+			<td>'.$query2['unitu'].'  '.$query2['nameu'].'<br>'.$query2['unitd'].'  '.$query2['named'].'</td>
+			</tr>
+			<tr nobr="true">
+			<td>得分</td>
+			<td></td>
+			<td></td>
+			</tr>
+			<tr nobr="true">
+			<td>勝方簽名</td>
+			<td></td>
+			<td></td>
+			</tr>
+			<tr nobr="true">
+			<td>裁判簽名</td>
+			<td colspan="2"></td>
+			</tr>
+			</table>';
+			$pdf->writeHTML($tbl, true, false, false, false, '');
+		}
+		elseif ($playtype == 'C') {
+			$query1 = queryContentGroup($account, $gameno, $fetch['ABOVE']);
+			$query2 = queryContentGroup($account, $gameno, $fetch['BELOW']);
+			$tbl = '<table border="1" cellpadding="2" cellspacing="2" align="center">
+			<tr nobr="true">
+			<td>'.$name.' 第 '.$fetch['PLAYNO'].' 場次<br>第 __ 場地 時間 ______</td>
+			<td>'.$query1.'</td>
+			<td>'.$query2.'</td>
+			</tr>
+			<tr nobr="true">
+			<td>得分</td>
+			<td></td>
+			<td></td>
+			</tr>
+			<tr nobr="true">
+			<td>勝方簽名</td>
+			<td></td>
+			<td></td>
+			</tr>
+			<tr nobr="true">
+			<td>裁判簽名</td>
+			<td colspan="2"></td>
+			</tr>
+			</table>';
+			$pdf->writeHTML($tbl, true, false, false, false, '');
+		}
 	}
 	ob_end_clean();
 	$pdf->Output('output.pdf', 'D');

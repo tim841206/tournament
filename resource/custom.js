@@ -101,7 +101,7 @@ function enter() {
 					if (request.readyState === 4 && request.status === 200) {
 						var data = JSON.parse(request.responseText);
 						if (data.message == 'Success') {
-							location.assign(data.route);
+							location.assign("index.php?host=" + data.host + "&gameno=" + data.gameno + "&type=" + data.type);
 						}
 						else {
 							alert(data.message);
@@ -110,18 +110,21 @@ function enter() {
 				}
 			}
 			else if (type[1].checked) {
-				var content = '<table><tr><th>序號</th><th>單位</th><th>名稱</th></tr>';
+				var content = '';
 				if (playtype == 'A') {
+					content += '<table><tr><th>序號</th><th>單位</th><th>名稱</th></tr>';
 					for (i = 1; i <= amount; i++) {
 						content += '<tr><td>'+i+'</td><td><input type="text" id="unit' + i + '"></td><td><input type="text" id="name' + i + '"></td></tr>';
 					}
 				}
 				else if (playtype == 'B') {
+					content += '<table><tr><th>序號</th><th>單位</th><th>名稱</th></tr>';
 					for (i = 1; i <= amount; i++) {
 						content += '<tr><td>'+i+'</td><td><input type="text" id="unit' + i + 'u"><br><input type="text" id="unit' + i + 'd"></td><td><input type="text" id="name' + i + 'u"><br><input type="text" id="name' + i + 'd"></td></tr>';
 					}
 				}
 				else if (playtype == 'C') {
+					content += '<table><tr><th>序號</th><th>單位</th></tr>';
 					for (i = 1; i <= amount; i++) {
 						content += '<tr><td>'+i+'</td><td><input type="text" id="unit' + i + '"></td></tr>';
 					}
@@ -146,9 +149,10 @@ function enter() {
 				request.send(data);
 				request.onreadystatechange = function() {
 					if (request.readyState === 4 && request.status === 200) {
+						alert(request.responseText);
 						var data = JSON.parse(request.responseText);
 						if (data.message == 'Success') {
-							location.assign(data.route);
+							location.assign("index.php?host=" + data.host + "&gameno=" + data.gameno + "&type=" + data.type);
 						}
 						else {
 							alert(data.message);
@@ -157,18 +161,21 @@ function enter() {
 				}
 			}
 			else if (type[1].checked) {
-				var content = '<table><tr><th>序號</th><th>單位</th><th>名稱</th></tr>';
+				var content = '';
 				if (playtype == 'A') {
+					content += '<table><tr><th>序號</th><th>單位</th><th>名稱</th></tr>';
 					for (i = 1; i <= amount; i++) {
 						content += '<tr><td>'+i+'</td><td><input type="text" id="unit' + i + '"></td><td><input type="text" id="name' + i + '"></td></tr>';
 					}
 				}
 				else if (playtype == 'B') {
+					content += '<table><tr><th>序號</th><th>單位</th><th>名稱</th></tr>';
 					for (i = 1; i <= amount; i++) {
 						content += '<tr><td>'+i+'</td><td><input type="text" id="unit' + i + 'u"><br><input type="text" id="unit' + i + 'd"></td><td><input type="text" id="name' + i + 'u"><br><input type="text" id="name' + i + 'd"></td></tr>';
 					}
 				}
 				else if (playtype == 'C') {
+					content += '<table><tr><th>序號</th><th>單位</th></tr>';
 					for (i = 1; i <= amount; i++) {
 						content += '<tr><td>'+i+'</td><td><input type="text" id="unit' + i + '"></td></tr>';
 					}
@@ -228,7 +235,7 @@ function send() {
 					if (request.readyState === 4 && request.status === 200) {
 						var data = JSON.parse(request.responseText);
 						if (data.message == 'Success') {
-							location.assign(data.route);
+							location.assign("index.php?host=" + data.host + "&gameno=" + data.gameno + "&type=" + data.type);
 						}
 						else {
 							alert(data.message);
@@ -274,7 +281,7 @@ function send() {
 					if (request.readyState === 4 && request.status === 200) {
 						var data = JSON.parse(request.responseText);
 						if (data.message == 'Success') {
-							location.assign(data.route);
+							location.assign("index.php?host=" + data.host + "&gameno=" + data.gameno);
 						}
 						else {
 							alert(data.message);
@@ -300,7 +307,7 @@ function send() {
 					if (request.readyState === 4 && request.status === 200) {
 						var data = JSON.parse(request.responseText);
 						if (data.message == 'Success') {
-							location.assign(data.route);
+							location.assign("index.php?host=" + data.host + "&gameno=" + data.gameno + "&type=" + data.type);
 						}
 						else {
 							alert(data.message);
@@ -346,7 +353,7 @@ function send() {
 					if (request.readyState === 4 && request.status === 200) {
 						var data = JSON.parse(request.responseText);
 						if (data.message == 'Success') {
-							location.assign(data.route);
+							location.assign("index.php?host=" + data.host + "&gameno=" + data.gameno);
 						}
 						else {
 							alert(data.message);
@@ -366,7 +373,7 @@ function send() {
 
 function public(amount, gameno, gamenm, playtype) {
 	var request = new XMLHttpRequest();
-	request.open("POST", "../../directProduce.php");
+	request.open("POST", "directProduce.php");
 	if (playtype == 'A') {
 		var unit = [];
 		var name = [];
@@ -424,7 +431,7 @@ function public(amount, gameno, gamenm, playtype) {
 		if (request.readyState === 4 && request.status === 200) {
 			var data = JSON.parse(request.responseText);
 			if (data.message == 'Success') {
-				location.assign("edit.html");
+				location.assign("index.php?host=" + data.host + "&gameno=" + data.gameno);
 			}
 			else {
 				alert(data.message);
@@ -435,7 +442,7 @@ function public(amount, gameno, gamenm, playtype) {
 
 function cyclePublic(amount, gameno, gamenm, playtype) {
 	var request = new XMLHttpRequest();
-	request.open("POST", "../../cycleProduce.php");
+	request.open("POST", "cycleProduce.php");
 	if (playtype == 'A') {
 		var unit = [];
 		var name = [];
@@ -491,9 +498,10 @@ function cyclePublic(amount, gameno, gamenm, playtype) {
 	request.send(data);
 	request.onreadystatechange = function() {
 		if (request.readyState === 4 && request.status === 200) {
+			alert(request.responseText);
 			var data = JSON.parse(request.responseText);
 			if (data.message == 'Success') {
-				location.assign("edit.html");
+				location.assign("index.php?host=" + data.host + "&gameno=" + data.gameno);
 			}
 			else {
 				alert(data.message);
@@ -504,7 +512,9 @@ function cyclePublic(amount, gameno, gamenm, playtype) {
 
 function update(gameno) {
 	var above = [];
+	above[0] = 'skip';
 	var below = [];
+	below[0] = 'skip';
 	var again = true;
 	for (i = 1; again; i++) {
 		var a = document.getElementById(i+"_above");
@@ -517,8 +527,9 @@ function update(gameno) {
 			again = false;
 		}
 	}
+	alert(above);
 	var request = new XMLHttpRequest();
-	request.open("POST", "../../update.php");
+	request.open("POST", "update.php");
 	var data = "gameno=" + gameno + "&above=" + above + "&below=" + below;
 	request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	request.send(data);
@@ -555,7 +566,7 @@ function games() {
 
 function updateGame(account, gameno) {
 	var request = new XMLHttpRequest();
-	request.open("GET", "../../search.php?type=update&account="+account+"&gameno="+gameno);
+	request.open("GET", "search.php?type=update&account="+account+"&gameno="+gameno);
 	request.send();
 	request.onreadystatechange = function() {
 		if (request.readyState === 4 && request.status === 200) {

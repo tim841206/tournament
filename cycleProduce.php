@@ -106,8 +106,8 @@ else {
 			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', $game+1, $game+1, $index+3, $index+4)");
 			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', $gap+$game, $gap+$game, $index+1, $index+3)");
 			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', $gap+$game+1, $gap+$game+1, $index+2, $index+4)");
-			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', 2*$gap+$game, 2*$gap+$game, $index+1, $index+4)");
-			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', 2*$gap+$game+1, 2*$gap+$game+1, $index+2, $index+3)");
+			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', $gap+$gap+$game, $gap+$gap+$game, $index+1, $index+4)");
+			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', $gap+$gap+$game+1, $gap+$gap+$game+1, $index+2, $index+3)");
 			$index += 4;
 			$game += 2;
 		}
@@ -166,8 +166,8 @@ else {
 			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', $game+1, $game+1, $index+3, $index+4)");
 			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', $gap+$game, $gap+$game, $index+1, $index+3)");
 			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', $gap+$game+1, $gap+$game+1, $index+2, $index+4)");
-			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', 2*$gap+$game, 2*$gap+$game, $index+1, $index+4)");
-			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', 2*$gap+$game+1, 2*$gap+$game+1, $index+2, $index+3)");
+			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', $gap+$gap+$game, $gap+$gap+$game, $index+1, $index+4)");
+			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', $gap+$gap+$game+1, $gap+$gap+$game+1, $index+2, $index+3)");
 			$index += 4;
 			$game += 2;
 		}
@@ -213,7 +213,7 @@ else {
 			}
 			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', $game, $game, $index+1, $index+2)");
 			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', $gap+$game, $gap+$game, $index+1, $index+3)");
-			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', 2*$gap+$game, 2*$gap+$game, $index+2, $index+3)");
+			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', $gap+$gap+$game, $gap+$gap+$game, $index+2, $index+3)");
 			$index += 3;
 			$game++;
 		}
@@ -259,7 +259,7 @@ else {
 			}
 			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', $game, $game, $index+1, $index+2)");
 			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', $gap+$game, $gap+$game, $index+1, $index+3)");
-			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', 2*$gap+$game, 2*$gap+$game, $index+2, $index+3)");
+			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', $gap+$gap+$game, $gap+$gap+$game, $index+2, $index+3)");
 			$index += 3;
 			$game++;
 		}
@@ -271,7 +271,7 @@ else {
 		}
 		makePublic($account, $gameno);
 		makeEdit($account, $gameno);
-		echo json_encode(array('message' => 'Success', 'route' => $account.'/'.$gameno.'/edit.html'));
+		echo json_encode(array('message' => 'Success', 'host' => $account, 'gameno' => $gameno));
 		makeGame($account, $gameno);
 	}
 	elseif ($mode == 'enter') {
@@ -332,8 +332,8 @@ else {
 			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', $game+1, $game+1, $index+3, $index+4)");
 			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', $gap+$game, $gap+$game, $index+1, $index+3)");
 			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', $gap+$game+1, $gap+$game+1, $index+2, $index+4)");
-			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', 2*$gap+$game, 2*$gap+$game, $index+1, $index+4)");
-			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', 2*$gap+$game+1, 2*$gap+$game+1, $index+2, $index+3)");
+			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', $gap+$gap+$game, $gap+$gap+$game, $index+1, $index+4)");
+			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', $gap+$gap+$game+1, $gap+$gap+$game+1, $index+2, $index+3)");
 			$index += 4;
 			$game += 2;
 		}
@@ -392,36 +392,36 @@ else {
 			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', $game+1, $game+1, $index+3, $index+4)");
 			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', $gap+$game, $gap+$game, $index+1, $index+3)");
 			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', $gap+$game+1, $gap+$game+1, $index+2, $index+4)");
-			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', 2*$gap+$game, 2*$gap+$game, $index+1, $index+4)");
-			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', 2*$gap+$game+1, 2*$gap+$game+1, $index+2, $index+3)");
+			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', $gap+$gap+$game, $gap+$gap+$game, $index+1, $index+4)");
+			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', $gap+$gap+$game+1, $gap+$gap+$game+1, $index+2, $index+3)");
 			$index += 4;
 			$game += 2;
 		}
 		for ($i = 1; $i <= $distribute['3_1']; $i++) {
 			if ($playtype == 'A') {
-				$temp_unit1 = $unit[$rand[$index+0]];
-				$temp_unit2 = $unit[$rand[$index+1]];
-				$temp_unit3 = $unit[$rand[$index+2]];
-				$temp_name1 = $name[$rand[$index+0]];
-				$temp_name2 = $name[$rand[$index+1]];
-				$temp_name3 = $name[$rand[$index+2]];
+				$temp_unit1 = $unit[$index+0];
+				$temp_unit2 = $unit[$index+1];
+				$temp_unit3 = $unit[$index+2];
+				$temp_name1 = $name[$index+0];
+				$temp_name2 = $name[$index+1];
+				$temp_name3 = $name[$index+2];
 				mysql_query("INSERT INTO GAMEPOSITION (USERNO, GAMENO, POSITION, UNIT, NAME) VALUES ('$account', '$gameno', $index+1, '$temp_unit1', '$temp_name1')");
 				mysql_query("INSERT INTO GAMEPOSITION (USERNO, GAMENO, POSITION, UNIT, NAME) VALUES ('$account', '$gameno', $index+2, '$temp_unit2', '$temp_name2')");
 				mysql_query("INSERT INTO GAMEPOSITION (USERNO, GAMENO, POSITION, UNIT, NAME) VALUES ('$account', '$gameno', $index+3, '$temp_unit3', '$temp_name3')");
 			}
 			elseif ($playtype == 'B') {
-				$temp_unit1u = $unitu[$rand[$index+0]];
-				$temp_unit1d = $unitd[$rand[$index+0]];
-				$temp_unit2u = $unitu[$rand[$index+1]];
-				$temp_unit2d = $unitd[$rand[$index+1]];
-				$temp_unit3u = $unitu[$rand[$index+2]];
-				$temp_unit3d = $unitd[$rand[$index+2]];
-				$temp_name1u = $nameu[$rand[$index+0]];
-				$temp_name1d = $named[$rand[$index+0]];
-				$temp_name2u = $nameu[$rand[$index+1]];
-				$temp_name2d = $named[$rand[$index+1]];
-				$temp_name3u = $nameu[$rand[$index+2]];
-				$temp_name3d = $named[$rand[$index+2]];
+				$temp_unit1u = $unitu[$index+0];
+				$temp_unit1d = $unitd[$index+0];
+				$temp_unit2u = $unitu[$index+1];
+				$temp_unit2d = $unitd[$index+1];
+				$temp_unit3u = $unitu[$index+2];
+				$temp_unit3d = $unitd[$index+2];
+				$temp_name1u = $nameu[$index+0];
+				$temp_name1d = $named[$index+0];
+				$temp_name2u = $nameu[$index+1];
+				$temp_name2d = $named[$index+1];
+				$temp_name3u = $nameu[$index+2];
+				$temp_name3d = $named[$index+2];
 				mysql_query("INSERT INTO GAMEPOSITION (USERNO, GAMENO, POSITION, PLAYERNO, UNIT, NAME) VALUES ('$account', '$gameno', $index+1, '1', '$temp_unit1u', '$temp_name1u')");
 				mysql_query("INSERT INTO GAMEPOSITION (USERNO, GAMENO, POSITION, PLAYERNO, UNIT, NAME) VALUES ('$account', '$gameno', $index+1, '2', '$temp_unit1d', '$temp_name1d')");
 				mysql_query("INSERT INTO GAMEPOSITION (USERNO, GAMENO, POSITION, PLAYERNO, UNIT, NAME) VALUES ('$account', '$gameno', $index+2, '1', '$temp_unit2u', '$temp_name2u')");
@@ -430,44 +430,44 @@ else {
 				mysql_query("INSERT INTO GAMEPOSITION (USERNO, GAMENO, POSITION, PLAYERNO, UNIT, NAME) VALUES ('$account', '$gameno', $index+3, '2', '$temp_unit3d', '$temp_name3d')");
 			}
 			elseif ($playtype == 'C') {
-				$temp_unit1 = $unit[$rand[$index+0]];
-				$temp_unit2 = $unit[$rand[$index+1]];
-				$temp_unit3 = $unit[$rand[$index+2]];
+				$temp_unit1 = $unit[$index+0];
+				$temp_unit2 = $unit[$index+1];
+				$temp_unit3 = $unit[$index+2];
 				mysql_query("INSERT INTO GAMEPOSITION (USERNO, GAMENO, POSITION, UNIT) VALUES ('$account', '$gameno', $index+1, '$temp_unit1')");
 				mysql_query("INSERT INTO GAMEPOSITION (USERNO, GAMENO, POSITION, UNIT) VALUES ('$account', '$gameno', $index+2, '$temp_unit2')");
 				mysql_query("INSERT INTO GAMEPOSITION (USERNO, GAMENO, POSITION, UNIT) VALUES ('$account', '$gameno', $index+3, '$temp_unit3')");
 			}
 			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', $game, $game, $index+1, $index+2)");
 			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', $gap+$game, $gap+$game, $index+1, $index+3)");
-			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', 2*$gap+$game, 2*$gap+$game, $index+2, $index+3)");
+			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', $gap+$gap+$game, $gap+$gap+$game, $index+2, $index+3)");
 			$index += 3;
 			$game++;
 		}
 		for ($i = 1; $i <= $distribute['3_2']; $i++) {
 			if ($playtype == 'A') {
-				$temp_unit1 = $unit[$rand[$index+0]];
-				$temp_unit2 = $unit[$rand[$index+1]];
-				$temp_unit3 = $unit[$rand[$index+2]];
-				$temp_name1 = $name[$rand[$index+0]];
-				$temp_name2 = $name[$rand[$index+1]];
-				$temp_name3 = $name[$rand[$index+2]];
+				$temp_unit1 = $unit[$index+0];
+				$temp_unit2 = $unit[$index+1];
+				$temp_unit3 = $unit[$index+2];
+				$temp_name1 = $name[$index+0];
+				$temp_name2 = $name[$index+1];
+				$temp_name3 = $name[$index+2];
 				mysql_query("INSERT INTO GAMEPOSITION (USERNO, GAMENO, POSITION, UNIT, NAME) VALUES ('$account', '$gameno', $index+1, '$temp_unit1', '$temp_name1')");
 				mysql_query("INSERT INTO GAMEPOSITION (USERNO, GAMENO, POSITION, UNIT, NAME) VALUES ('$account', '$gameno', $index+2, '$temp_unit2', '$temp_name2')");
 				mysql_query("INSERT INTO GAMEPOSITION (USERNO, GAMENO, POSITION, UNIT, NAME) VALUES ('$account', '$gameno', $index+3, '$temp_unit3', '$temp_name3')");
 			}
 			elseif ($playtype == 'B') {
-				$temp_unit1u = $unitu[$rand[$index+0]];
-				$temp_unit1d = $unitd[$rand[$index+0]];
-				$temp_unit2u = $unitu[$rand[$index+1]];
-				$temp_unit2d = $unitd[$rand[$index+1]];
-				$temp_unit3u = $unitu[$rand[$index+2]];
-				$temp_unit3d = $unitd[$rand[$index+2]];
-				$temp_name1u = $nameu[$rand[$index+0]];
-				$temp_name1d = $named[$rand[$index+0]];
-				$temp_name2u = $nameu[$rand[$index+1]];
-				$temp_name2d = $named[$rand[$index+1]];
-				$temp_name3u = $nameu[$rand[$index+2]];
-				$temp_name3d = $named[$rand[$index+2]];
+				$temp_unit1u = $unitu[$index+0];
+				$temp_unit1d = $unitd[$index+0];
+				$temp_unit2u = $unitu[$index+1];
+				$temp_unit2d = $unitd[$index+1];
+				$temp_unit3u = $unitu[$index+2];
+				$temp_unit3d = $unitd[$index+2];
+				$temp_name1u = $nameu[$index+0];
+				$temp_name1d = $named[$index+0];
+				$temp_name2u = $nameu[$index+1];
+				$temp_name2d = $named[$index+1];
+				$temp_name3u = $nameu[$index+2];
+				$temp_name3d = $named[$index+2];
 				mysql_query("INSERT INTO GAMEPOSITION (USERNO, GAMENO, POSITION, PLAYERNO, UNIT, NAME) VALUES ('$account', '$gameno', $index+1, '1', '$temp_unit1u', '$temp_name1u')");
 				mysql_query("INSERT INTO GAMEPOSITION (USERNO, GAMENO, POSITION, PLAYERNO, UNIT, NAME) VALUES ('$account', '$gameno', $index+1, '2', '$temp_unit1d', '$temp_name1d')");
 				mysql_query("INSERT INTO GAMEPOSITION (USERNO, GAMENO, POSITION, PLAYERNO, UNIT, NAME) VALUES ('$account', '$gameno', $index+2, '1', '$temp_unit2u', '$temp_name2u')");
@@ -476,16 +476,16 @@ else {
 				mysql_query("INSERT INTO GAMEPOSITION (USERNO, GAMENO, POSITION, PLAYERNO, UNIT, NAME) VALUES ('$account', '$gameno', $index+3, '2', '$temp_unit3d', '$temp_name3d')");
 			}
 			elseif ($playtype == 'C') {
-				$temp_unit1 = $unit[$rand[$index+0]];
-				$temp_unit2 = $unit[$rand[$index+1]];
-				$temp_unit3 = $unit[$rand[$index+2]];
+				$temp_unit1 = $unit[$index+0];
+				$temp_unit2 = $unit[$index+1];
+				$temp_unit3 = $unit[$index+2];
 				mysql_query("INSERT INTO GAMEPOSITION (USERNO, GAMENO, POSITION, UNIT) VALUES ('$account', '$gameno', $index+1, '$temp_unit1')");
 				mysql_query("INSERT INTO GAMEPOSITION (USERNO, GAMENO, POSITION, UNIT) VALUES ('$account', '$gameno', $index+2, '$temp_unit2')");
 				mysql_query("INSERT INTO GAMEPOSITION (USERNO, GAMENO, POSITION, UNIT) VALUES ('$account', '$gameno', $index+3, '$temp_unit3')");
 			}
 			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', $game, $game, $index+1, $index+2)");
 			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', $gap+$game, $gap+$game, $index+1, $index+3)");
-			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', 2*$gap+$game, 2*$gap+$game, $index+2, $index+3)");
+			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', $gap+$gap+$game, $gap+$gap+$game, $index+2, $index+3)");
 			$index += 3;
 			$game++;
 		}
@@ -494,8 +494,8 @@ else {
 		}
 		makePublic($account, $gameno);
 		makeEdit($account, $gameno);
-		echo json_encode(array('message' => 'Success', 'route' => $account.'/'.$gameno.'/edit.html'));
-		unlink($account.'/'.$gameno."/cycleAssign.html");
+		echo json_encode(array('message' => 'Success', 'host' => $account, 'gameno' => $gameno));
+		unlink($account.'/'.$gameno."/assign.html");
 		makeGame($account, $gameno);
 	}
 }
