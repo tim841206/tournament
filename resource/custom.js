@@ -527,7 +527,6 @@ function update(gameno) {
 			again = false;
 		}
 	}
-	alert(above);
 	var request = new XMLHttpRequest();
 	request.open("POST", "update.php");
 	var data = "gameno=" + gameno + "&above=" + above + "&below=" + below;
@@ -535,6 +534,7 @@ function update(gameno) {
 	request.send(data);
 	request.onreadystatechange = function() {
 		if (request.readyState === 4 && request.status === 200) {
+			alert(request.responseText);
 			var data = JSON.parse(request.responseText);
 			if (data.message == 'Success') {
 				alert("成功更新");
@@ -566,7 +566,7 @@ function games() {
 
 function updateGame(account, gameno) {
 	var request = new XMLHttpRequest();
-	request.open("GET", "search.php?type=update&account="+account+"&gameno="+gameno);
+	request.open("GET", "search.php?type=updateGame&account="+account+"&gameno="+gameno);
 	request.send();
 	request.onreadystatechange = function() {
 		if (request.readyState === 4 && request.status === 200) {
@@ -574,6 +574,56 @@ function updateGame(account, gameno) {
 			var data = JSON.parse(request.responseText);
 			if (data.message == 'Success') {
 				document.getElementById("gameState").innerHTML = data.content;
+			}
+			else {
+				alert(data.message);
+			}
+		}
+	}
+}
+
+function updateFunction(account, gameno) {
+	var request = new XMLHttpRequest();
+	request.open("GET", "search.php?type=updateFunction&account="+account+"&gameno="+gameno);
+	request.send();
+	request.onreadystatechange = function() {
+		if (request.readyState === 4 && request.status === 200) {
+			alert(request.responseText);
+			var data = JSON.parse(request.responseText);
+			if (data.message == 'Success') {
+				document.getElementById("gameState").innerHTML = data.content;
+			}
+			else {
+				alert(data.message);
+			}
+		}
+	}
+}
+
+function updateTime(account, gameno) {
+	var request = new XMLHttpRequest();
+	request.open("POST", "search.php");
+	var times = [];
+	var again = true;
+	for (i = 1; again; i++) {
+		var id = document.getElementById(i+"_time");
+		if (id != null) {
+			times[i-1] = id.value;
+		}
+		else {
+			again = false;
+		}
+	}
+	var data = "type=updateTime&account=" + account + "&gameno=" + gameno + "&times=" + times;
+	request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	request.send(data);
+	request.onreadystatechange = function() {
+		if (request.readyState === 4 && request.status === 200) {
+			alert(request.responseText);
+			var data = JSON.parse(request.responseText);
+			if (data.message == 'Success') {
+				alert("成功更新");
+				location.reload();
 			}
 			else {
 				alert(data.message);

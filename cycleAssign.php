@@ -28,7 +28,9 @@ else {
 	$total = 1;
 	$game = 1;
 	$pos = 1;
-	$up = array();
+	$rank1 = array();
+	$rank2 = array();
+	$rank3 = array();
 	for ($i = 1; $i <= $distribute['4_2']; $i++) {
 		if ($playtype == 'A') {
 			$square = file_get_contents("resource/single_square_assign.html");
@@ -51,8 +53,8 @@ else {
 		$square = str_replace('[pos3]', $pos+2, $square);
 		$square = str_replace('[pos4]', $pos+3, $square);
 		$content .= $square;
-		array_push($up, $label[$total].'冠');
-		array_push($up, $label[$total].'亞');
+		array_push($rank1, $label[$total].'冠');
+		array_push($rank3, $label[$total].'亞');
 		$total++;
 		$game += 2;
 		$pos += 4;
@@ -79,7 +81,7 @@ else {
 		$square = str_replace('[pos3]', $pos+2, $square);
 		$square = str_replace('[pos4]', $pos+3, $square);
 		$content .= $square;
-		array_push($up, $label[$total].'冠');
+		array_push($rank1, $label[$total].'冠');
 		$total++;
 		$game += 2;
 		$pos += 4;
@@ -102,7 +104,7 @@ else {
 		$triangle = str_replace('[pos2]', $pos+1, $triangle);
 		$triangle = str_replace('[pos3]', $pos+2, $triangle);
 		$content .= $triangle;
-		array_push($up, $label[$total].'冠');
+		array_push($rank2, $label[$total].'冠');
 		$total++;
 		$game++;
 		$pos += 3;
@@ -125,13 +127,13 @@ else {
 		$triangle = str_replace('[pos2]', $pos+1, $triangle);
 		$triangle = str_replace('[pos3]', $pos+2, $triangle);
 		$content .= $triangle;
-		array_push($up, $label[$total].'冠');
-		array_push($up, $label[$total].'亞');
+		array_push($rank2, $label[$total].'冠');
+		array_push($rank3, $label[$total].'亞');
 		$total++;
 		$game++;
 		$pos += 3;
 	}
-	shuffle($up);
+	$up = arrange($rank1, $rank2, $rank3);
 	for ($i = 1; $i <= $distribute['round']; $i++) {
 		$content .= '<tr><td id="unit'.$i.'">'.array_pop($up).'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
 	}

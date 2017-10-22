@@ -46,7 +46,7 @@ function publicContent($account, $gameno) {
 		}
 	}
 	$content = setPlayNo($account, $gameno, $content, $amount);
-	$content .= '</table><button onclick="window.open(\'index.php?host='.$account.'&gameno='.$gameno.'&type=game\')">賽程表</button>';
+	$content .= '</table><button onclick="window.open(\'index.php?host='.$account.'&gameno='.$gameno.'&type=game\')">賽程時間表</button>';
 	return $content;
 }
 
@@ -70,7 +70,7 @@ function editContent($account, $gameno) {
 	}
 	$content = setPlayNo($account, $gameno, $content, $amount);
 	$content = setScoreInput($account, $gameno, $content, $amount);
-	$content .= '</table><button onclick="update(\''.$gameno.'\')">確定更新</button><button onclick="window.open(\'index.php?host='.$account.'&gameno='.$gameno.'&type=game\')">賽程表</button>';
+	$content .= '</table><button onclick="update(\''.$gameno.'\')">確定更新</button><button onclick="window.open(\'index.php?host='.$account.'&gameno='.$gameno.'&type=game\')">賽程時間表</button>';
 	return $content;
 }
 
@@ -84,7 +84,9 @@ function cyclePublicContent($account, $gameno) {
 	$total = 1;
 	$game = 1;
 	$pos = 1;
-	$up = array();
+	$rank1 = array();
+	$rank2 = array();
+	$rank3 = array();
 	for ($i = 1; $i <= $distribute['4_2']; $i++) {
 		if ($playtype == 'A') {
 			$query1 = queryContentSingle($account, $gameno, $pos);
@@ -155,10 +157,10 @@ function cyclePublicContent($account, $gameno) {
 		$square = str_replace('[game5]', 2*$gap + $game, $square);
 		$square = str_replace('[game6]', 2*$gap + $game+1, $square);
 		$content .= $square;
-		array_push($up, $label[$total].'冠');
-		array_push($up, $label[$total].'亞');
+		array_push($rank1, $label[$total].'冠');
+		array_push($rank3, $label[$total].'亞');
 		$total++;
-		$game += 6;
+		$game += 2;
 		$pos += 4;
 	}
 	for ($i = 1; $i <= $distribute['4_1']; $i++) {
@@ -231,9 +233,9 @@ function cyclePublicContent($account, $gameno) {
 		$square = str_replace('[game5]', 2*$gap + $game, $square);
 		$square = str_replace('[game6]', 2*$gap + $game+1, $square);
 		$content .= $square;
-		array_push($up, $label[$total].'冠');
+		array_push($rank1, $label[$total].'冠');
 		$total++;
-		$game += 6;
+		$game += 2;
 		$pos += 4;
 	}
 	for ($i = 1; $i <= $distribute['3_1']; $i++) {
@@ -290,9 +292,9 @@ function cyclePublicContent($account, $gameno) {
 		$triangle = str_replace('[game2]', $gap + $game, $triangle);
 		$triangle = str_replace('[game3]', 2*$gap + $game, $triangle);
 		$content .= $triangle;
-		array_push($up, $label[$total].'冠');
+		array_push($rank2, $label[$total].'冠');
 		$total++;
-		$game += 3;
+		$game++;
 		$pos += 3;
 	}
 	for ($i = 1; $i <= $distribute['3_2']; $i++) {
@@ -349,19 +351,84 @@ function cyclePublicContent($account, $gameno) {
 		$triangle = str_replace('[game2]', $gap + $game, $triangle);
 		$triangle = str_replace('[game3]', 2*$gap + $game, $triangle);
 		$content .= $triangle;
-		array_push($up, $label[$total].'冠');
-		array_push($up, $label[$total].'亞');
+		array_push($rank2, $label[$total].'冠');
+		array_push($rank3, $label[$total].'亞');
 		$total++;
-		$game += 3;
+		$game++;
 		$pos += 3;
 	}
-	shuffle($up);
-	$content .= '<table><tr><td>單位</td><td>名稱</td></tr>';
+	$up = arrange($rank1, $rank2, $rank3);
+	if ($playtype == 'A') {
+		$content .= '<table><tr><td>單位</td><td>名稱</td></tr>';
+	}
+	elseif ($playtype == 'B') {
+		$content .= '<table><tr><td>單位</td><td>名稱</td></tr>';
+	}
+	elseif ($playtype == 'C') {
+		$content .= '<table><tr><td>單位</td></tr>';
+	}
 	for ($i = 1; $i <= $distribute['round']; $i++) {
-		$content .= '<tr><td id="unit'.$i.'">'.array_pop($up).'</td><td></td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+		$state = queryState($account, $gameno, 3*$gap+ceil($i/2));
+		if ($playtype == 'A') {
+			if (empty($state['above'])) {
+				$content .= '<tr><td id="unit'.$i.'">'.array_pop($up).'</td><td></td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+			}
+			else {
+				$omit = array_pop($up);
+				$query = queryContentSingle($account, $gameno, $state['above']);
+				$content .= '<tr><td id="unit'.$i.'">'.$query['unit'].'</td><td>'.$query['name'].'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+			}
+			$i++;
+			if (empty($state['below'])) {
+				$content .= '<tr><td id="unit'.$i.'">'.array_pop($up).'</td><td></td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+			}
+			else {
+				$omit = array_pop($up);
+				$query = queryContentSingle($account, $gameno, $state['below']);
+				$content .= '<tr><td id="unit'.$i.'">'.$query['unit'].'</td><td>'.$query['name'].'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+			}
+		}
+		elseif ($playtype == 'B') {
+			if (empty($state['above'])) {
+				$content .= '<tr><td id="unit'.$i.'">'.array_pop($up).'</td><td></td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+			}
+			else {
+				$omit = array_pop($up);
+				$query = queryContentDouble($account, $gameno, $state['above']);
+				$content .= '<tr><td id="unit'.$i.'">'.$query['unitu'].'</td><td>'.$query['nameu'].'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td>'.$query['unitd'].'</td><td>'.$query['named'].'</td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+			}
+			$i++;
+			if (empty($state['below'])) {
+				$content .= '<tr><td id="unit'.$i.'">'.array_pop($up).'</td><td></td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+			}
+			else {
+				$omit = array_pop($up);
+				$query = queryContentDouble($account, $gameno, $state['below']);
+				$content .= '<tr><td id="unit'.$i.'">'.$query['unitu'].'</td><td>'.$query['nameu'].'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td>'.$query['unitd'].'</td><td>'.$query['named'].'</td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+			}
+		}
+		elseif ($playtype == 'C') {
+			if (empty($state['above'])) {
+				$content .= '<tr><td id="unit'.$i.'">'.array_pop($up).'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+			}
+			else {
+				$omit = array_pop($up);
+				$query = queryContentGroup($account, $gameno, $state['above']);
+				$content .= '<tr><td id="unit'.$i.'">'.$query.'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+			}
+			$i++;
+			if (empty($state['below'])) {
+				$content .= '<tr><td id="unit'.$i.'">'.array_pop($up).'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+			}
+			else {
+				$omit = array_pop($up);
+				$query = queryContentGroup($account, $gameno, $state['below']);
+				$content .= '<tr><td id="unit'.$i.'">'.$query.'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+			}
+		}
 	}
 	$content = cycleSetPlayNo($account, $gameno, $content, $distribute['round']);
-	$content .= '</table><button onclick="window.open(\'index.php?host='.$account.'&gameno='.$gameno.'&type=game\')">賽程表</button>';
+	$content .= '</table><button onclick="window.open(\'index.php?host='.$account.'&gameno='.$gameno.'&type=game\')">賽程時間表</button>';
 	return $content;
 }
 
@@ -375,7 +442,9 @@ function cycleEditContent($account, $gameno) {
 	$total = 1;
 	$game = 1;
 	$pos = 1;
-	$up = array();
+	$rank1 = array();
+	$rank2 = array();
+	$rank3 = array();
 	for ($i = 1; $i <= $distribute['4_2']; $i++) {
 		if ($playtype == 'A') {
 			$query1 = queryContentSingle($account, $gameno, $pos);
@@ -446,8 +515,8 @@ function cycleEditContent($account, $gameno) {
 		$square = str_replace('[game5]', 2*$gap + $game, $square);
 		$square = str_replace('[game6]', 2*$gap + $game+1, $square);
 		$content .= $square;
-		array_push($up, $label[$total].'冠');
-		array_push($up, $label[$total].'亞');
+		array_push($rank1, $label[$total].'冠');
+		array_push($rank3, $label[$total].'亞');
 		$total++;
 		$game += 2;
 		$pos += 4;
@@ -522,7 +591,7 @@ function cycleEditContent($account, $gameno) {
 		$square = str_replace('[game5]', 2*$gap + $game, $square);
 		$square = str_replace('[game6]', 2*$gap + $game+1, $square);
 		$content .= $square;
-		array_push($up, $label[$total].'冠');
+		array_push($rank1, $label[$total].'冠');
 		$total++;
 		$game += 2;
 		$pos += 4;
@@ -581,7 +650,7 @@ function cycleEditContent($account, $gameno) {
 		$triangle = str_replace('[game2]', $gap + $game, $triangle);
 		$triangle = str_replace('[game3]', 2*$gap + $game, $triangle);
 		$content .= $triangle;
-		array_push($up, $label[$total].'冠');
+		array_push($rank2, $label[$total].'冠');
 		$total++;
 		$game++;
 		$pos += 3;
@@ -640,20 +709,85 @@ function cycleEditContent($account, $gameno) {
 		$triangle = str_replace('[game2]', $gap + $game, $triangle);
 		$triangle = str_replace('[game3]', 2*$gap + $game, $triangle);
 		$content .= $triangle;
-		array_push($up, $label[$total].'冠');
-		array_push($up, $label[$total].'亞');
+		array_push($rank2, $label[$total].'冠');
+		array_push($rank3, $label[$total].'亞');
 		$total++;
 		$game++;
 		$pos += 3;
 	}
-	shuffle($up);
-	$content .= '<table><tr><td>單位</td><td>名稱</td></tr>';
+	$up = arrange($rank1, $rank2, $rank3);
+	if ($playtype == 'A') {
+		$content .= '<table><tr><td>單位</td><td>名稱</td></tr>';
+	}
+	elseif ($playtype == 'B') {
+		$content .= '<table><tr><td>單位</td><td>名稱</td></tr>';
+	}
+	elseif ($playtype == 'C') {
+		$content .= '<table><tr><td>單位</td></tr>';
+	}
 	for ($i = 1; $i <= $distribute['round']; $i++) {
-		$content .= '<tr><td id="unit'.$i.'">'.array_pop($up).'</td><td></td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+		$state = queryState($account, $gameno, 3*$gap+ceil($i/2));
+		if ($playtype == 'A') {
+			if (empty($state['above'])) {
+				$content .= '<tr><td id="unit'.$i.'">'.array_pop($up).'</td><td></td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+			}
+			else {
+				$omit = array_pop($up);
+				$query = queryContentSingle($account, $gameno, $state['above']);
+				$content .= '<tr><td id="unit'.$i.'">'.$query['unit'].'</td><td>'.$query['name'].'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+			}
+			$i++;
+			if (empty($state['below'])) {
+				$content .= '<tr><td id="unit'.$i.'">'.array_pop($up).'</td><td></td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+			}
+			else {
+				$omit = array_pop($up);
+				$query = queryContentSingle($account, $gameno, $state['below']);
+				$content .= '<tr><td id="unit'.$i.'">'.$query['unit'].'</td><td>'.$query['name'].'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+			}
+		}
+		elseif ($playtype == 'B') {
+			if (empty($state['above'])) {
+				$content .= '<tr><td id="unit'.$i.'">'.array_pop($up).'</td><td></td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+			}
+			else {
+				$omit = array_pop($up);
+				$query = queryContentDouble($account, $gameno, $state['above']);
+				$content .= '<tr><td id="unit'.$i.'">'.$query['unitu'].'</td><td>'.$query['nameu'].'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td>'.$query['unitd'].'</td><td>'.$query['named'].'</td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+			}
+			$i++;
+			if (empty($state['below'])) {
+				$content .= '<tr><td id="unit'.$i.'">'.array_pop($up).'</td><td></td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+			}
+			else {
+				$omit = array_pop($up);
+				$query = queryContentDouble($account, $gameno, $state['below']);
+				$content .= '<tr><td id="unit'.$i.'">'.$query['unitu'].'</td><td>'.$query['nameu'].'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td>'.$query['unitd'].'</td><td>'.$query['named'].'</td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+			}
+		}
+		elseif ($playtype == 'C') {
+			if (empty($state['above'])) {
+				$content .= '<tr><td id="unit'.$i.'">'.array_pop($up).'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+			}
+			else {
+				$omit = array_pop($up);
+				$query = queryContentGroup($account, $gameno, $state['above']);
+				$content .= '<tr><td id="unit'.$i.'">'.$query.'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+			}
+			$i++;
+			if (empty($state['below'])) {
+				$content .= '<tr><td id="unit'.$i.'">'.array_pop($up).'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+			}
+			else {
+				$omit = array_pop($up);
+				$query = queryContentGroup($account, $gameno, $state['below']);
+				$content .= '<tr><td id="unit'.$i.'">'.$query.'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+			}
+		}
 	}
 	$content = cycleSetPlayNo($account, $gameno, $content, $distribute['round']);
 	$content = cycleSetScoreInput($account, $gameno, $content, $distribute['round']);
-	$content .= '</table><button onclick="update(\''.$gameno.'\')">確定更新</button><button onclick="window.open(\'index.php?host='.$account.'&gameno='.$gameno.'&type=game\')">賽程表</button>';
+	$content .= '</table><button onclick="update(\''.$gameno.'\')">確定更新</button><button onclick="window.open(\'index.php?host='.$account.'&gameno='.$gameno.'&type=game\')">賽程時間表</button>';
 	return $content;
 }
 
@@ -673,6 +807,30 @@ function processName($name) {
 	else {
 		return $name;
 	}
+}
+
+function arrange($rank1, $rank2, $rank3) {
+	$rank3 = array_merge(array_slice($rank3, ceil(count($rank3)/2)), array_slice($rank3, 0, ceil(count($rank3)/2)));
+	$up = array();
+	while (count($rank1)) {
+		array_push($up, array_shift($rank1));
+		if (count($rank3)) {
+			array_push($up, array_shift($rank3));
+		}
+		else {
+			array_push($up, array_shift($rank2));
+		}
+	}
+	while (count($rank2)) {
+		array_push($up, array_shift($rank2));
+		if (count($rank3)) {
+			array_push($up, array_shift($rank3));
+		}
+		else {
+			array_push($up, array_pop($rank2));
+		}
+	}
+	return array_reverse($up);
 }
 
 function setPlayNo($account, $gameno, $content, $amount) {
@@ -906,6 +1064,7 @@ function updateGameChart($account, $gameno) {
 		}
 	}
 	else {
+		updateCycleGameState($account, $gameno);
 		$publicContent = cyclePublicContent($account, $gameno);
 		$editContent = cycleEditContent($account, $gameno);
 		$distribute = distribute($amount);
@@ -916,11 +1075,10 @@ function updateGameChart($account, $gameno) {
 			$state = queryState($account, $gameno, $i);
 			if ($i <= $gap) {
 				if (!empty($state['aboveScore']) && !empty($state['belowScore'])) {
-					$scoreInput = scoreInputPosition($i, $amount);
-					$publicContent = str_replace('<td id="p'.$scoreInput['above'].'">', '<td id="p'.$scoreInput['above'].'">'.$state['aboveScore'], $publicContent);
-					$publicContent = str_replace('<td id="p'.$scoreInput['below'].'">', '<td id="p'.$scoreInput['below'].'">'.$state['belowScore'], $publicContent);
-					$editContent = str_replace('<input type="text" id="'.$state['playno'].'_above">', '<input type="text" id="'.$state['playno'].'_above" value="'.$state['aboveScore'].'">', $editContent);
-					$editContent = str_replace('<input type="text" id="'.$state['playno'].'_below">', '<input type="text" id="'.$state['playno'].'_below" value="'.$state['belowScore'].'">', $editContent);
+					$publicContent = str_replace('id="'.$state['playno'].'_above">', 'id="'.$state['playno'].'_above">'.$state['aboveScore'], $publicContent);
+					$publicContent = str_replace('id="'.$state['playno'].'_below">', 'id="'.$state['playno'].'_below">'.$state['belowScore'], $publicContent);
+					$editContent = str_replace('id="'.$state['playno'].'_above">', 'id="'.$state['playno'].'_above" value="'.$state['aboveScore'].'">', $editContent);
+					$editContent = str_replace('id="'.$state['playno'].'_below">', 'id="'.$state['playno'].'_below" value="'.$state['belowScore'].'">', $editContent);
 				}
 			}
 			else {
@@ -976,6 +1134,256 @@ function updateGameState($account, $gameno) {
 	}
 }
 
+function updateCycleGameState($account, $gameno) {
+	$amount = getAmount($account, $gameno);
+	$distribute = distribute($amount);
+	$gap = 2 * ($distribute['4_1'] + $distribute['4_2']) + $distribute['3_1'] + $distribute['3_2'];
+	$game = 1;
+	$pos = 1;
+	$rank1 = array();
+	$rank2 = array();
+	$rank3 = array();
+	for ($cycle = 1; $cycle <= $distribute['4_2']; $cycle++) {
+		$game1 = queryState($account, $gameno, $game);
+		$game2 = queryState($account, $gameno, $game+1);
+		$game3 = queryState($account, $gameno, $gap + $game);
+		$game4 = queryState($account, $gameno, $gap + $game+1);
+		$game5 = queryState($account, $gameno, 2*$gap + $game);
+		$game6 = queryState($account, $gameno, 2*$gap + $game+1);
+		$priority = array(0,0,0,0);
+		if (!empty($game1['winner']) && !empty($game2['winner']) && !empty($game3['winner']) && !empty($game4['winner']) && !empty($game5['winner']) && !empty($game6['winner'])) {
+			$priority[0] += $game1['aboveScore'];
+			$priority[1] += $game1['belowScore'];
+			$priority[2] += $game2['aboveScore'];
+			$priority[3] += $game2['belowScore'];
+			$priority[0] += $game3['aboveScore'];
+			$priority[2] += $game3['belowScore'];
+			$priority[1] += $game4['aboveScore'];
+			$priority[3] += $game4['belowScore'];
+			$priority[0] += $game5['aboveScore'];
+			$priority[3] += $game5['belowScore'];
+			$priority[1] += $game6['aboveScore'];
+			$priority[2] += $game6['belowScore'];
+			($game1['winner'] == $pos) ? $priority[0] += 1000 : $priority[1] += 1000;
+			($game2['winner'] == $pos+2) ? $priority[2] += 1000 : $priority[3] += 1000;
+			($game3['winner'] == $pos) ? $priority[0] += 1000 : $priority[2] += 1000;
+			($game4['winner'] == $pos+1) ? $priority[1] += 1000 : $priority[3] += 1000;
+			($game5['winner'] == $pos) ? $priority[0] += 1000 : $priority[3] += 1000;
+			($game6['winner'] == $pos+1) ? $priority[1] += 1000 : $priority[2] += 1000;
+			$first = 0;
+			$second = 0;
+			for ($i = 0; $i < count($priority); $i++) {
+				if ($priority[$i] > $first) {
+					$second = $first;
+					$first = $priority[$i];
+				}
+				elseif ($priority[$i] > $second) {
+					$second = $priority[$i];
+				}
+			}
+			if ($first == $priority[0]) {
+				array_push($rank1, $pos);
+				if ($second == $priority[1]) {
+					array_push($rank3, $pos+1);
+				}
+				elseif ($second == $priority[2]) {
+					array_push($rank3, $pos+2);
+				}
+				elseif ($second == $priority[3]) {
+					array_push($rank3, $pos+3);
+				}
+			}
+			elseif ($first == $priority[1]) {
+				array_push($rank1, $pos+1);
+				if ($second == $priority[0]) {
+					array_push($rank3, $pos);
+				}
+				elseif ($second == $priority[2]) {
+					array_push($rank3, $pos+2);
+				}
+				elseif ($second == $priority[3]) {
+					array_push($rank3, $pos+3);
+				}
+			}
+			elseif ($first == $priority[2]) {
+				array_push($rank1, $pos+2);
+				if ($second == $priority[0]) {
+					array_push($rank3, $pos);
+				}
+				elseif ($second == $priority[1]) {
+					array_push($rank3, $pos+1);
+				}
+				elseif ($second == $priority[3]) {
+					array_push($rank3, $pos+3);
+				}
+			}
+			elseif ($first == $priority[3]) {
+				array_push($rank1, $pos+3);
+				if ($second == $priority[0]) {
+					array_push($rank3, $pos);
+				}
+				elseif ($second == $priority[1]) {
+					array_push($rank3, $pos+1);
+				}
+				elseif ($second == $priority[2]) {
+					array_push($rank3, $pos+2);
+				}
+			}
+		}
+		else {
+			array_push($rank1, '');
+			array_push($rank3, '');
+		}
+		$game += 2;
+		$pos += 4;
+	}
+	for ($cycle = 1; $cycle <= $distribute['4_1']; $cycle++) {
+		$game1 = queryState($account, $gameno, $game);
+		$game2 = queryState($account, $gameno, $game+1);
+		$game3 = queryState($account, $gameno, $gap + $game);
+		$game4 = queryState($account, $gameno, $gap + $game+1);
+		$game5 = queryState($account, $gameno, 2*$gap + $game);
+		$game6 = queryState($account, $gameno, 2*$gap + $game+1);
+		$priority = array(0,0,0,0);
+		if (!empty($game1['winner']) && !empty($game2['winner']) && !empty($game3['winner']) && !empty($game4['winner']) && !empty($game5['winner']) && !empty($game6['winner'])) {
+			$priority[0] += $game1['aboveScore'];
+			$priority[1] += $game1['belowScore'];
+			$priority[2] += $game2['aboveScore'];
+			$priority[3] += $game2['belowScore'];
+			$priority[0] += $game3['aboveScore'];
+			$priority[2] += $game3['belowScore'];
+			$priority[1] += $game4['aboveScore'];
+			$priority[3] += $game4['belowScore'];
+			$priority[0] += $game5['aboveScore'];
+			$priority[3] += $game5['belowScore'];
+			$priority[1] += $game6['aboveScore'];
+			$priority[2] += $game6['belowScore'];
+			($game1['winner'] == $pos) ? $priority[0] += 1000 : $priority[1] += 1000;
+			($game2['winner'] == $pos+2) ? $priority[2] += 1000 : $priority[3] += 1000;
+			($game3['winner'] == $pos) ? $priority[0] += 1000 : $priority[2] += 1000;
+			($game4['winner'] == $pos+1) ? $priority[1] += 1000 : $priority[3] += 1000;
+			($game5['winner'] == $pos) ? $priority[0] += 1000 : $priority[3] += 1000;
+			($game6['winner'] == $pos+1) ? $priority[1] += 1000 : $priority[2] += 1000;
+			if (max($priority) == $priority[0]) {
+				array_push($rank1, $pos);
+			}
+			elseif (max($priority) == $priority[1]) {
+				array_push($rank1, $pos+1);
+			}
+			elseif (max($priority) == $priority[2]) {
+				array_push($rank1, $pos+2);
+			}
+			elseif (max($priority) == $priority[3]) {
+				array_push($rank1, $pos+3);
+			}
+		}
+		else {
+			array_push($rank1, '');
+		}
+		$game += 2;
+		$pos += 4;
+	}
+	for ($cycle = 1; $cycle <= $distribute['3_1']; $cycle++) {
+		$game1 = queryState($account, $gameno, $game);
+		$game2 = queryState($account, $gameno, $gap + $game);
+		$game3 = queryState($account, $gameno, 2*$gap + $game);
+		$priority = array(0,0,0);
+		if (!empty($game1['winner']) && !empty($game2['winner']) && !empty($game3['winner'])) {
+			$priority[0] += $game1['aboveScore'];
+			$priority[1] += $game1['belowScore'];
+			$priority[0] += $game2['aboveScore'];
+			$priority[2] += $game2['belowScore'];
+			$priority[1] += $game3['aboveScore'];
+			$priority[2] += $game3['belowScore'];
+			($game1['winner'] == $pos) ? $priority[0] += 1000 : $priority[1] += 1000;
+			($game2['winner'] == $pos) ? $priority[0] += 1000 : $priority[2] += 1000;
+			($game3['winner'] == $pos+1) ? $priority[1] += 1000 : $priority[2] += 1000;
+			if (max($priority) == $priority[0]) {
+				array_push($rank2, $pos);
+			}
+			elseif (max($priority) == $priority[1]) {
+				array_push($rank2, $pos+1);
+			}
+			elseif (max($priority) == $priority[2]) {
+				array_push($rank2, $pos+2);
+			}
+		}
+		else {
+			array_push($rank2, '');
+		}
+		$game++;
+		$pos += 3;
+	}
+	for ($cycle = 1; $cycle <= $distribute['3_2']; $cycle++) {
+		$game1 = queryState($account, $gameno, $game);
+		$game2 = queryState($account, $gameno, $gap + $game);
+		$game3 = queryState($account, $gameno, 2*$gap + $game);
+		$priority = array(0,0,0);
+		if (!empty($game1['winner']) && !empty($game2['winner']) && !empty($game3['winner'])) {
+			$priority[0] += $game1['aboveScore'];
+			$priority[1] += $game1['belowScore'];
+			$priority[0] += $game2['aboveScore'];
+			$priority[2] += $game2['belowScore'];
+			$priority[1] += $game3['aboveScore'];
+			$priority[2] += $game3['belowScore'];
+			($game1['winner'] == $pos) ? $priority[0] += 1000 : $priority[1] += 1000;
+			($game2['winner'] == $pos) ? $priority[0] += 1000 : $priority[2] += 1000;
+			($game3['winner'] == $pos+1) ? $priority[1] += 1000 : $priority[2] += 1000;
+			$first = 0;
+			$second = 0;
+			for ($i = 0; $i < count($priority); $i++) {
+				if ($priority[$i] > $first) {
+					$second = $first;
+					$first = $priority[$i];
+				}
+				elseif ($priority[$i] > $second) {
+					$second = $priority[$i];
+				}
+			}
+			if ($first == $priority[0]) {
+				array_push($rank2, $pos);
+				if ($second == $priority[1]) {
+					array_push($rank3, $pos+1);
+				}
+				elseif ($second == $priority[2]) {
+					array_push($rank3, $pos+2);
+				}
+			}
+			elseif ($first == $priority[1]) {
+				array_push($rank2, $pos+1);
+				if ($second == $priority[0]) {
+					array_push($rank3, $pos);
+				}
+				elseif ($second == $priority[2]) {
+					array_push($rank3, $pos+2);
+				}
+			}
+			elseif ($first == $priority[2]) {
+				array_push($rank2, $pos+2);
+				if ($second == $priority[0]) {
+					array_push($rank3, $pos);
+				}
+				elseif ($second == $priority[1]) {
+					array_push($rank3, $pos+1);
+				}
+			}
+		}
+		else {
+			array_push($rank2, '');
+			array_push($rank3, '');
+		}
+		$game++;
+		$pos += 3;
+	}
+	$up = arrange($rank1, $rank2, $rank3);
+	for ($i = 2; $i <= $distribute['round']; $i+=2) {
+		$playno = 3*$gap + $i/2;
+		$above = array_pop($up);
+		$below = array_pop($up);
+		mysql_query("UPDATE GAMESTATE SET ABOVE='$above', BELOW='$below' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO='$playno'");
+	}
+}
+
 function clearBye($account, $gameno) {
 	$amount = getAmount($account, $gameno);
 	$playtype = getPlaytype($account, $gameno);
@@ -1023,8 +1431,14 @@ function clearBye($account, $gameno) {
 function makeGame($account, $gameno) {
 	$start = '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>電子化賽程系統</title><script src="resource/custom.js"></script></head><body>';
 	$content = '<p id="gameState"></p>';
-	$end = '</body><button onclick="location.assign(\'resource/output.php?account='.$account.'&gameno='.$gameno.'&name=123\')">輸出主審單</button><script>updateGame(\''.$account.'\', \''.$gameno.'\')</script></html>';
+	$end = '</body><script>updateGame(\''.$account.'\', \''.$gameno.'\')</script></html>';
 	$file = fopen($account.'/'.$gameno."/game.html", "w");
+	fwrite($file, $start.$content.$end);
+	fclose($file);
+	$start = '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>電子化賽程系統</title><script src="resource/custom.js"></script></head><body>';
+	$content = '<p id="gameState"></p>';
+	$end = '</body><button onclick="location.assign(\'resource/output.php?account='.$account.'&gameno='.$gameno.'&name=123\')">輸出主審單</button><script>updateFunction(\''.$account.'\', \''.$gameno.'\')</script></html>';
+	$file = fopen($account.'/'.$gameno."/function.html", "w");
 	fwrite($file, $start.$content.$end);
 	fclose($file);
 }

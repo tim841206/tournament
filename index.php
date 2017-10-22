@@ -5,7 +5,7 @@ include_once("resource/custom.php");
 if (isset($_POST['event'])) {
 	if ($_POST['event'] == 'login') {
 		$return = login($_POST['account'], $_POST['password']);
-		if ($return['message'] == 'Success') {
+		if (is_array($return) && $return['message'] == 'Success') {
 			setcookie('account', $_POST['account']);
 			setcookie('token', $return['token']);
 			echo json_encode(array('message' => $return['message']));
@@ -16,7 +16,7 @@ if (isset($_POST['event'])) {
 	}
 	elseif ($_POST['event'] == 'logon') {
 		$return = logon($_POST['account'], $_POST['password']);
-		if ($return['message'] == 'Success') {
+		if (is_array($return) && $return['message'] == 'Success') {
 			setcookie('account', $_POST['account']);
 			setcookie('token', $return['token']);
 			mkdir($_POST['account']);
@@ -50,7 +50,7 @@ elseif (isset($_GET['host']) && isset($_GET['gameno'])) {
 			echo $content;
 		}
 		elseif (isset($_GET['type']) && $_GET['type'] == 'game') {
-			$content = file_get_contents($host."/".$gameno."/game.html");
+			$content = file_get_contents($host."/".$gameno."/function.html");
 			echo $content;
 		}
 		else {
