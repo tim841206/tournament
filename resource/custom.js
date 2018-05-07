@@ -149,7 +149,6 @@ function enter() {
 				request.send(data);
 				request.onreadystatechange = function() {
 					if (request.readyState === 4 && request.status === 200) {
-						alert(request.responseText);
 						var data = JSON.parse(request.responseText);
 						if (data.message == 'Success') {
 							location.assign("index.php?host=" + data.host + "&gameno=" + data.gameno + "&type=" + data.type);
@@ -498,7 +497,6 @@ function cyclePublic(amount, gameno, gamenm, playtype) {
 	request.send(data);
 	request.onreadystatechange = function() {
 		if (request.readyState === 4 && request.status === 200) {
-			alert(request.responseText);
 			var data = JSON.parse(request.responseText);
 			if (data.message == 'Success') {
 				location.assign("index.php?host=" + data.host + "&gameno=" + data.gameno);
@@ -534,7 +532,6 @@ function update(gameno) {
 	request.send(data);
 	request.onreadystatechange = function() {
 		if (request.readyState === 4 && request.status === 200) {
-			alert(request.responseText);
 			var data = JSON.parse(request.responseText);
 			if (data.message == 'Success') {
 				alert("成功更新");
@@ -570,7 +567,6 @@ function updateGame(account, gameno) {
 	request.send();
 	request.onreadystatechange = function() {
 		if (request.readyState === 4 && request.status === 200) {
-			alert(request.responseText);
 			var data = JSON.parse(request.responseText);
 			if (data.message == 'Success') {
 				document.getElementById("gameState").innerHTML = data.content;
@@ -588,7 +584,6 @@ function updateFunction(account, gameno) {
 	request.send();
 	request.onreadystatechange = function() {
 		if (request.readyState === 4 && request.status === 200) {
-			alert(request.responseText);
 			var data = JSON.parse(request.responseText);
 			if (data.message == 'Success') {
 				document.getElementById("gameState").innerHTML = data.content;
@@ -619,7 +614,6 @@ function updateTime(account, gameno) {
 	request.send(data);
 	request.onreadystatechange = function() {
 		if (request.readyState === 4 && request.status === 200) {
-			alert(request.responseText);
 			var data = JSON.parse(request.responseText);
 			if (data.message == 'Success') {
 				alert("成功更新");
