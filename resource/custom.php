@@ -817,7 +817,7 @@ function arrange($rank1, $rank2, $rank3) {
 		if (count($rank3)) {
 			array_push($up, array_shift($rank3));
 		}
-		else {
+		elseif (count($rank2)) {
 			array_push($up, array_shift($rank2));
 		}
 	}
