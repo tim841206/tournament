@@ -1,4 +1,6 @@
 <?php
+include_once("resource/custom.php");
+
 $account = $_COOKIE['account'];
 $gameno = $_POST['gameno'];
 $gamenm = $_POST['gamenm'];
@@ -41,17 +43,17 @@ else {
 	$content = '<table><tr><td>單位</td><td>名稱</td></tr>';
 	for ($i = 1; $i <= $roundAmount; $i++) {
 		if (in_array($i, $arrange)) {
-			$content .= '<tr><td></td><td>Bye</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+			$content .= getTreeTable($i, 2, array('', 'Bye'), array('', ''));
 		}
 		else {
 			if ($playtype == 'A') {
-				$content .= '<tr><td><input type="text" id="unit'.$i.'"></td><td><input type="text" id="name'.$i.'"></td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+				$content .= getTreeTable($i, 2, array('<input type="text" id="unit'.$i.'">', '<input type="text" id="name'.$i.'">'), array('', ''));
 			}
 			elseif ($playtype == 'B') {
-				$content .= '<tr><td><input type="text" id="unit'.$i.'u"></td><td><input type="text" id="name'.$i.'u"></td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td><input type="text" id="unit'.$i.'d"></td><td><input type="text" id="name'.$i.'d"></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+				$content .= getTreeTable($i, 2, array('<input type="text" id="unit'.$i.'u">', '<input type="text" id="name'.$i.'u">'), array('<input type="text" id="unit'.$i.'d">', '<input type="text" id="name'.$i.'d">'));
 			}
 			elseif ($playtype == 'C') {
-				$content .= '<tr><td><input type="text" id="unit'.$i.'"></td><td></td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+				$content .= getTreeTable($i, 2, array('<input type="text" id="unit'.$i.'">', ''), array('', ''));
 			}
 		}
 	}

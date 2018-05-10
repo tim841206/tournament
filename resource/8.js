@@ -23,6 +23,23 @@ while (bound >= 1) {
 	layer = layer + 1;
 }
 // layer 4
-if (document.getElementById("p8_4").classList.length == 0) {
-	document.getElementById("p8_4").classList.add("b");
+var final_start = start/2 + 1;
+var final_end = start/2*3;
+for (c = final_start; c <= final_end; c++) {
+	if (document.getElementById("p"+c+"_"+layer).classList.length == 0) {
+		if (c == final_start) {
+			document.getElementById("p"+c+"_"+layer).classList.add("t-r");	
+		}
+		else if (c == final_end) {
+			document.getElementById("p"+c+"_"+layer).classList.add("b-r");	
+		}
+		else {
+			document.getElementById("p"+c+"_"+layer).classList.add("r");
+		}
+	}
+}
+layer = layer + 1;
+// layer 5
+if (document.getElementById("p"+start+"_"+layer).classList.length == 0) {
+	document.getElementById("p"+start+"_"+layer).classList.add("b");
 }

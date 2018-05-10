@@ -1,6 +1,42 @@
 <?php
 include_once("database.php");
 
+function getTreeTable($row, $type, $first, $second) {
+	$content = '';
+	if ($type == 1) {
+		$content .= '<tr><td id="unit'.$row.'">'.$first[0].'</td><td>'.$first[1].'</td>';
+		for ($a = 1; $a <= 9; $a++) {
+			$content .= '<td id="p'.($row*2-1).'_'.$a.'"></td>';
+		}
+		$content .= '</tr><tr><td>'.$second[0].'</td><td>'.$second[1].'</td>';
+		for ($b = 1; $b <= 9; $b++) {
+			$content .= '<td id="p'.($row*2).'_'.$b.'"></td>';
+		}
+	}
+	elseif ($type == 2) {
+		$content .= '<tr><td>'.$first[0].'</td><td>'.$first[1].'</td>';
+		for ($a = 1; $a <= 9; $a++) {
+			$content .= '<td id="p'.($row*2-1).'_'.$a.'"></td>';
+		}
+		$content .= '</tr><tr><td>'.$second[0].'</td><td>'.$second[1].'</td>';
+		for ($b = 1; $b <= 9; $b++) {
+			$content .= '<td id="p'.($row*2).'_'.$b.'"></td>';
+		}
+	}
+	elseif ($type == 3) {
+		$content .= '<tr><td id="unit'.$row.'">'.$first[0].'</td>';
+		for ($a = 1; $a <= 9; $a++) {
+			$content .= '<td id="p'.($row*2-1).'_'.$a.'"></td>';
+		}
+		$content .= '</tr><tr><td>'.$second[0].'</td>';
+		for ($b = 1; $b <= 9; $b++) {
+			$content .= '<td id="p'.($row*2).'_'.$b.'"></td>';
+		}
+	}
+	$content .= '</tr>';
+	return $content;
+}
+
 function makePublic($account, $gameno) {
 	$type = getGametype($account, $gameno);
 	$start = ($type == 'A') ? '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>電子化賽程系統</title><link rel="stylesheet" type="text/css" href="resource/custom.css"></head><body>' : '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>電子化賽程系統</title><link rel="stylesheet" type="text/css" href="resource/tournament.css"><link rel="stylesheet" type="text/css" href="resource/custom.css"></head><body>';
@@ -34,15 +70,15 @@ function publicContent($account, $gameno) {
 	for ($i = 1; $i <= pow(2, ceil(log($amount, 2))); $i++) {
 		if ($playtype == 'A') {
 			$query = queryContentSingle($account, $gameno, $i);
-			$content .= '<tr><td>'.processUnit($query['unit']).'</td><td>'.processName($query['name']).'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+			$content .= getTreeTable($i, 2, array(processUnit($query['unit']), processName($query['name'])), array('', ''));
 		}
 		elseif ($playtype == 'B') {
 			$query = queryContentDouble($account, $gameno, $i);
-			$content .= '<tr><td>'.processUnit($query['unitu']).'</td><td>'.processName($query['nameu']).'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td>'.processUnit($query['unitd']).'</td><td>'.processName($query['named']).'</td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+			$content .= getTreeTable($i, 2, array(processUnit($query['unitu']), processName($query['nameu'])), array(processUnit($query['unitd']), processName($query['named'])));
 		}
 		elseif ($playtype == 'C') {
 			$query = queryContentGroup($account, $gameno, $i);
-			$content .= '<tr><td>'.processName($query).'</td><td></td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+			$content .= getTreeTable($i, 2, array(processName($query), ''), array('', ''));
 		}
 	}
 	$content = setPlayNo($account, $gameno, $content, $amount);
@@ -57,15 +93,15 @@ function editContent($account, $gameno) {
 	for ($i = 1; $i <= pow(2, ceil(log($amount, 2))); $i++) {
 		if ($playtype == 'A') {
 			$query = queryContentSingle($account, $gameno, $i);
-			$content .= '<tr><td>'.processUnit($query['unit']).'</td><td>'.processName($query['name']).'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+			$content .= getTreeTable($i, 2, array(processUnit($query['unit']), processName($query['name'])), array('', ''));
 		}
 		elseif ($playtype == 'B') {
 			$query = queryContentDouble($account, $gameno, $i);
-			$content .= '<tr><td>'.processUnit($query['unitu']).'</td><td>'.processName($query['nameu']).'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td>'.processUnit($query['unitd']).'</td><td>'.processName($query['named']).'</td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+			$content .= getTreeTable($i, 2, array(processUnit($query['unitu']), processName($query['nameu'])), array(processUnit($query['unitd']), processName($query['named'])));
 		}
 		elseif ($playtype == 'C') {
 			$query = queryContentGroup($account, $gameno, $i);
-			$content .= '<tr><td>'.processName($query).'</td><td></td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+			$content .= getTreeTable($i, 2, array(processName($query), ''), array('', ''));
 		}
 	}
 	$content = setPlayNo($account, $gameno, $content, $amount);
@@ -371,59 +407,59 @@ function cyclePublicContent($account, $gameno) {
 		$state = queryState($account, $gameno, 3*$gap+ceil($i/2));
 		if ($playtype == 'A') {
 			if (empty($state['above'])) {
-				$content .= '<tr><td id="unit'.$i.'">'.array_pop($up).'</td><td></td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+				$content .= getTreeTable($i, 1, array(array_pop($up), ''), array('', ''));
 			}
 			else {
 				$omit = array_pop($up);
 				$query = queryContentSingle($account, $gameno, $state['above']);
-				$content .= '<tr><td id="unit'.$i.'">'.$query['unit'].'</td><td>'.$query['name'].'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+				$content .= getTreeTable($i, 1, array($query['unit'], $query['name']), array('', ''));
 			}
 			$i++;
 			if (empty($state['below'])) {
-				$content .= '<tr><td id="unit'.$i.'">'.array_pop($up).'</td><td></td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+				$content .= getTreeTable($i, 1, array(array_pop($up), ''), array('', ''));
 			}
 			else {
 				$omit = array_pop($up);
 				$query = queryContentSingle($account, $gameno, $state['below']);
-				$content .= '<tr><td id="unit'.$i.'">'.$query['unit'].'</td><td>'.$query['name'].'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+				$content .= getTreeTable($i, 1, array($query['unit'], $query['name']), array('', ''));
 			}
 		}
 		elseif ($playtype == 'B') {
 			if (empty($state['above'])) {
-				$content .= '<tr><td id="unit'.$i.'">'.array_pop($up).'</td><td></td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+				$content .= getTreeTable($i, 1, array(array_pop($up), ''), array('', ''));
 			}
 			else {
 				$omit = array_pop($up);
 				$query = queryContentDouble($account, $gameno, $state['above']);
-				$content .= '<tr><td id="unit'.$i.'">'.$query['unitu'].'</td><td>'.$query['nameu'].'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td>'.$query['unitd'].'</td><td>'.$query['named'].'</td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+				$content .= getTreeTable($i, 1, array($query['unitu'], $query['nameu']), array($query['unitd'], $query['named']));
 			}
 			$i++;
 			if (empty($state['below'])) {
-				$content .= '<tr><td id="unit'.$i.'">'.array_pop($up).'</td><td></td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+				$content .= getTreeTable($i, 1, array(array_pop($up), ''), array('', ''));
 			}
 			else {
 				$omit = array_pop($up);
 				$query = queryContentDouble($account, $gameno, $state['below']);
-				$content .= '<tr><td id="unit'.$i.'">'.$query['unitu'].'</td><td>'.$query['nameu'].'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td>'.$query['unitd'].'</td><td>'.$query['named'].'</td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+				$content .= getTreeTable($i, 1, array($query['unitu'], $query['nameu']), array($query['unitd'], $query['named']));
 			}
 		}
 		elseif ($playtype == 'C') {
 			if (empty($state['above'])) {
-				$content .= '<tr><td id="unit'.$i.'">'.array_pop($up).'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+				$content .= getTreeTable($i, 3, array(array_pop($up)), array(''));
 			}
 			else {
 				$omit = array_pop($up);
 				$query = queryContentGroup($account, $gameno, $state['above']);
-				$content .= '<tr><td id="unit'.$i.'">'.$query.'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+				$content .= getTreeTable($i, 3, array($query), array(''));
 			}
 			$i++;
 			if (empty($state['below'])) {
-				$content .= '<tr><td id="unit'.$i.'">'.array_pop($up).'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+				$content .= getTreeTable($i, 3, array(array_pop($up)), array(''));
 			}
 			else {
 				$omit = array_pop($up);
 				$query = queryContentGroup($account, $gameno, $state['below']);
-				$content .= '<tr><td id="unit'.$i.'">'.$query.'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+				$content .= getTreeTable($i, 3, array($query), array(''));
 			}
 		}
 	}
@@ -729,59 +765,59 @@ function cycleEditContent($account, $gameno) {
 		$state = queryState($account, $gameno, 3*$gap+ceil($i/2));
 		if ($playtype == 'A') {
 			if (empty($state['above'])) {
-				$content .= '<tr><td id="unit'.$i.'">'.array_pop($up).'</td><td></td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+				$content .= getTreeTable($i, 1, array(array_pop($up), ''), array('', ''));
 			}
 			else {
 				$omit = array_pop($up);
 				$query = queryContentSingle($account, $gameno, $state['above']);
-				$content .= '<tr><td id="unit'.$i.'">'.$query['unit'].'</td><td>'.$query['name'].'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+				$content .= getTreeTable($i, 1, array($query['unit'], $query['name']), array('', ''));
 			}
 			$i++;
 			if (empty($state['below'])) {
-				$content .= '<tr><td id="unit'.$i.'">'.array_pop($up).'</td><td></td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+				$content .= getTreeTable($i, 1, array(array_pop($up), ''), array('', ''));
 			}
 			else {
 				$omit = array_pop($up);
 				$query = queryContentSingle($account, $gameno, $state['below']);
-				$content .= '<tr><td id="unit'.$i.'">'.$query['unit'].'</td><td>'.$query['name'].'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+				$content .= getTreeTable($i, 1, array($query['unit'], $query['name']), array('', ''));
 			}
 		}
 		elseif ($playtype == 'B') {
 			if (empty($state['above'])) {
-				$content .= '<tr><td id="unit'.$i.'">'.array_pop($up).'</td><td></td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+				$content .= getTreeTable($i, 1, array(array_pop($up), ''), array('', ''));
 			}
 			else {
 				$omit = array_pop($up);
 				$query = queryContentDouble($account, $gameno, $state['above']);
-				$content .= '<tr><td id="unit'.$i.'">'.$query['unitu'].'</td><td>'.$query['nameu'].'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td>'.$query['unitd'].'</td><td>'.$query['named'].'</td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+				$content .= getTreeTable($i, 1, array($query['unitu'], $query['nameu']), array($query['unitd'], $query['named']));
 			}
 			$i++;
 			if (empty($state['below'])) {
-				$content .= '<tr><td id="unit'.$i.'">'.array_pop($up).'</td><td></td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+				$content .= getTreeTable($i, 1, array(array_pop($up), ''), array('', ''));
 			}
 			else {
 				$omit = array_pop($up);
 				$query = queryContentDouble($account, $gameno, $state['below']);
-				$content .= '<tr><td id="unit'.$i.'">'.$query['unitu'].'</td><td>'.$query['nameu'].'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td>'.$query['unitd'].'</td><td>'.$query['named'].'</td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+				$content .= getTreeTable($i, 1, array($query['unitu'], $query['nameu']), array($query['unitd'], $query['named']));
 			}
 		}
 		elseif ($playtype == 'C') {
 			if (empty($state['above'])) {
-				$content .= '<tr><td id="unit'.$i.'">'.array_pop($up).'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+				$content .= getTreeTable($i, 2, array(array_pop($up)), array(''));
 			}
 			else {
 				$omit = array_pop($up);
 				$query = queryContentGroup($account, $gameno, $state['above']);
-				$content .= '<tr><td id="unit'.$i.'">'.$query.'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+				$content .= getTreeTable($i, 2, array($query), array(''));
 			}
 			$i++;
 			if (empty($state['below'])) {
-				$content .= '<tr><td id="unit'.$i.'">'.array_pop($up).'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+				$content .= getTreeTable($i, 2, array(array_pop($up)), array(''));
 			}
 			else {
 				$omit = array_pop($up);
 				$query = queryContentGroup($account, $gameno, $state['below']);
-				$content .= '<tr><td id="unit'.$i.'">'.$query.'</td><td id="p'.($i*2-1).'_1"></td><td id="p'.($i*2-1).'_2"></td><td id="p'.($i*2-1).'_3"></td><td id="p'.($i*2-1).'_4"></td><td id="p'.($i*2-1).'_5"></td><td id="p'.($i*2-1).'_6"></td><td id="p'.($i*2-1).'_7"></td><td id="p'.($i*2-1).'_8"></td></tr><tr><td></td><td id="p'.($i*2).'_1"></td><td id="p'.($i*2).'_2"></td><td id="p'.($i*2).'_3"></td><td id="p'.($i*2).'_4"></td><td id="p'.($i*2).'_5"></td><td id="p'.($i*2).'_6"></td><td id="p'.($i*2).'_7"></td><td id="p'.($i*2).'_8"></td></tr>';
+				$content .= getTreeTable($i, 2, array($query), array(''));
 			}
 		}
 	}
@@ -1121,12 +1157,26 @@ function updateGameState($account, $gameno) {
 	$next = 2;
 	$middle = $roundAmount / 2 + 1;
 	while ($middle < $roundAmount) {
-		$sql1 = mysql_query("SELECT WINNER FROM GAMESTATE WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO='$start'");
+		$sql1 = mysql_query("SELECT * FROM GAMESTATE WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO='$start'");
 		$fetch1 = mysql_fetch_array($sql1);
-		$above = $fetch1['WINNER'];
-		$sql2 = mysql_query("SELECT WINNER FROM GAMESTATE WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO='$next'");
+		$sql2 = mysql_query("SELECT * FROM GAMESTATE WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO='$next'");
 		$fetch2 = mysql_fetch_array($sql2);
-		$below = $fetch2['WINNER'];
+		if ($fetch1['ABOVESCORE'] > $fetch1['BELOWSCORE']) {
+			$above = $fetch1['ABOVE'];
+			mysql_query("UPDATE GAMESTATE SET WINNER=ABOVE WHERE GAMENO='$gameno' AND SYSTEMPLAYNO='$start'");
+		}
+		elseif ($fetch1['ABOVESCORE'] < $fetch1['BELOWSCORE']) {
+			$above = $fetch1['BELOW'];
+			mysql_query("UPDATE GAMESTATE SET WINNER=BELOW WHERE GAMENO='$gameno' AND SYSTEMPLAYNO='$start'");
+		}
+		if ($fetch2['ABOVESCORE'] > $fetch2['BELOWSCORE']) {
+			$below = $fetch2['ABOVE'];
+			mysql_query("UPDATE GAMESTATE SET WINNER=ABOVE WHERE GAMENO='$gameno' AND SYSTEMPLAYNO='$next'");
+		}
+		elseif ($fetch2['ABOVESCORE'] < $fetch2['BELOWSCORE']) {
+			$below = $fetch2['BELOW'];
+			mysql_query("UPDATE GAMESTATE SET WINNER=BELOW WHERE GAMENO='$gameno' AND SYSTEMPLAYNO='$next'");
+		}
 		mysql_query("UPDATE GAMESTATE SET ABOVE='$above', BELOW='$below' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO='$middle'");
 		$start += 2;
 		$next += 2;
@@ -1381,6 +1431,36 @@ function updateCycleGameState($account, $gameno) {
 		$above = array_pop($up);
 		$below = array_pop($up);
 		mysql_query("UPDATE GAMESTATE SET ABOVE='$above', BELOW='$below' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO='$playno'");
+	}
+	$roundAmount = 3*$gap + $distribute['round'];
+	$start = 3*$gap + 1;
+	$next = 3*$gap + 2;
+	$middle = 3*$gap + $distribute['round'] / 2 + 1;
+	while ($middle < $roundAmount) {
+		$sql1 = mysql_query("SELECT * FROM GAMESTATE WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO='$start'");
+		$fetch1 = mysql_fetch_array($sql1);
+		$sql2 = mysql_query("SELECT * FROM GAMESTATE WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO='$next'");
+		$fetch2 = mysql_fetch_array($sql2);
+		if ($fetch1['ABOVESCORE'] > $fetch1['BELOWSCORE']) {
+			$above = $fetch1['ABOVE'];
+			mysql_query("UPDATE GAMESTATE SET WINNER=ABOVE WHERE GAMENO='$gameno' AND SYSTEMPLAYNO='$start'");
+		}
+		elseif ($fetch1['ABOVESCORE'] < $fetch1['BELOWSCORE']) {
+			$above = $fetch1['BELOW'];
+			mysql_query("UPDATE GAMESTATE SET WINNER=BELOW WHERE GAMENO='$gameno' AND SYSTEMPLAYNO='$start'");
+		}
+		if ($fetch2['ABOVESCORE'] > $fetch2['BELOWSCORE']) {
+			$below = $fetch2['ABOVE'];
+			mysql_query("UPDATE GAMESTATE SET WINNER=ABOVE WHERE GAMENO='$gameno' AND SYSTEMPLAYNO='$next'");
+		}
+		elseif ($fetch2['ABOVESCORE'] < $fetch2['BELOWSCORE']) {
+			$below = $fetch2['BELOW'];
+			mysql_query("UPDATE GAMESTATE SET WINNER=BELOW WHERE GAMENO='$gameno' AND SYSTEMPLAYNO='$next'");
+		}
+		mysql_query("UPDATE GAMESTATE SET ABOVE='$above', BELOW='$below' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO='$middle'");
+		$start += 2;
+		$next += 2;
+		$middle += 1;
 	}
 }
 

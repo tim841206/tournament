@@ -45,7 +45,7 @@
 }
 
 .separater {
-	width: 42px;
+	width: 10px;
 	display: inline-block;
 }
 
@@ -59,7 +59,8 @@
 }
 
 .name {
-	width: 44px;
+	width: 58px;
+	font-size: 14px;
 	outline: none;
 	display: inline-block;
 	text-align: center;

@@ -528,6 +528,7 @@ function update(gameno) {
 	var request = new XMLHttpRequest();
 	request.open("POST", "update.php");
 	var data = "gameno=" + gameno + "&above=" + above + "&below=" + below;
+	alert(data);
 	request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	request.send(data);
 	request.onreadystatechange = function() {
