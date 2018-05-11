@@ -656,18 +656,18 @@ function cycleEditContent($account, $gameno) {
 			$triangle = str_replace('[pos1]', $pos, $triangle);
 			$triangle = str_replace('[pos2]', $pos+1, $triangle);
 			$triangle = str_replace('[pos3]', $pos+2, $triangle);
-			$triangle = str_replace('[unit'.$pos.']u', $query1['unitu'], $triangle);
-			$triangle = str_replace('[unit'.$pos.']d', $query1['unitd'], $triangle);
-			$triangle = str_replace('[name'.$pos.']u', $query1['nameu'], $triangle);
-			$triangle = str_replace('[name'.$pos.']d', $query1['named'], $triangle);
-			$triangle = str_replace('[unit'.($pos+1).']u', $query2['unitu'], $triangle);
-			$triangle = str_replace('[unit'.($pos+1).']d', $query2['unitd'], $triangle);
-			$triangle = str_replace('[name'.($pos+1).']u', $query2['nameu'], $triangle);
-			$triangle = str_replace('[name'.($pos+1).']d', $query2['named'], $triangle);
-			$triangle = str_replace('[unit'.($pos+2).']u', $query3['unitu'], $triangle);
-			$triangle = str_replace('[unit'.($pos+2).']d', $query3['unitd'], $triangle);
-			$triangle = str_replace('[name'.($pos+2).']u', $query3['nameu'], $triangle);
-			$triangle = str_replace('[name'.($pos+2).']d', $query3['named'], $triangle);
+			$triangle = str_replace('[unit'.$pos.'u]', $query1['unitu'], $triangle);
+			$triangle = str_replace('[unit'.$pos.'d]', $query1['unitd'], $triangle);
+			$triangle = str_replace('[name'.$pos.'u]', $query1['nameu'], $triangle);
+			$triangle = str_replace('[name'.$pos.'d]', $query1['named'], $triangle);
+			$triangle = str_replace('[unit'.($pos+1).'u]', $query2['unitu'], $triangle);
+			$triangle = str_replace('[unit'.($pos+1).'d]', $query2['unitd'], $triangle);
+			$triangle = str_replace('[name'.($pos+1).'u]', $query2['nameu'], $triangle);
+			$triangle = str_replace('[name'.($pos+1).'d]', $query2['named'], $triangle);
+			$triangle = str_replace('[unit'.($pos+2).'u]', $query3['unitu'], $triangle);
+			$triangle = str_replace('[unit'.($pos+2).'d]', $query3['unitd'], $triangle);
+			$triangle = str_replace('[name'.($pos+2).'u]', $query3['nameu'], $triangle);
+			$triangle = str_replace('[name'.($pos+2).'d]', $query3['named'], $triangle);
 		}
 		elseif ($playtype == 'C') {
 			$query1 = queryContentGroup($account, $gameno, $pos);
@@ -715,18 +715,18 @@ function cycleEditContent($account, $gameno) {
 			$triangle = str_replace('[pos1]', $pos, $triangle);
 			$triangle = str_replace('[pos2]', $pos+1, $triangle);
 			$triangle = str_replace('[pos3]', $pos+2, $triangle);
-			$triangle = str_replace('[unit'.$pos.']u', $query1['unitu'], $triangle);
-			$triangle = str_replace('[unit'.$pos.']d', $query1['unitd'], $triangle);
-			$triangle = str_replace('[name'.$pos.']u', $query1['nameu'], $triangle);
-			$triangle = str_replace('[name'.$pos.']d', $query1['named'], $triangle);
-			$triangle = str_replace('[unit'.($pos+1).']u', $query2['unitu'], $triangle);
-			$triangle = str_replace('[unit'.($pos+1).']d', $query2['unitd'], $triangle);
-			$triangle = str_replace('[name'.($pos+1).']u', $query2['nameu'], $triangle);
-			$triangle = str_replace('[name'.($pos+1).']d', $query2['named'], $triangle);
-			$triangle = str_replace('[unit'.($pos+2).']u', $query3['unitu'], $triangle);
-			$triangle = str_replace('[unit'.($pos+2).']d', $query3['unitd'], $triangle);
-			$triangle = str_replace('[name'.($pos+2).']u', $query3['nameu'], $triangle);
-			$triangle = str_replace('[name'.($pos+2).']d', $query3['named'], $triangle);
+			$triangle = str_replace('[unit'.$pos.'u]', $query1['unitu'], $triangle);
+			$triangle = str_replace('[unit'.$pos.'d]', $query1['unitd'], $triangle);
+			$triangle = str_replace('[name'.$pos.'u]', $query1['nameu'], $triangle);
+			$triangle = str_replace('[name'.$pos.'d]', $query1['named'], $triangle);
+			$triangle = str_replace('[unit'.($pos+1).'u]', $query2['unitu'], $triangle);
+			$triangle = str_replace('[unit'.($pos+1).'d]', $query2['unitd'], $triangle);
+			$triangle = str_replace('[name'.($pos+1).'u]', $query2['nameu'], $triangle);
+			$triangle = str_replace('[name'.($pos+1).'d]', $query2['named'], $triangle);
+			$triangle = str_replace('[unit'.($pos+2).'u]', $query3['unitu'], $triangle);
+			$triangle = str_replace('[unit'.($pos+2).'d]', $query3['unitd'], $triangle);
+			$triangle = str_replace('[name'.($pos+2).'u]', $query3['nameu'], $triangle);
+			$triangle = str_replace('[name'.($pos+2).'d]', $query3['named'], $triangle);
 		}
 		elseif ($playtype == 'C') {
 			$query1 = queryContentGroup($account, $gameno, $pos);
