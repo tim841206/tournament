@@ -5,10 +5,10 @@ include_once("TCPDF/tcpdf.php");
 
 $account = $_GET['account'];
 $gameno = $_GET['gameno'];
-$name = $_GET['name'];
-output($account, $gameno, $name);
+output($account, $gameno);
 
-function output($account, $gameno, $name) {
+function output($account, $gameno) {
+	$name = getGamename($account, $gameno);
 	$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 	$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
 	$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));

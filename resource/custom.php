@@ -965,6 +965,12 @@ function getPlaytype($account, $gameno) {
 	return $fetch[0];
 }
 
+function getGamename($account, $gameno) {
+	$sql = mysql_query("SELECT GAMENM FROM GAMEMAIN WHERE USERNO='$account' AND GAMENO='$gameno'");
+	$fetch = mysql_fetch_row($sql);
+	return $fetch[0];
+}
+
 function translatePlaytype($playtype) {
 	if ($playtype == 'A') return "單打";
 	elseif ($playtype == 'B') return "雙打";
@@ -1517,7 +1523,7 @@ function makeGame($account, $gameno) {
 	fclose($file);
 	$start = '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>電子化賽程系統</title><script src="resource/custom.js"></script></head><body>';
 	$content = '<p id="gameState"></p>';
-	$end = '</body><button onclick="location.assign(\'resource/output.php?account='.$account.'&gameno='.$gameno.'&name=123\')">輸出主審單</button><script>updateFunction(\''.$account.'\', \''.$gameno.'\')</script></html>';
+	$end = '</body><button onclick="location.assign(\'resource/output.php?account='.$account.'&gameno='.$gameno.'\')">輸出主審單</button><script>updateFunction(\''.$account.'\', \''.$gameno.'\')</script></html>';
 	$file = fopen($account.'/'.$gameno."/function.html", "w");
 	fwrite($file, $start.$content.$end);
 	fclose($file);
