@@ -263,7 +263,7 @@ else {
 			$index += 3;
 			$game++;
 		}
-		for ($i = 1; $i < $distribute['round']; $i++) {
+		for ($i = 1; $i <= $distribute['round']; $i++) {
 			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO) VALUES ('$account', '$gameno', 3*$gap+$i, 3*$gap+$i)");
 		}
 		if (!is_dir($account.'/'.$gameno)) {
@@ -489,7 +489,7 @@ else {
 			$index += 3;
 			$game++;
 		}
-		for ($i = 1; $i < $distribute['round']; $i++) {
+		for ($i = 1; $i <= $distribute['round']; $i++) {
 			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, PLAYNO, SYSTEMPLAYNO) VALUES ('$account', '$gameno', 3*$gap+$i, 3*$gap+$i)");
 		}
 		makePublic($account, $gameno);

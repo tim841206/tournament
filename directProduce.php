@@ -121,7 +121,7 @@ else {
 				}
 			}
 		}
-		for ($i = $roundAmount/2+1; $i < $roundAmount; $i++) {
+		for ($i = $roundAmount/2+1; $i <= $roundAmount; $i++) {
 			mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
 			$index++;
 		}
@@ -179,7 +179,7 @@ else {
 				}
 			}
 		}
-		for ($i = $roundAmount/2+1; $i < $roundAmount; $i++) {
+		for ($i = $roundAmount/2+1; $i <= $roundAmount; $i++) {
 			mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
 			$index++;
 		}

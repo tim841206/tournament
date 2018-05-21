@@ -39,7 +39,7 @@ function getTreeTable($row, $type, $first, $second) {
 
 function makePublic($account, $gameno) {
 	$type = getGametype($account, $gameno);
-	$start = ($type == 'A') ? '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>電子化賽程系統</title><link rel="stylesheet" type="text/css" href="resource/custom.css"></head><body>' : '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>電子化賽程系統</title><link rel="stylesheet" type="text/css" href="resource/tournament.css"><link rel="stylesheet" type="text/css" href="resource/custom.css"></head><body>';
+	$start = '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>電子化賽程系統</title><link rel="stylesheet" type="text/css" href="resource/tournament.css"><link rel="stylesheet" type="text/css" href="resource/custom.css"></head><body>';
 	$content = ($type == 'A') ? publicContent($account, $gameno) : cyclePublicContent($account, $gameno);
 	$amount = getAmount($account, $gameno);
 	$distribute = distribute($amount);
@@ -52,7 +52,7 @@ function makePublic($account, $gameno) {
 
 function makeEdit($account, $gameno) {
 	$type = getGametype($account, $gameno);
-	$start = ($type == 'A') ? '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>電子化賽程系統</title><link rel="stylesheet" type="text/css" href="resource/custom.css"></head><body>' : '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>電子化賽程系統</title><link rel="stylesheet" type="text/css" href="resource/tournament.css"><link rel="stylesheet" type="text/css" href="resource/custom.css"></head><body>';
+	$start = '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>電子化賽程系統</title><link rel="stylesheet" type="text/css" href="resource/tournament.css"><link rel="stylesheet" type="text/css" href="resource/custom.css"></head><body>';
 	$content = ($type == 'A') ? editContent($account, $gameno) : cycleEditContent($account, $gameno);
 	$amount = getAmount($account, $gameno);
 	$distribute = distribute($amount);
@@ -873,7 +873,7 @@ function setPlayNo($account, $gameno, $content, $amount) {
 	$sql = mysql_query("SELECT * FROM GAMESTATE WHERE USERNO='$account' AND GAMENO='$gameno'");
 	while ($fetch = mysql_fetch_array($sql)) {
 		$position = playNoPosition($fetch['SYSTEMPLAYNO'], $amount);
-		$content = str_replace('<td id="p'.$position.'">', '<td id="p'.$position.'" align="right">'.$fetch['PLAYNO'], $content);
+		$content = str_replace('id="p'.$position.'">', 'align="right" id="p'.$position.'">'.$fetch['PLAYNO'], $content);
 	}
 	return $content;
 }
@@ -885,7 +885,7 @@ function cycleSetPlayNo($account, $gameno, $content, $amount) {
 	while ($fetch = mysql_fetch_array($sql)) {
 		if ($fetch['SYSTEMPLAYNO'] > $gap) {
 			$position = playNoPosition($fetch['SYSTEMPLAYNO'] - $gap, $amount);
-			$content = str_replace('<td id="p'.$position.'">', '<td id="p'.$position.'" align="right">'.$fetch['PLAYNO'], $content);
+			$content = str_replace('id="p'.$position.'">', 'align="right" id="p'.$position.'">'.$fetch['PLAYNO'], $content);
 		}
 	}
 	return $content;
@@ -893,15 +893,23 @@ function cycleSetPlayNo($account, $gameno, $content, $amount) {
 
 function playNoPosition($playno, $amount) {
 	$bound = pow(2, ceil(log($amount, 2))-1);
+	$adjust = 0;
+	if ($playno == 2 * $bound) {
+		$playno -= 1;
+		$adjust = 1;
+	}
 	$layer = 1;
 	$times = 4;
 	while ($playno > $bound) {
-		$playno = $playno - $bound;
-		$bound = $bound / 2;
-		$times = $times * 2;
-		$layer = $layer + 1;
+		$playno -= $bound;
+		$bound /= 2;
+		$times *= 2;
+		$layer += 1;
 	}
 	$pos = $playno * $times - $times / 2;
+	if ($adjust == 1) {
+		$layer += 1;
+	}
 	return $pos.'_'.$layer;
 }
 
@@ -910,8 +918,8 @@ function setScoreInput($account, $gameno, $content, $amount) {
 	while ($fetch = mysql_fetch_array($sql)) {
 		$scoreInput = scoreInputPosition($fetch['SYSTEMPLAYNO'], $amount);
 		if (!empty($fetch['PLAYNO'])) {
-			$content = str_replace('<td id="p'.$scoreInput['above'].'">', '<td id="p'.$scoreInput['above'].'"><input type="text" id="'.$fetch['PLAYNO'].'_above">', $content);
-			$content = str_replace('<td id="p'.$scoreInput['below'].'">', '<td id="p'.$scoreInput['below'].'"><input type="text" id="'.$fetch['PLAYNO'].'_below">', $content);
+			$content = str_replace('id="p'.$scoreInput['above'].'">', 'id="p'.$scoreInput['above'].'"><input class="score" style="float: left;" type="text" id="'.$fetch['PLAYNO'].'_above">', $content);
+			$content = str_replace('id="p'.$scoreInput['below'].'">', 'id="p'.$scoreInput['below'].'"><input class="score" style="float: left;" type="text" id="'.$fetch['PLAYNO'].'_below">', $content);
 		}
 	}
 	return $content;
@@ -924,8 +932,8 @@ function cycleSetScoreInput($account, $gameno, $content, $amount) {
 	while ($fetch = mysql_fetch_array($sql)) {
 		if ($fetch['SYSTEMPLAYNO'] > $gap) {
 			$scoreInput = scoreInputPosition($fetch['SYSTEMPLAYNO'] - $gap, $amount);
-			$content = str_replace('<td id="p'.$scoreInput['above'].'">', '<td id="p'.$scoreInput['above'].'"><input type="text" id="'.$fetch['PLAYNO'].'_above">', $content);
-			$content = str_replace('<td id="p'.$scoreInput['below'].'">', '<td id="p'.$scoreInput['below'].'"><input type="text" id="'.$fetch['PLAYNO'].'_below">', $content);
+			$content = str_replace('id="p'.$scoreInput['above'].'">', 'id="p'.$scoreInput['above'].'"><input class="score" style="float: left;" type="text" id="'.$fetch['PLAYNO'].'_above">', $content);
+			$content = str_replace('id="p'.$scoreInput['below'].'">', 'id="p'.$scoreInput['below'].'"><input class="score" style="float: left;" type="text" id="'.$fetch['PLAYNO'].'_below">', $content);
 		}
 	}
 	return $content;
@@ -933,6 +941,11 @@ function cycleSetScoreInput($account, $gameno, $content, $amount) {
 
 function scoreInputPosition($playno, $amount) {
 	$bound = pow(2, ceil(log($amount, 2))-1);
+	$adjust = 0;
+	if ($playno == 2 * $bound) {
+		$playno -= 1;
+		$adjust = 1;
+	}
 	$layer = 2;
 	$times = 4;
 	while ($playno > $bound) {
@@ -942,6 +955,9 @@ function scoreInputPosition($playno, $amount) {
 		$layer += 1;
 	}
 	$pos = $playno*$times - $times/2;
+	if ($adjust == 1) {
+		$layer += 1;
+	}
 	$abovePos = $pos.'_'.$layer;
 	$belowPos = ($pos+1).'_'.$layer;
 	return array('above' => $abovePos, 'below' => $belowPos);
@@ -1004,7 +1020,7 @@ function queryState($account, $gameno, $playno) {
 }
 
 function createGameState($account, $gameno, $amount) {
-	for ($i = 1; $i < $amount; $i++) {
+	for ($i = 1; $i <= $amount; $i++) {
 		if ($i <= $amount/2) {
 			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', $i, $i*2-1, $i*2)");
 		}
@@ -1016,6 +1032,11 @@ function createGameState($account, $gameno, $amount) {
 
 function updateAbovePosition($playno, $amount) {
 	$bound = pow(2, ceil(log($amount, 2))-1);
+	$adjust = 0;
+	if ($playno == 2 * $bound) {
+		$playno -= 1;
+		$adjust = 1;
+	}
 	$layer = 1;
 	$times = 4;
 	while ($playno > $bound) {
@@ -1025,6 +1046,9 @@ function updateAbovePosition($playno, $amount) {
 		$layer += 1;
 	}
 	$pos = $playno*$times - $times/2;
+	if ($adjust == 1) {
+		$layer += 1;
+	}
 	$temp = array();
 	array_push($temp, $pos.'_'.$layer);
 	$aboveLength = $times/4 - 1;
@@ -1036,6 +1060,11 @@ function updateAbovePosition($playno, $amount) {
 
 function updateBelowPosition($playno, $amount) {
 	$bound = pow(2, ceil(log($amount, 2))-1);
+	$adjust = 0;
+	if ($playno == 2 * $bound) {
+		$playno -= 1;
+		$adjust = 1;
+	}
 	$layer = 1;
 	$times = 4;
 	while ($playno > $bound) {
@@ -1045,6 +1074,9 @@ function updateBelowPosition($playno, $amount) {
 		$layer += 1;
 	}
 	$pos = $playno*$times - $times/2 + 1;
+	if ($adjust == 1) {
+		$layer += 1;
+	}
 	$temp = array();
 	array_push($temp, $pos.'_'.$layer);
 	$aboveLength = $times/4 - 1;
@@ -1056,22 +1088,22 @@ function updateBelowPosition($playno, $amount) {
 
 function updateAbove($playno, $publicContent, $editContent, $amount) {
 	$updateAbovePosition = updateAbovePosition($playno, $amount);
-	$publicContent = str_replace('<td id="p'.$updateAbovePosition['t-r'].'"', '<td id="p'.$updateAbovePosition['t-r'].'" class="t-r_red"', $publicContent);
-	$editContent = str_replace('<td id="p'.$updateAbovePosition['t-r'].'"', '<td id="p'.$updateAbovePosition['t-r'].'" class="t-r_red"', $editContent);
+	$publicContent = str_replace('id="p'.$updateAbovePosition['t-r'].'"', 'class="t-r_red" id="p'.$updateAbovePosition['t-r'].'"', $publicContent);
+	$editContent = str_replace('id="p'.$updateAbovePosition['t-r'].'"', 'class="t-r_red" id="p'.$updateAbovePosition['t-r'].'"', $editContent);
 	while ($pos = array_pop($updateAbovePosition['r'])) {
-		$publicContent = str_replace('<td id="p'.$pos.'"', '<td id="p'.$pos.'" class="r_red"', $publicContent);
-		$editContent = str_replace('<td id="p'.$pos.'"', '<td id="p'.$pos.'" class="r_red"', $editContent);
+		$publicContent = str_replace('id="p'.$pos.'"', 'class="r_red" id="p'.$pos.'"', $publicContent);
+		$editContent = str_replace('id="p'.$pos.'"', 'class="r_red" id="p'.$pos.'"', $editContent);
 	}
 	return array('public' => $publicContent, 'edit' => $editContent);
 }
 
 function updateBelow($playno, $publicContent, $editContent, $amount) {
 	$updateBelowPosition = updateBelowPosition($playno, $amount);
-	$publicContent = str_replace('<td id="p'.$updateBelowPosition['b-r'].'"', '<td id="p'.$updateBelowPosition['b-r'].'" class="b-r_red"', $publicContent);
-	$editContent = str_replace('<td id="p'.$updateBelowPosition['b-r'].'"', '<td id="p'.$updateBelowPosition['b-r'].'" class="b-r_red"', $editContent);
+	$publicContent = str_replace('id="p'.$updateBelowPosition['b-r'].'"', 'class="b-r_red" id="p'.$updateBelowPosition['b-r'].'"', $publicContent);
+	$editContent = str_replace('id="p'.$updateBelowPosition['b-r'].'"', 'class="b-r_red" id="p'.$updateBelowPosition['b-r'].'"', $editContent);
 	while ($pos = array_pop($updateBelowPosition['r'])) {
-		$publicContent = str_replace('<td id="p'.$pos.'"', '<td id="p'.$pos.'" class="r_red"', $publicContent);
-		$editContent = str_replace('<td id="p'.$pos.'"', '<td id="p'.$pos.'" class="r_red"', $editContent);
+		$publicContent = str_replace('id="p'.$pos.'"', 'class="r_red" id="p'.$pos.'"', $publicContent);
+		$editContent = str_replace('id="p'.$pos.'"', 'class="r_red" id="p'.$pos.'"', $editContent);
 	}
 	return array('public' => $publicContent, 'edit' => $editContent);
 }
@@ -1084,14 +1116,14 @@ function updateGameChart($account, $gameno) {
 		$publicContent = publicContent($account, $gameno);
 		$editContent = editContent($account, $gameno);
 		$roundAmount = pow(2, ceil(log($amount, 2)));
-		for ($i = 1; $i < $roundAmount; $i++) {
+		for ($i = 1; $i <= $roundAmount; $i++) {
 			$state = queryState($account, $gameno, $i);
 			if (!empty($state['aboveScore']) && !empty($state['belowScore'])) {
 				$scoreInput = scoreInputPosition($i, $amount);
-				$publicContent = str_replace('<td id="p'.$scoreInput['above'].'">', '<td id="p'.$scoreInput['above'].'">'.$state['aboveScore'], $publicContent);
-				$publicContent = str_replace('<td id="p'.$scoreInput['below'].'">', '<td id="p'.$scoreInput['below'].'">'.$state['belowScore'], $publicContent);
-				$editContent = str_replace('<input type="text" id="'.$state['playno'].'_above">', '<input type="text" id="'.$state['playno'].'_above" value="'.$state['aboveScore'].'">', $editContent);
-				$editContent = str_replace('<input type="text" id="'.$state['playno'].'_below">', '<input type="text" id="'.$state['playno'].'_below" value="'.$state['belowScore'].'">', $editContent);
+				$publicContent = str_replace('id="p'.$scoreInput['above'].'">', 'id="p'.$scoreInput['above'].'">'.$state['aboveScore'], $publicContent);
+				$publicContent = str_replace('id="p'.$scoreInput['below'].'">', 'id="p'.$scoreInput['below'].'">'.$state['belowScore'], $publicContent);
+				$editContent = str_replace('type="text" id="'.$state['playno'].'_above">', 'type="text" id="'.$state['playno'].'_above" value="'.$state['aboveScore'].'">', $editContent);
+				$editContent = str_replace('type="text" id="'.$state['playno'].'_below">', 'type="text" id="'.$state['playno'].'_below" value="'.$state['belowScore'].'">', $editContent);
 			}
 			if (!empty($state['winner']) && ($state['winner'] == $state['above'])) {
 				$return = updateAbove($i, $publicContent, $editContent, $amount);
@@ -1113,7 +1145,7 @@ function updateGameChart($account, $gameno) {
 		$roundAmount = $distribute['round'];
 		$gap = 3 * ($distribute['3_1'] + $distribute['3_2']) + 6 * ($distribute['4_1'] + $distribute['4_2']);
 		$total = $gap + $roundAmount;
-		for ($i = 1; $i < $total; $i++) {
+		for ($i = 1; $i <= $total; $i++) {
 			$state = queryState($account, $gameno, $i);
 			if ($i <= $gap) {
 				if (!empty($state['aboveScore']) && !empty($state['belowScore'])) {
@@ -1126,10 +1158,10 @@ function updateGameChart($account, $gameno) {
 			else {
 				if (!empty($state['aboveScore']) && !empty($state['belowScore'])) {
 					$scoreInput = scoreInputPosition($i-$gap, $roundAmount);
-					$publicContent = str_replace('<td id="p'.$scoreInput['above'].'">', '<td id="p'.$scoreInput['above'].'">'.$state['aboveScore'], $publicContent);
-					$publicContent = str_replace('<td id="p'.$scoreInput['below'].'">', '<td id="p'.$scoreInput['below'].'">'.$state['belowScore'], $publicContent);
-					$editContent = str_replace('<input type="text" id="'.$state['playno'].'_above">', '<input type="text" id="'.$state['playno'].'_above" value="'.$state['aboveScore'].'">', $editContent);
-					$editContent = str_replace('<input type="text" id="'.$state['playno'].'_below">', '<input type="text" id="'.$state['playno'].'_below" value="'.$state['belowScore'].'">', $editContent);
+					$publicContent = str_replace('id="p'.$scoreInput['above'].'">', 'id="p'.$scoreInput['above'].'">'.$state['aboveScore'], $publicContent);
+					$publicContent = str_replace('id="p'.$scoreInput['below'].'">', 'id="p'.$scoreInput['below'].'">'.$state['belowScore'], $publicContent);
+					$editContent = str_replace('type="text" id="'.$state['playno'].'_above">', 'type="text" id="'.$state['playno'].'_above" value="'.$state['aboveScore'].'">', $editContent);
+					$editContent = str_replace('type="text" id="'.$state['playno'].'_below">', 'type="text" id="'.$state['playno'].'_below" value="'.$state['belowScore'].'">', $editContent);
 				}
 				if (!empty($state['winner']) && ($state['winner'] == $state['above'])) {
 					$return = updateAbove($i-$gap, $publicContent, $editContent, $roundAmount);
