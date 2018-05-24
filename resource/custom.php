@@ -1151,8 +1151,8 @@ function updateGameChart($account, $gameno) {
 				if (!empty($state['aboveScore']) && !empty($state['belowScore'])) {
 					$publicContent = str_replace('id="'.$state['playno'].'_above">', 'id="'.$state['playno'].'_above">'.$state['aboveScore'], $publicContent);
 					$publicContent = str_replace('id="'.$state['playno'].'_below">', 'id="'.$state['playno'].'_below">'.$state['belowScore'], $publicContent);
-					$editContent = str_replace('id="'.$state['playno'].'_above">', 'id="'.$state['playno'].'_above" value="'.$state['aboveScore'].'">', $editContent);
-					$editContent = str_replace('id="'.$state['playno'].'_below">', 'id="'.$state['playno'].'_below" value="'.$state['belowScore'].'">', $editContent);
+					$editContent = str_replace('type="text" id="'.$state['playno'].'_above">', 'type="text" id="'.$state['playno'].'_above" value="'.$state['aboveScore'].'">', $editContent);
+					$editContent = str_replace('type="text" id="'.$state['playno'].'_below">', 'type="text" id="'.$state['playno'].'_below" value="'.$state['belowScore'].'">', $editContent);
 				}
 			}
 			else {
@@ -1178,7 +1178,7 @@ function updateGameChart($account, $gameno) {
 	}
 	unlink($account.'/'.$gameno."/public.html");
 	unlink($account.'/'.$gameno."/edit.html");
-	$start = ($type == 'A') ? '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>電子化賽程系統</title><link rel="stylesheet" type="text/css" href="resource/custom.css"></head><body>' : '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>電子化賽程系統</title><link rel="stylesheet" type="text/css" href="resource/custom.css"><link rel="stylesheet" type="text/css" href="resource/tournament.css"></head><body>';
+	$start = '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>電子化賽程系統</title><link rel="stylesheet" type="text/css" href="resource/custom.css"><link rel="stylesheet" type="text/css" href="resource/tournament.css"></head><body>';
 	$end = '</body><script src="resource/'.$roundAmount.'.js"></script></html>';
 	$file = fopen($account.'/'.$gameno."/public.html", "w");
 	fwrite($file, $start.$publicContent.$end);
