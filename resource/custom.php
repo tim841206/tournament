@@ -1118,7 +1118,7 @@ function updateGameChart($account, $gameno) {
 		$roundAmount = pow(2, ceil(log($amount, 2)));
 		for ($i = 1; $i <= $roundAmount; $i++) {
 			$state = queryState($account, $gameno, $i);
-			if (!empty($state['aboveScore']) && !empty($state['belowScore'])) {
+			if (is_numeric($state['aboveScore']) && is_numeric($state['belowScore'])) {
 				$scoreInput = scoreInputPosition($i, $amount);
 				$publicContent = str_replace('id="p'.$scoreInput['above'].'">', 'id="p'.$scoreInput['above'].'">'.$state['aboveScore'], $publicContent);
 				$publicContent = str_replace('id="p'.$scoreInput['below'].'">', 'id="p'.$scoreInput['below'].'">'.$state['belowScore'], $publicContent);
@@ -1148,7 +1148,7 @@ function updateGameChart($account, $gameno) {
 		for ($i = 1; $i <= $total; $i++) {
 			$state = queryState($account, $gameno, $i);
 			if ($i <= $gap) {
-				if (!empty($state['aboveScore']) && !empty($state['belowScore'])) {
+				if (is_numeric($state['aboveScore']) && is_numeric($state['belowScore'])) {
 					$publicContent = str_replace('id="'.$state['playno'].'_above">', 'id="'.$state['playno'].'_above">'.$state['aboveScore'], $publicContent);
 					$publicContent = str_replace('id="'.$state['playno'].'_below">', 'id="'.$state['playno'].'_below">'.$state['belowScore'], $publicContent);
 					$editContent = str_replace('type="text" id="'.$state['playno'].'_above">', 'type="text" id="'.$state['playno'].'_above" value="'.$state['aboveScore'].'">', $editContent);
@@ -1156,7 +1156,7 @@ function updateGameChart($account, $gameno) {
 				}
 			}
 			else {
-				if (!empty($state['aboveScore']) && !empty($state['belowScore'])) {
+				if (is_numeric($state['aboveScore']) && is_numeric($state['belowScore'])) {
 					$scoreInput = scoreInputPosition($i-$gap, $roundAmount);
 					$publicContent = str_replace('id="p'.$scoreInput['above'].'">', 'id="p'.$scoreInput['above'].'">'.$state['aboveScore'], $publicContent);
 					$publicContent = str_replace('id="p'.$scoreInput['below'].'">', 'id="p'.$scoreInput['below'].'">'.$state['belowScore'], $publicContent);

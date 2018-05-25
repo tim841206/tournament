@@ -15,13 +15,11 @@ $gap = 3 * ($distribute['3_1'] + $distribute['3_2']) + 6 * ($distribute['4_1'] +
 for ($i = 1; $i < count($above); $i++) {
 	$temp_above = $above[$i];
 	$temp_below = $below[$i];
-	if (!empty($temp_above) && !empty($temp_below)) {
-		if ($temp_above > $temp_below) {
-			mysql_query("UPDATE GAMESTATE SET ABOVESCORE='$temp_above', BELOWSCORE='$temp_below', WINNER=ABOVE WHERE USERNO='$account' AND GAMENO='$gameno' AND PLAYNO='$i'");
-		}
-		elseif ($temp_above < $temp_below) {
-			mysql_query("UPDATE GAMESTATE SET ABOVESCORE='$temp_above', BELOWSCORE='$temp_below', WINNER=BELOW WHERE USERNO='$account' AND GAMENO='$gameno' AND PLAYNO='$i'");
-		}
+	if ($temp_above > $temp_below) {
+		mysql_query("UPDATE GAMESTATE SET ABOVESCORE='$temp_above', BELOWSCORE='$temp_below', WINNER=ABOVE WHERE USERNO='$account' AND GAMENO='$gameno' AND PLAYNO='$i'");
+	}
+	elseif ($temp_above < $temp_below) {
+		mysql_query("UPDATE GAMESTATE SET ABOVESCORE='$temp_above', BELOWSCORE='$temp_below', WINNER=BELOW WHERE USERNO='$account' AND GAMENO='$gameno' AND PLAYNO='$i'");
 	}
 	if ($gametype == 'A' || $i > $gap) {
 		updateGameChart($account, $gameno);
