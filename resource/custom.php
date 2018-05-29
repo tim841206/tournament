@@ -1122,18 +1122,18 @@ function updateGameChart($account, $gameno) {
 				$scoreInput = scoreInputPosition($i, $amount);
 				$publicContent = str_replace('id="p'.$scoreInput['above'].'">', 'id="p'.$scoreInput['above'].'">'.$state['aboveScore'], $publicContent);
 				$publicContent = str_replace('id="p'.$scoreInput['below'].'">', 'id="p'.$scoreInput['below'].'">'.$state['belowScore'], $publicContent);
-				$editContent = str_replace('type="text" id="'.$state['playno'].'_above">', 'type="text" id="'.$state['playno'].'_above" value="'.$state['aboveScore'].'">', $editContent);
-				$editContent = str_replace('type="text" id="'.$state['playno'].'_below">', 'type="text" id="'.$state['playno'].'_below" value="'.$state['belowScore'].'">', $editContent);
-			}
-			if (!empty($state['winner']) && ($state['winner'] == $state['above'])) {
-				$return = updateAbove($i, $publicContent, $editContent, $amount);
-				$publicContent = $return['public'];
-				$editContent = $return['edit'];
-			}
-			elseif (!empty($state['winner']) && ($state['winner'] == $state['below'])) {
-				$return = updateBelow($i, $publicContent, $editContent, $amount);
-				$publicContent = $return['public'];
-				$editContent = $return['edit'];
+				$editContent = str_replace('id="'.$state['playno'].'_above">', 'id="'.$state['playno'].'_above" value="'.$state['aboveScore'].'">', $editContent);
+				$editContent = str_replace('id="'.$state['playno'].'_below">', 'id="'.$state['playno'].'_below" value="'.$state['belowScore'].'">', $editContent);
+				if ($state['aboveScore'] > $state['belowScore']) {
+					$return = updateAbove($i-$gap, $publicContent, $editContent, $roundAmount);
+					$publicContent = $return['public'];
+					$editContent = $return['edit'];
+				}
+				elseif ($state['aboveScore'] < $state['belowScore']) {
+					$return = updateBelow($i-$gap, $publicContent, $editContent, $roundAmount);
+					$publicContent = $return['public'];
+					$editContent = $return['edit'];
+				}
 			}
 		}
 	}
@@ -1151,8 +1151,8 @@ function updateGameChart($account, $gameno) {
 				if (is_numeric($state['aboveScore']) && is_numeric($state['belowScore'])) {
 					$publicContent = str_replace('id="'.$state['playno'].'_above">', 'id="'.$state['playno'].'_above">'.$state['aboveScore'], $publicContent);
 					$publicContent = str_replace('id="'.$state['playno'].'_below">', 'id="'.$state['playno'].'_below">'.$state['belowScore'], $publicContent);
-					$editContent = str_replace('type="text" id="'.$state['playno'].'_above">', 'type="text" id="'.$state['playno'].'_above" value="'.$state['aboveScore'].'">', $editContent);
-					$editContent = str_replace('type="text" id="'.$state['playno'].'_below">', 'type="text" id="'.$state['playno'].'_below" value="'.$state['belowScore'].'">', $editContent);
+					$editContent = str_replace('id="'.$state['playno'].'_above">', 'id="'.$state['playno'].'_above" value="'.$state['aboveScore'].'">', $editContent);
+					$editContent = str_replace('id="'.$state['playno'].'_below">', 'id="'.$state['playno'].'_below" value="'.$state['belowScore'].'">', $editContent);
 				}
 			}
 			else {
@@ -1160,18 +1160,18 @@ function updateGameChart($account, $gameno) {
 					$scoreInput = scoreInputPosition($i-$gap, $roundAmount);
 					$publicContent = str_replace('id="p'.$scoreInput['above'].'">', 'id="p'.$scoreInput['above'].'">'.$state['aboveScore'], $publicContent);
 					$publicContent = str_replace('id="p'.$scoreInput['below'].'">', 'id="p'.$scoreInput['below'].'">'.$state['belowScore'], $publicContent);
-					$editContent = str_replace('type="text" id="'.$state['playno'].'_above">', 'type="text" id="'.$state['playno'].'_above" value="'.$state['aboveScore'].'">', $editContent);
-					$editContent = str_replace('type="text" id="'.$state['playno'].'_below">', 'type="text" id="'.$state['playno'].'_below" value="'.$state['belowScore'].'">', $editContent);
-				}
-				if (!empty($state['winner']) && ($state['winner'] == $state['above'])) {
-					$return = updateAbove($i-$gap, $publicContent, $editContent, $roundAmount);
-					$publicContent = $return['public'];
-					$editContent = $return['edit'];
-				}
-				elseif (!empty($state['winner']) && ($state['winner'] == $state['below'])) {
-					$return = updateBelow($i-$gap, $publicContent, $editContent, $roundAmount);
-					$publicContent = $return['public'];
-					$editContent = $return['edit'];
+					$editContent = str_replace('id="'.$state['playno'].'_above">', 'id="'.$state['playno'].'_above" value="'.$state['aboveScore'].'">', $editContent);
+					$editContent = str_replace('id="'.$state['playno'].'_below">', 'id="'.$state['playno'].'_below" value="'.$state['belowScore'].'">', $editContent);
+					if ($state['aboveScore'] > $state['belowScore']) {
+						$return = updateAbove($i-$gap, $publicContent, $editContent, $roundAmount);
+						$publicContent = $return['public'];
+						$editContent = $return['edit'];
+					}
+					elseif ($state['aboveScore'] < $state['belowScore']) {
+						$return = updateBelow($i-$gap, $publicContent, $editContent, $roundAmount);
+						$publicContent = $return['public'];
+						$editContent = $return['edit'];
+					}
 				}
 			}
 		}
