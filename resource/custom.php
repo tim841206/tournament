@@ -873,7 +873,7 @@ function setPlayNo($account, $gameno, $content, $amount) {
 	$sql = mysql_query("SELECT * FROM GAMESTATE WHERE USERNO='$account' AND GAMENO='$gameno'");
 	while ($fetch = mysql_fetch_array($sql)) {
 		$position = playNoPosition($fetch['SYSTEMPLAYNO'], $amount);
-		$content = str_replace('id="p'.$position.'">', 'align="right" id="p'.$position.'">'.$fetch['PLAYNO'], $content);
+		$content = str_replace('id="p'.$position.'">', 'id="p'.$position.'"><span style="float: right;">'.$fetch['PLAYNO'].'</span>', $content);
 	}
 	return $content;
 }
@@ -885,7 +885,7 @@ function cycleSetPlayNo($account, $gameno, $content, $amount) {
 	while ($fetch = mysql_fetch_array($sql)) {
 		if ($fetch['SYSTEMPLAYNO'] > $gap) {
 			$position = playNoPosition($fetch['SYSTEMPLAYNO'] - $gap, $amount);
-			$content = str_replace('id="p'.$position.'">', 'align="right" id="p'.$position.'">'.$fetch['PLAYNO'], $content);
+			$content = str_replace('id="p'.$position.'">', 'id="p'.$position.'"><span style="float: right;">'.$fetch['PLAYNO'].'</span>', $content);
 		}
 	}
 	return $content;
