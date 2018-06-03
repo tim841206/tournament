@@ -845,28 +845,57 @@ function processName($name) {
 	}
 }
 
-function arrange($rank1, $rank2, $rank3) {
-	$rank3 = array_merge(array_slice($rank3, ceil(count($rank3)/2)), array_slice($rank3, 0, ceil(count($rank3)/2)));
-	$up = array();
-	while (count($rank1)) {
-		array_push($up, array_shift($rank1));
-		if (count($rank3)) {
-			array_push($up, array_shift($rank3));
+function rank($amount) {
+	$return = array();
+	array_push($return, 1);
+	$temp = array();
+	for ($i = 1; $i <= log($amount, 2); $i++) {
+		while (count($return)) {
+			$value = array_shift($return);
+			array_push($temp, $value);
+			array_push($temp, pow(2, $i)+1-$value);
 		}
-		elseif (count($rank2)) {
+		$return = $temp;
+		$temp = array();
+	}
+	return $return;
+}
+
+function arrange($rank1, $rank2, $rank3) {
+	$rank_count = count($rank1) + count($rank2) + count($rank3);
+	$rank3 = array_merge(array_slice($rank3, ceil(count($rank3)/2)), array_slice($rank3, 0, ceil(count($rank3)/2)));
+	$result = array_merge($rank1, $rank2, $rank3);
+	$up = array();
+	if (count($rank1) + count($rank3) <= 3) {
+		$up = array_merge($rank1, $rank2, $rank3);
+		$rank = rank($rank_count);
+		for ($i = 0; $i < count($rank); $i++) {
+			$result[$rank[$i]] = array_shift($up);
+		}
+	}
+	else {
+		$rank = rank($rank_count/2);
+		while (count($rank1)) {
+			array_push($up, array_shift($rank1));
+			if (count($rank3)) {
+				array_push($up, array_shift($rank3));
+			}
+			elseif (count($rank2)) {
+				array_push($up, array_shift($rank2));
+			}
+			else {
+				array_push($up, array_shift($rank1));
+			}
+		}
+		while (count($rank2)) {
 			array_push($up, array_shift($rank2));
 		}
-	}
-	while (count($rank2)) {
-		array_push($up, array_shift($rank2));
-		if (count($rank3)) {
-			array_push($up, array_shift($rank3));
-		}
-		else {
-			array_push($up, array_pop($rank2));
+		for ($i = 0; $i < count($rank); $i++) {
+			$result[2*$rank[$i]-2] = array_shift($up);
+			$result[2*$rank[$i]-1] = array_shift($up);
 		}
 	}
-	return array_reverse($up);
+	return $result;
 }
 
 function setPlayNo($account, $gameno, $content, $amount) {
