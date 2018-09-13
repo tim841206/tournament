@@ -1,14 +1,4 @@
 <?php
-$db_server = "localhost";
-$db_name = "tournament";
-$db_user = "root";
-$db_passwd = "";
-
-if(!@mysql_connect($db_server, $db_user, $db_passwd))
-	die("無法對資料庫連線");
-
-mysql_query("SET NAMES utf8");
-
-if(!@mysql_select_db($db_name))
-	die("無法使用資料庫");
-?>
+$mysql = mysql_connect("localhost", "root", "");
+mysqli_query($mysql, "SET NAMES utf8");
+mysqli_select_db($mysql, "tournament");

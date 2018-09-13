@@ -1,4 +1,5 @@
 <?php
+include_once("resource/database.php");
 include_once("resource/custom.php");
 
 $account = $_COOKIE['account'];
@@ -6,7 +7,7 @@ $gameno = $_POST['gameno'];
 $gamenm = $_POST['gamenm'];
 $amount = $_POST['amount'];
 $playtype = $_POST['playtype'];
-$sql = mysql_query("SELECT * FROM GAMEMAIN WHERE USERNO='$account' AND GAMENO='$gameno'");
+$sql = mysqli_query($mysql, "SELECT * FROM GAMEMAIN WHERE USERNO='$account' AND GAMENO='$gameno'");
 if (empty($gameno)) {
 	echo json_encode(array('message' => 'Empty game index'));
 }

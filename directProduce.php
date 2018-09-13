@@ -21,7 +21,7 @@ elseif ($playtype == 'B') {
 elseif ($playtype == 'C') {
 	$unit = explode(',', $_POST['unit']);
 }
-$sql = mysql_query("SELECT * FROM GAMEMAIN WHERE USERNO='$account' AND GAMENO='$gameno'");
+$sql = mysqli_query($mysql, "SELECT * FROM GAMEMAIN WHERE USERNO='$account' AND GAMENO='$gameno'");
 if (empty($gameno)) {
 	echo json_encode(array('message' => 'Empty game index'));
 }
@@ -31,7 +31,7 @@ elseif (empty($gamenm)) {
 elseif (!is_validAmount($amount)) {
 	echo json_encode(array('message' => 'Invalid player amount'));
 }
-elseif (mysql_num_rows($sql) != 0) {
+elseif (mysqli_num_rows($sql) != 0) {
 	echo json_encode(array('message' => 'Used game index'));
 }
 elseif (!in_array($playtype, array('A', 'B', 'C'))) {
@@ -40,7 +40,7 @@ elseif (!in_array($playtype, array('A', 'B', 'C'))) {
 else {
 	date_default_timezone_set('Asia/Taipei');
 	$date = date("Y-m-d H:i:s");
-	mysql_query("INSERT INTO GAMEMAIN (USERNO, GAMENO, GAMENM, GAMETYPE, PLAYTYPE, AMOUNT, CREATEDATE, UPDATEDATE) VALUES ('$account', '$gameno', '$gamenm', 'A', '$playtype', '$amount', '$date', '$date')");
+	mysqli_query($mysql, "INSERT INTO GAMEMAIN (USERNO, GAMENO, GAMENM, GAMETYPE, PLAYTYPE, AMOUNT, CREATEDATE, UPDATEDATE) VALUES ('$account', '$gameno', '$gamenm', 'A', '$playtype', '$amount', '$date', '$date')");
 	$roundAmount = pow(2, ceil(log($amount, 2)));
 	if ($mode == 'auto') {
 		$rand = array();
@@ -67,26 +67,26 @@ else {
 		}
 		for ($i = 1; $i <= $roundAmount; $i++) {
 			if (in_array($i, $arrange)) {
-				mysql_query("INSERT INTO GAMEPOSITION (USERNO, GAMENO, POSITION, UNIT, NAME) VALUES ('$account', '$gameno', '$i', 'none', 'none')");
+				mysqli_query($mysql, "INSERT INTO GAMEPOSITION (USERNO, GAMENO, POSITION, UNIT, NAME) VALUES ('$account', '$gameno', '$i', 'none', 'none')");
 			}
 			else {
 				$temp = array_pop($rand);
 				if ($playtype == 'A') {
 					$temp_unit = $unit[$temp];
 					$temp_name = $name[$temp];
-					mysql_query("INSERT INTO GAMEPOSITION (USERNO, GAMENO, POSITION, UNIT, NAME) VALUES ('$account', '$gameno', '$i', '$temp_unit', '$temp_name')");
+					mysqli_query($mysql, "INSERT INTO GAMEPOSITION (USERNO, GAMENO, POSITION, UNIT, NAME) VALUES ('$account', '$gameno', '$i', '$temp_unit', '$temp_name')");
 				}
 				elseif ($playtype == 'B') {
 					$temp_unitu = $unitu[$temp];
 					$temp_unitd = $unitd[$temp];
 					$temp_nameu = $nameu[$temp];
 					$temp_named = $named[$temp];
-					mysql_query("INSERT INTO GAMEPOSITION (USERNO, GAMENO, POSITION, PLAYERNO, UNIT, NAME) VALUES ('$account', '$gameno', '$i', '1', '$temp_unitu', '$temp_nameu')");
-					mysql_query("INSERT INTO GAMEPOSITION (USERNO, GAMENO, POSITION, PLAYERNO, UNIT, NAME) VALUES ('$account', '$gameno', '$i', '2', '$temp_unitd', '$temp_named')");
+					mysqli_query($mysql, "INSERT INTO GAMEPOSITION (USERNO, GAMENO, POSITION, PLAYERNO, UNIT, NAME) VALUES ('$account', '$gameno', '$i', '1', '$temp_unitu', '$temp_nameu')");
+					mysqli_query($mysql, "INSERT INTO GAMEPOSITION (USERNO, GAMENO, POSITION, PLAYERNO, UNIT, NAME) VALUES ('$account', '$gameno', '$i', '2', '$temp_unitd', '$temp_named')");
 				}
 				elseif ($playtype == 'C') {
 					$temp_unit = $unit[$temp];
-					mysql_query("INSERT INTO GAMEPOSITION (USERNO, GAMENO, POSITION, UNIT) VALUES ('$account', '$gameno', '$i', '$temp_unit')");
+					mysqli_query($mysql, "INSERT INTO GAMEPOSITION (USERNO, GAMENO, POSITION, UNIT) VALUES ('$account', '$gameno', '$i', '$temp_unit')");
 				}
 			}
 		}
@@ -100,7 +100,7 @@ else {
 				$single = queryContentSingle($account, $gameno, $i*2-1);
 				$double = queryContentSingle($account, $gameno, $i*2);
 				if ($single['unit'] != 'none' && $double['unit'] != 'none') {
-					mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
+					mysqli_query($mysql, "UPDATE GAMESTATE SET PLAYNO='$index' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
 					$index++;
 				}
 			}
@@ -108,7 +108,7 @@ else {
 				$single = queryContentDouble($account, $gameno, $i*2-1);
 				$double = queryContentDouble($account, $gameno, $i*2);
 				if ($single['unitu'] != 'none' && $double['unitu'] != 'none') {
-					mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
+					mysqli_query($mysql, "UPDATE GAMESTATE SET PLAYNO='$index' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
 					$index++;
 				}
 			}
@@ -116,13 +116,13 @@ else {
 				$single = queryContentGroup($account, $gameno, $i*2-1);
 				$double = queryContentGroup($account, $gameno, $i*2);
 				if ($single != 'none' && $double != 'none') {
-					mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
+					mysqli_query($mysql, "UPDATE GAMESTATE SET PLAYNO='$index' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
 					$index++;
 				}
 			}
 		}
 		for ($i = $roundAmount/2+1; $i <= $roundAmount; $i++) {
-			mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
+			mysqli_query($mysql, "UPDATE GAMESTATE SET PLAYNO='$index' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
 			$index++;
 		}
 		makePublic($account, $gameno);
@@ -136,19 +136,19 @@ else {
 			if ($playtype == 'A') {
 				$temp_unit = $unit[$i-1];
 				$temp_name = $name[$i-1];
-				mysql_query("INSERT INTO GAMEPOSITION (USERNO, GAMENO, POSITION, UNIT, NAME) VALUES ('$account', '$gameno', '$i', '$temp_unit', '$temp_name')");
+				mysqli_query($mysql, "INSERT INTO GAMEPOSITION (USERNO, GAMENO, POSITION, UNIT, NAME) VALUES ('$account', '$gameno', '$i', '$temp_unit', '$temp_name')");
 			}
 			elseif ($playtype == 'B') {
 				$temp_unitu = $unitu[$i-1];
 				$temp_nameu = $nameu[$i-1];
 				$temp_unitd = $unitd[$i-1];
 				$temp_named = $named[$i-1];
-				mysql_query("INSERT INTO GAMEPOSITION (USERNO, GAMENO, POSITION, PLAYERNO, UNIT, NAME) VALUES ('$account', '$gameno', '$i', '1', '$temp_unitu', '$temp_nameu')");
-				mysql_query("INSERT INTO GAMEPOSITION (USERNO, GAMENO, POSITION, PLAYERNO, UNIT, NAME) VALUES ('$account', '$gameno', '$i', '2', '$temp_unitd', '$temp_named')");
+				mysqli_query($mysql, "INSERT INTO GAMEPOSITION (USERNO, GAMENO, POSITION, PLAYERNO, UNIT, NAME) VALUES ('$account', '$gameno', '$i', '1', '$temp_unitu', '$temp_nameu')");
+				mysqli_query($mysql, "INSERT INTO GAMEPOSITION (USERNO, GAMENO, POSITION, PLAYERNO, UNIT, NAME) VALUES ('$account', '$gameno', '$i', '2', '$temp_unitd', '$temp_named')");
 			}
 			elseif ($playtype == 'C') {
 				$temp_unit = $unit[$i-1];
-				mysql_query("INSERT INTO GAMEPOSITION (USERNO, GAMENO, POSITION, UNIT) VALUES ('$account', '$gameno', '$i', '$temp_unit')");
+				mysqli_query($mysql, "INSERT INTO GAMEPOSITION (USERNO, GAMENO, POSITION, UNIT) VALUES ('$account', '$gameno', '$i', '$temp_unit')");
 			}
 		}
 		createGameState($account, $gameno, $roundAmount);
@@ -158,7 +158,7 @@ else {
 				$single = queryContentSingle($account, $gameno, $i*2-1);
 				$double = queryContentSingle($account, $gameno, $i*2);
 				if ($single['unit'] != 'none' && $double['unit'] != 'none') {
-					mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
+					mysqli_query($mysql, "UPDATE GAMESTATE SET PLAYNO='$index' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
 					$index++;
 				}
 			}
@@ -166,7 +166,7 @@ else {
 				$single = queryContentDouble($account, $gameno, $i*2-1);
 				$double = queryContentDouble($account, $gameno, $i*2);
 				if ($single['unitu'] != 'none' && $double['unitu'] != 'none') {
-					mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
+					mysqli_query($mysql, "UPDATE GAMESTATE SET PLAYNO='$index' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
 					$index++;
 				}
 			}
@@ -174,13 +174,13 @@ else {
 				$single = queryContentGroup($account, $gameno, $i*2-1);
 				$double = queryContentGroup($account, $gameno, $i*2);
 				if ($single != 'none' && $double != 'none') {
-					mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
+					mysqli_query($mysql, "UPDATE GAMESTATE SET PLAYNO='$index' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
 					$index++;
 				}
 			}
 		}
 		for ($i = $roundAmount/2+1; $i <= $roundAmount; $i++) {
-			mysql_query("UPDATE GAMESTATE SET PLAYNO='$index' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
+			mysqli_query($mysql, "UPDATE GAMESTATE SET PLAYNO='$index' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO=$i");
 			$index++;
 		}
 		makePublic($account, $gameno);

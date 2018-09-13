@@ -899,8 +899,9 @@ function arrange($rank1, $rank2, $rank3) {
 }
 
 function setPlayNo($account, $gameno, $content, $amount) {
-	$sql = mysql_query("SELECT * FROM GAMESTATE WHERE USERNO='$account' AND GAMENO='$gameno'");
-	while ($fetch = mysql_fetch_array($sql)) {
+	$mysql = $GLOBALS['mysql'];
+	$sql = mysqli_query($mysql, "SELECT * FROM GAMESTATE WHERE USERNO='$account' AND GAMENO='$gameno'");
+	while ($fetch = mysqli_fetch_array($sql)) {
 		$position = playNoPosition($fetch['SYSTEMPLAYNO'], $amount);
 		$content = str_replace('id="p'.$position.'">', 'id="p'.$position.'"><span style="float: right;">'.$fetch['PLAYNO'].'</span>', $content);
 	}
@@ -908,10 +909,11 @@ function setPlayNo($account, $gameno, $content, $amount) {
 }
 
 function cycleSetPlayNo($account, $gameno, $content, $amount) {
+	$mysql = $GLOBALS['mysql'];
 	$distribute = distribute(getAmount($account, $gameno));
 	$gap = 3 * (2 * ($distribute['4_1'] + $distribute['4_2']) + $distribute['3_1'] + $distribute['3_2']);
-	$sql = mysql_query("SELECT * FROM GAMESTATE WHERE USERNO='$account' AND GAMENO='$gameno'");
-	while ($fetch = mysql_fetch_array($sql)) {
+	$sql = mysqli_query($mysql, "SELECT * FROM GAMESTATE WHERE USERNO='$account' AND GAMENO='$gameno'");
+	while ($fetch = mysqli_fetch_array($sql)) {
 		if ($fetch['SYSTEMPLAYNO'] > $gap) {
 			$position = playNoPosition($fetch['SYSTEMPLAYNO'] - $gap, $amount);
 			$content = str_replace('id="p'.$position.'">', 'id="p'.$position.'"><span style="float: right;">'.$fetch['PLAYNO'].'</span>', $content);
@@ -943,8 +945,9 @@ function playNoPosition($playno, $amount) {
 }
 
 function setScoreInput($account, $gameno, $content, $amount) {
-	$sql = mysql_query("SELECT * FROM GAMESTATE WHERE USERNO='$account' AND GAMENO='$gameno'");
-	while ($fetch = mysql_fetch_array($sql)) {
+	$mysql = $GLOBALS['mysql'];
+	$sql = mysqli_query($mysql, "SELECT * FROM GAMESTATE WHERE USERNO='$account' AND GAMENO='$gameno'");
+	while ($fetch = mysqli_fetch_array($sql)) {
 		$scoreInput = scoreInputPosition($fetch['SYSTEMPLAYNO'], $amount);
 		if (!empty($fetch['PLAYNO'])) {
 			$content = str_replace('id="p'.$scoreInput['above'].'">', 'id="p'.$scoreInput['above'].'"><input class="score" style="float: left;" type="text" id="'.$fetch['PLAYNO'].'_above">', $content);
@@ -955,10 +958,11 @@ function setScoreInput($account, $gameno, $content, $amount) {
 }
 
 function cycleSetScoreInput($account, $gameno, $content, $amount) {
+	$mysql = $GLOBALS['mysql'];
 	$distribute = distribute(getAmount($account, $gameno));
 	$gap = 3 * (2 * ($distribute['4_1'] + $distribute['4_2']) + $distribute['3_1'] + $distribute['3_2']);
-	$sql = mysql_query("SELECT * FROM GAMESTATE WHERE USERNO='$account' AND GAMENO='$gameno'");
-	while ($fetch = mysql_fetch_array($sql)) {
+	$sql = mysqli_query($mysql, "SELECT * FROM GAMESTATE WHERE USERNO='$account' AND GAMENO='$gameno'");
+	while ($fetch = mysqli_fetch_array($sql)) {
 		if ($fetch['SYSTEMPLAYNO'] > $gap) {
 			$scoreInput = scoreInputPosition($fetch['SYSTEMPLAYNO'] - $gap, $amount);
 			$content = str_replace('id="p'.$scoreInput['above'].'">', 'id="p'.$scoreInput['above'].'"><input class="score" style="float: left;" type="text" id="'.$fetch['PLAYNO'].'_above">', $content);
@@ -993,26 +997,30 @@ function scoreInputPosition($playno, $amount) {
 }
 
 function getAmount($account, $gameno) {
-	$sql = mysql_query("SELECT AMOUNT FROM GAMEMAIN WHERE USERNO='$account' AND GAMENO='$gameno'");
-	$fetch = mysql_fetch_row($sql);
+	$mysql = $GLOBALS['mysql'];
+	$sql = mysqli_query($mysql, "SELECT AMOUNT FROM GAMEMAIN WHERE USERNO='$account' AND GAMENO='$gameno'");
+	$fetch = mysqli_fetch_row($sql);
 	return $fetch[0];
 }
 
 function getGametype($account, $gameno) {
-	$sql = mysql_query("SELECT GAMETYPE FROM GAMEMAIN WHERE USERNO='$account' AND GAMENO='$gameno'");
-	$fetch = mysql_fetch_row($sql);
+	$mysql = $GLOBALS['mysql'];
+	$sql = mysqli_query($mysql, "SELECT GAMETYPE FROM GAMEMAIN WHERE USERNO='$account' AND GAMENO='$gameno'");
+	$fetch = mysqli_fetch_row($sql);
 	return $fetch[0];
 }
 
 function getPlaytype($account, $gameno) {
-	$sql = mysql_query("SELECT PLAYTYPE FROM GAMEMAIN WHERE USERNO='$account' AND GAMENO='$gameno'");
-	$fetch = mysql_fetch_row($sql);
+	$mysql = $GLOBALS['mysql'];
+	$sql = mysqli_query($mysql, "SELECT PLAYTYPE FROM GAMEMAIN WHERE USERNO='$account' AND GAMENO='$gameno'");
+	$fetch = mysqli_fetch_row($sql);
 	return $fetch[0];
 }
 
 function getGamename($account, $gameno) {
-	$sql = mysql_query("SELECT GAMENM FROM GAMEMAIN WHERE USERNO='$account' AND GAMENO='$gameno'");
-	$fetch = mysql_fetch_row($sql);
+	$mysql = $GLOBALS['mysql'];
+	$sql = mysqli_query($mysql, "SELECT GAMENM FROM GAMEMAIN WHERE USERNO='$account' AND GAMENO='$gameno'");
+	$fetch = mysqli_fetch_row($sql);
 	return $fetch[0];
 }
 
@@ -1023,38 +1031,43 @@ function translatePlaytype($playtype) {
 }
 
 function queryContentSingle($account, $gameno, $position) {
-	$sql = mysql_query("SELECT * FROM GAMEPOSITION WHERE USERNO='$account' AND GAMENO='$gameno' AND POSITION='$position'");
-	$fetch = mysql_fetch_array($sql);
+	$mysql = $GLOBALS['mysql'];
+	$sql = mysqli_query($mysql, "SELECT * FROM GAMEPOSITION WHERE USERNO='$account' AND GAMENO='$gameno' AND POSITION='$position'");
+	$fetch = mysqli_fetch_array($sql);
 	return array('unit' => $fetch['UNIT'], 'name' => $fetch['NAME']);
 }
 
 function queryContentDouble($account, $gameno, $position) {
-	$sql1 = mysql_query("SELECT * FROM GAMEPOSITION WHERE USERNO='$account' AND GAMENO='$gameno' AND POSITION='$position' AND PLAYERNO=1");
-	$fetch1 = mysql_fetch_array($sql1);
-	$sql2 = mysql_query("SELECT * FROM GAMEPOSITION WHERE USERNO='$account' AND GAMENO='$gameno' AND POSITION='$position' AND PLAYERNO=2");
-	$fetch2 = mysql_fetch_array($sql2);
+	$mysql = $GLOBALS['mysql'];
+	$sql1 = mysqli_query($mysql, "SELECT * FROM GAMEPOSITION WHERE USERNO='$account' AND GAMENO='$gameno' AND POSITION='$position' AND PLAYERNO=1");
+	$fetch1 = mysqli_fetch_array($sql1);
+	$sql2 = mysqli_query($mysql, "SELECT * FROM GAMEPOSITION WHERE USERNO='$account' AND GAMENO='$gameno' AND POSITION='$position' AND PLAYERNO=2");
+	$fetch2 = mysqli_fetch_array($sql2);
 	return array('unitu' => $fetch1['UNIT'], 'nameu' => $fetch1['NAME'], 'unitd' => $fetch2['UNIT'], 'named' => $fetch2['NAME']);
 }
 
 function queryContentGroup($account, $gameno, $position) {
-	$sql = mysql_query("SELECT * FROM GAMEPOSITION WHERE USERNO='$account' AND GAMENO='$gameno' AND POSITION='$position'");
-	$fetch = mysql_fetch_array($sql);
+	$mysql = $GLOBALS['mysql'];
+	$sql = mysqli_query($mysql, "SELECT * FROM GAMEPOSITION WHERE USERNO='$account' AND GAMENO='$gameno' AND POSITION='$position'");
+	$fetch = mysqli_fetch_array($sql);
 	return $fetch['UNIT'];
 }
 
 function queryState($account, $gameno, $playno) {
-	$sql = mysql_query("SELECT * FROM GAMESTATE WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO='$playno'");
-	$fetch = mysql_fetch_array($sql);
+	$mysql = $GLOBALS['mysql'];
+	$sql = mysqli_query($mysql, "SELECT * FROM GAMESTATE WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO='$playno'");
+	$fetch = mysqli_fetch_array($sql);
 	return array('playno' => $fetch['PLAYNO'], 'above' => $fetch['ABOVE'], 'below' => $fetch['BELOW'], 'aboveScore' => $fetch['ABOVESCORE'], 'belowScore' => $fetch['BELOWSCORE'], 'winner' => $fetch['WINNER']);
 }
 
 function createGameState($account, $gameno, $amount) {
+	$mysql = $GLOBALS['mysql'];
 	for ($i = 1; $i <= $amount; $i++) {
 		if ($i <= $amount/2) {
-			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', $i, $i*2-1, $i*2)");
+			mysqli_query($mysql, "INSERT INTO GAMESTATE (USERNO, GAMENO, SYSTEMPLAYNO, ABOVE, BELOW) VALUES ('$account', '$gameno', $i, $i*2-1, $i*2)");
 		}
 		else {
-			mysql_query("INSERT INTO GAMESTATE (USERNO, GAMENO, SYSTEMPLAYNO) VALUES ('$account', '$gameno', $i)");
+			mysqli_query($mysql, "INSERT INTO GAMESTATE (USERNO, GAMENO, SYSTEMPLAYNO) VALUES ('$account', '$gameno', $i)");
 		}
 	}
 }
@@ -1218,33 +1231,34 @@ function updateGameChart($account, $gameno) {
 }
 
 function updateGameState($account, $gameno) {
+	$mysql = $GLOBALS['mysql'];
 	$amount = getAmount($account, $gameno);
 	$roundAmount = pow(2, ceil(log($amount, 2)));
 	$start = 1;
 	$next = 2;
 	$middle = $roundAmount / 2 + 1;
 	while ($middle < $roundAmount) {
-		$sql1 = mysql_query("SELECT * FROM GAMESTATE WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO='$start'");
-		$fetch1 = mysql_fetch_array($sql1);
-		$sql2 = mysql_query("SELECT * FROM GAMESTATE WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO='$next'");
-		$fetch2 = mysql_fetch_array($sql2);
+		$sql1 = mysqli_query($mysql, "SELECT * FROM GAMESTATE WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO='$start'");
+		$fetch1 = mysqli_fetch_array($sql1);
+		$sql2 = mysqli_query($mysql, "SELECT * FROM GAMESTATE WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO='$next'");
+		$fetch2 = mysqli_fetch_array($sql2);
 		if ($fetch1['ABOVESCORE'] > $fetch1['BELOWSCORE']) {
 			$above = $fetch1['ABOVE'];
-			mysql_query("UPDATE GAMESTATE SET WINNER=ABOVE WHERE GAMENO='$gameno' AND SYSTEMPLAYNO='$start'");
+			mysqli_query($mysql, "UPDATE GAMESTATE SET WINNER=ABOVE WHERE GAMENO='$gameno' AND SYSTEMPLAYNO='$start'");
 		}
 		elseif ($fetch1['ABOVESCORE'] < $fetch1['BELOWSCORE']) {
 			$above = $fetch1['BELOW'];
-			mysql_query("UPDATE GAMESTATE SET WINNER=BELOW WHERE GAMENO='$gameno' AND SYSTEMPLAYNO='$start'");
+			mysqli_query($mysql, "UPDATE GAMESTATE SET WINNER=BELOW WHERE GAMENO='$gameno' AND SYSTEMPLAYNO='$start'");
 		}
 		if ($fetch2['ABOVESCORE'] > $fetch2['BELOWSCORE']) {
 			$below = $fetch2['ABOVE'];
-			mysql_query("UPDATE GAMESTATE SET WINNER=ABOVE WHERE GAMENO='$gameno' AND SYSTEMPLAYNO='$next'");
+			mysqli_query($mysql, "UPDATE GAMESTATE SET WINNER=ABOVE WHERE GAMENO='$gameno' AND SYSTEMPLAYNO='$next'");
 		}
 		elseif ($fetch2['ABOVESCORE'] < $fetch2['BELOWSCORE']) {
 			$below = $fetch2['BELOW'];
-			mysql_query("UPDATE GAMESTATE SET WINNER=BELOW WHERE GAMENO='$gameno' AND SYSTEMPLAYNO='$next'");
+			mysqli_query($mysql, "UPDATE GAMESTATE SET WINNER=BELOW WHERE GAMENO='$gameno' AND SYSTEMPLAYNO='$next'");
 		}
-		mysql_query("UPDATE GAMESTATE SET ABOVE='$above', BELOW='$below' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO='$middle'");
+		mysqli_query($mysql, "UPDATE GAMESTATE SET ABOVE='$above', BELOW='$below' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO='$middle'");
 		$start += 2;
 		$next += 2;
 		$middle += 1;
@@ -1252,6 +1266,7 @@ function updateGameState($account, $gameno) {
 }
 
 function updateCycleGameState($account, $gameno) {
+	$mysql = $GLOBALS['mysql'];
 	$amount = getAmount($account, $gameno);
 	$distribute = distribute($amount);
 	$gap = 2 * ($distribute['4_1'] + $distribute['4_2']) + $distribute['3_1'] + $distribute['3_2'];
@@ -1497,34 +1512,34 @@ function updateCycleGameState($account, $gameno) {
 		$playno = 3*$gap + $i/2;
 		$above = array_pop($up);
 		$below = array_pop($up);
-		mysql_query("UPDATE GAMESTATE SET ABOVE='$above', BELOW='$below' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO='$playno'");
+		mysqli_query($mysql, "UPDATE GAMESTATE SET ABOVE='$above', BELOW='$below' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO='$playno'");
 	}
 	$roundAmount = 3*$gap + $distribute['round'];
 	$start = 3*$gap + 1;
 	$next = 3*$gap + 2;
 	$middle = 3*$gap + $distribute['round'] / 2 + 1;
 	while ($middle < $roundAmount) {
-		$sql1 = mysql_query("SELECT * FROM GAMESTATE WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO='$start'");
-		$fetch1 = mysql_fetch_array($sql1);
-		$sql2 = mysql_query("SELECT * FROM GAMESTATE WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO='$next'");
-		$fetch2 = mysql_fetch_array($sql2);
+		$sql1 = mysqli_query($mysql, "SELECT * FROM GAMESTATE WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO='$start'");
+		$fetch1 = mysqli_fetch_array($sql1);
+		$sql2 = mysqli_query($mysql, "SELECT * FROM GAMESTATE WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO='$next'");
+		$fetch2 = mysqli_fetch_array($sql2);
 		if ($fetch1['ABOVESCORE'] > $fetch1['BELOWSCORE']) {
 			$above = $fetch1['ABOVE'];
-			mysql_query("UPDATE GAMESTATE SET WINNER=ABOVE WHERE GAMENO='$gameno' AND SYSTEMPLAYNO='$start'");
+			mysqli_query($mysql, "UPDATE GAMESTATE SET WINNER=ABOVE WHERE GAMENO='$gameno' AND SYSTEMPLAYNO='$start'");
 		}
 		elseif ($fetch1['ABOVESCORE'] < $fetch1['BELOWSCORE']) {
 			$above = $fetch1['BELOW'];
-			mysql_query("UPDATE GAMESTATE SET WINNER=BELOW WHERE GAMENO='$gameno' AND SYSTEMPLAYNO='$start'");
+			mysqli_query($mysql, "UPDATE GAMESTATE SET WINNER=BELOW WHERE GAMENO='$gameno' AND SYSTEMPLAYNO='$start'");
 		}
 		if ($fetch2['ABOVESCORE'] > $fetch2['BELOWSCORE']) {
 			$below = $fetch2['ABOVE'];
-			mysql_query("UPDATE GAMESTATE SET WINNER=ABOVE WHERE GAMENO='$gameno' AND SYSTEMPLAYNO='$next'");
+			mysqli_query($mysql, "UPDATE GAMESTATE SET WINNER=ABOVE WHERE GAMENO='$gameno' AND SYSTEMPLAYNO='$next'");
 		}
 		elseif ($fetch2['ABOVESCORE'] < $fetch2['BELOWSCORE']) {
 			$below = $fetch2['BELOW'];
-			mysql_query("UPDATE GAMESTATE SET WINNER=BELOW WHERE GAMENO='$gameno' AND SYSTEMPLAYNO='$next'");
+			mysqli_query($mysql, "UPDATE GAMESTATE SET WINNER=BELOW WHERE GAMENO='$gameno' AND SYSTEMPLAYNO='$next'");
 		}
-		mysql_query("UPDATE GAMESTATE SET ABOVE='$above', BELOW='$below' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO='$middle'");
+		mysqli_query($mysql, "UPDATE GAMESTATE SET ABOVE='$above', BELOW='$below' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO='$middle'");
 		$start += 2;
 		$next += 2;
 		$middle += 1;
@@ -1532,6 +1547,7 @@ function updateCycleGameState($account, $gameno) {
 }
 
 function clearBye($account, $gameno) {
+	$mysql = $GLOBALS['mysql'];
 	$amount = getAmount($account, $gameno);
 	$playtype = getPlaytype($account, $gameno);
 	$roundAmount = pow(2, ceil(log($amount, 2)));
@@ -1543,30 +1559,30 @@ function clearBye($account, $gameno) {
 			$querySingle = queryContentSingle($account, $gameno, $single);
 			$queryDouble = queryContentSingle($account, $gameno, $double);
 			if ($querySingle['unit'] == 'none') {
-				mysql_query("UPDATE GAMESTATE SET WINNER='$double' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO='$playno'");
+				mysqli_query($mysql, "UPDATE GAMESTATE SET WINNER='$double' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO='$playno'");
 			}
 			elseif ($queryDouble['unit'] == 'none') {
-				mysql_query("UPDATE GAMESTATE SET WINNER='$single' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO='$playno'");
+				mysqli_query($mysql, "UPDATE GAMESTATE SET WINNER='$single' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO='$playno'");
 			}
 		}
 		elseif ($playtype == 'B') {
 			$querySingle = queryContentDouble($account, $gameno, $single);
 			$queryDouble = queryContentDouble($account, $gameno, $double);
 			if ($querySingle['unitu'] == 'none') {
-				mysql_query("UPDATE GAMESTATE SET WINNER='$double' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO='$playno'");
+				mysqli_query($mysql, "UPDATE GAMESTATE SET WINNER='$double' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO='$playno'");
 			}
 			elseif ($queryDouble['unitu'] == 'none') {
-				mysql_query("UPDATE GAMESTATE SET WINNER='$single' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO='$playno'");
+				mysqli_query($mysql, "UPDATE GAMESTATE SET WINNER='$single' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO='$playno'");
 			}
 		}
 		elseif ($playtype == 'C') {
 			$querySingle = queryContentGroup($account, $gameno, $single);
 			$queryDouble = queryContentGroup($account, $gameno, $double);
 			if ($querySingle == 'none') {
-				mysql_query("UPDATE GAMESTATE SET WINNER='$double' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO='$playno'");
+				mysqli_query($mysql, "UPDATE GAMESTATE SET WINNER='$double' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO='$playno'");
 			}
 			elseif ($queryDouble == 'none') {
-				mysql_query("UPDATE GAMESTATE SET WINNER='$single' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO='$playno'");
+				mysqli_query($mysql, "UPDATE GAMESTATE SET WINNER='$single' WHERE USERNO='$account' AND GAMENO='$gameno' AND SYSTEMPLAYNO='$playno'");
 			}
 		}
 		$single += 2;
@@ -1640,15 +1656,16 @@ function distribute($amount) {
 }
 
 function login($account, $password) {
-	$sql1 = mysql_query("SELECT * FROM USERMAS WHERE USERNO='$account'");
-	$fetch1 = mysql_fetch_array($sql1);
+	$mysql = $GLOBALS['mysql'];
+	$sql1 = mysqli_query($mysql, "SELECT * FROM USERMAS WHERE USERNO='$account'");
+	$fetch1 = mysqli_fetch_array($sql1);
 	if (empty($account)) {
 		return '請輸入帳號';
 	}
 	elseif (empty($password)) {
 		return '請輸入密碼';
 	}
-	elseif (mysql_num_rows($sql1) == 0) {
+	elseif (mysqli_num_rows($sql1) == 0) {
 		return '未註冊的帳號';
 	}
 	elseif ($password != $fetch1['PASSWORD']) {
@@ -1657,7 +1674,7 @@ function login($account, $password) {
 	else {
 		$token = get_token();
 		$sql2 = "UPDATE USERMAS SET TOKEN='$token' WHERE USERNO='$account'";
-		if (mysql_query($sql2)) {
+		if (mysqli_query($mysql, $sql2)) {
 			return array('message' => 'Success', 'token' => $token);
 		}
 		else {
@@ -1667,15 +1684,16 @@ function login($account, $password) {
 }
 
 function logon($account, $password) {
-	$sql1 = mysql_query("SELECT * FROM USERMAS WHERE USERNO='$account'");
-	$fetch1 = mysql_fetch_array($sql1);
+	$mysql = $GLOBALS['mysql'];
+	$sql1 = mysqli_query($mysql, "SELECT * FROM USERMAS WHERE USERNO='$account'");
+	$fetch1 = mysqli_fetch_array($sql1);
 	if (empty($account)) {
 		return '請輸入帳號';
 	}
 	elseif (empty($password)) {
 		return '請輸入密碼';
 	}
-	elseif (mysql_num_rows($sql1) != 0) {
+	elseif (mysqli_num_rows($sql1) != 0) {
 		return '此帳號已被註冊';
 	}
 	else {
@@ -1683,7 +1701,7 @@ function logon($account, $password) {
 		$date = date("Y-m-d H:i:s");
 		$token = get_token();
 		$sql2 = "INSERT INTO USERMAS (USERNO, TOKEN, PASSWORD, CREATEDATE, LOGINDATE, AUTHDATE) VALUES ('$account', '$token', '$password', '$date', '$date', '$date')";
-		if (mysql_query($sql2)) {
+		if (mysqli_query($mysql, $sql2)) {
 			return array('message' => 'Success', 'token' => $token);
 		}
 		else {
@@ -1693,17 +1711,18 @@ function logon($account, $password) {
 }
 
 function logout($account) {
-	$sql1 = mysql_query("SELECT * FROM USERMAS WHERE USERNO='$account'");
-	$fetch1 = mysql_fetch_array($sql1);
+	$mysql = $GLOBALS['mysql'];
+	$sql1 = mysqli_query($mysql, "SELECT * FROM USERMAS WHERE USERNO='$account'");
+	$fetch1 = mysqli_fetch_array($sql1);
 	if (empty($account)) {
 		return '請輸入帳號';
 	}
-	elseif (mysql_num_rows($sql1) == 0) {
+	elseif (mysqli_num_rows($sql1) == 0) {
 		return '未註冊的帳號';
 	}
 	else {
 		$sql2 = "UPDATE USERMAS SET TOKEN='' WHERE USERNO='$account'";
-		if (mysql_query($sql2)) {
+		if (mysqli_query($mysql, $sql2)) {
 			return 'Success';
 		}
 		else {

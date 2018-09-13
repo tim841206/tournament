@@ -42,8 +42,8 @@ if (isset($_POST['event'])) {
 elseif (isset($_GET['host']) && isset($_GET['gameno'])) {
 	$host = $_GET['host'];
 	$gameno = $_GET['gameno'];
-	$sql = mysql_query("SELECT * FROM USERMAS WHERE USERNO='$host'");
-	$fetch = mysql_fetch_array($sql);
+	$sql = mysqli_query($mysql, "SELECT * FROM USERMAS WHERE USERNO='$host'");
+	$fetch = mysqli_fetch_array($sql);
 	if (isset($_COOKIE['account']) && isset($_COOKIE['token']) && $_COOKIE['account'] == $host && $_COOKIE['token'] == $fetch['TOKEN']) {
 		if (isset($_GET['type']) && $_GET['type'] == 'assign') {
 			$content = file_get_contents($host."/".$gameno."/assign.html");
