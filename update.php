@@ -21,6 +21,9 @@ for ($i = 1; $i < count($above); $i++) {
 	elseif ($temp_above < $temp_below) {
 		mysqli_query($mysql, "UPDATE GAMESTATE SET ABOVESCORE='$temp_above', BELOWSCORE='$temp_below', WINNER=BELOW WHERE USERNO='$account' AND GAMENO='$gameno' AND PLAYNO='$i'");
 	}
+	elseif ($temp_above == $temp_below && $temp_above != '') {
+		mysqli_query($mysql, "UPDATE GAMESTATE SET ABOVESCORE='$temp_above', BELOWSCORE='$temp_below', WINNER='-1' WHERE USERNO='$account' AND GAMENO='$gameno' AND PLAYNO='$i'");
+	}
 	if ($gametype == 'A' || $i > $gap) {
 		updateGameChart($account, $gameno);
 	}

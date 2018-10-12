@@ -1296,12 +1296,18 @@ function updateCycleGameState($account, $gameno) {
 			$priority[3] += $game5['belowScore'];
 			$priority[1] += $game6['aboveScore'];
 			$priority[2] += $game6['belowScore'];
-			($game1['winner'] == $pos) ? $priority[0] += 1000 : $priority[1] += 1000;
-			($game2['winner'] == $pos+2) ? $priority[2] += 1000 : $priority[3] += 1000;
-			($game3['winner'] == $pos) ? $priority[0] += 1000 : $priority[2] += 1000;
-			($game4['winner'] == $pos+1) ? $priority[1] += 1000 : $priority[3] += 1000;
-			($game5['winner'] == $pos) ? $priority[0] += 1000 : $priority[3] += 1000;
-			($game6['winner'] == $pos+1) ? $priority[1] += 1000 : $priority[2] += 1000;
+			if ($game1['winner'] == $pos) $priority[0] += 1000;
+			elseif ($game1['winner'] == $pos+1) $priority[1] += 1000;
+			if ($game2['winner'] == $pos+2) $priority[2] += 1000;
+			elseif ($game2['winner'] == $pos+3) $priority[3] += 1000;
+			if ($game3['winner'] == $pos) $priority[0] += 1000;
+			elseif ($game3['winner'] == $pos+2) $priority[2] += 1000;
+			if ($game4['winner'] == $pos+1) $priority[1] += 1000;
+			elseif ($game4['winner'] == $pos+3) $priority[3] += 1000;
+			if ($game5['winner'] == $pos) $priority[0] += 1000;
+			elseif ($game5['winner'] == $pos+3) $priority[3] += 1000;
+			if ($game6['winner'] == $pos+1) $priority[1] += 1000;
+			elseif ($game6['winner'] == $pos+2) $priority[2] += 1000;
 			$first = 0;
 			$second = 0;
 			for ($i = 0; $i < count($priority); $i++) {
@@ -1363,8 +1369,8 @@ function updateCycleGameState($account, $gameno) {
 			}
 		}
 		else {
-			array_push($rank1, '');
-			array_push($rank3, '');
+			array_push($rank1, NULL);
+			array_push($rank3, NULL);
 		}
 		$game += 2;
 		$pos += 4;
@@ -1390,12 +1396,18 @@ function updateCycleGameState($account, $gameno) {
 			$priority[3] += $game5['belowScore'];
 			$priority[1] += $game6['aboveScore'];
 			$priority[2] += $game6['belowScore'];
-			($game1['winner'] == $pos) ? $priority[0] += 1000 : $priority[1] += 1000;
-			($game2['winner'] == $pos+2) ? $priority[2] += 1000 : $priority[3] += 1000;
-			($game3['winner'] == $pos) ? $priority[0] += 1000 : $priority[2] += 1000;
-			($game4['winner'] == $pos+1) ? $priority[1] += 1000 : $priority[3] += 1000;
-			($game5['winner'] == $pos) ? $priority[0] += 1000 : $priority[3] += 1000;
-			($game6['winner'] == $pos+1) ? $priority[1] += 1000 : $priority[2] += 1000;
+			if ($game1['winner'] == $pos) $priority[0] += 1000;
+			elseif ($game1['winner'] == $pos+1) $priority[1] += 1000;
+			if ($game2['winner'] == $pos+2) $priority[2] += 1000;
+			elseif ($game2['winner'] == $pos+3) $priority[3] += 1000;
+			if ($game3['winner'] == $pos) $priority[0] += 1000;
+			elseif ($game3['winner'] == $pos+2) $priority[2] += 1000;
+			if ($game4['winner'] == $pos+1) $priority[1] += 1000;
+			elseif ($game4['winner'] == $pos+3) $priority[3] += 1000;
+			if ($game5['winner'] == $pos) $priority[0] += 1000;
+			elseif ($game5['winner'] == $pos+3) $priority[3] += 1000;
+			if ($game6['winner'] == $pos+1) $priority[1] += 1000;
+			elseif ($game6['winner'] == $pos+2) $priority[2] += 1000;
 			if (max($priority) == $priority[0]) {
 				array_push($rank1, $pos);
 			}
@@ -1410,7 +1422,7 @@ function updateCycleGameState($account, $gameno) {
 			}
 		}
 		else {
-			array_push($rank1, '');
+			array_push($rank1, NULL);
 		}
 		$game += 2;
 		$pos += 4;
@@ -1427,9 +1439,12 @@ function updateCycleGameState($account, $gameno) {
 			$priority[2] += $game2['belowScore'];
 			$priority[1] += $game3['aboveScore'];
 			$priority[2] += $game3['belowScore'];
-			($game1['winner'] == $pos) ? $priority[0] += 1000 : $priority[1] += 1000;
-			($game2['winner'] == $pos) ? $priority[0] += 1000 : $priority[2] += 1000;
-			($game3['winner'] == $pos+1) ? $priority[1] += 1000 : $priority[2] += 1000;
+			if ($game1['winner'] == $pos) $priority[0] += 1000;
+			elseif ($game1['winner'] == $pos+1) $priority[1] += 1000;
+			if ($game2['winner'] == $pos) $priority[0] += 1000;
+			elseif ($game2['winner'] == $pos+2) $priority[2] += 1000;
+			if ($game3['winner'] == $pos+1) $priority[1] += 1000;
+			elseif ($game3['winner'] == $pos+2) $priority[2] += 1000;
 			if (max($priority) == $priority[0]) {
 				array_push($rank2, $pos);
 			}
@@ -1441,7 +1456,7 @@ function updateCycleGameState($account, $gameno) {
 			}
 		}
 		else {
-			array_push($rank2, '');
+			array_push($rank2, NULL);
 		}
 		$game++;
 		$pos += 3;
@@ -1458,9 +1473,12 @@ function updateCycleGameState($account, $gameno) {
 			$priority[2] += $game2['belowScore'];
 			$priority[1] += $game3['aboveScore'];
 			$priority[2] += $game3['belowScore'];
-			($game1['winner'] == $pos) ? $priority[0] += 1000 : $priority[1] += 1000;
-			($game2['winner'] == $pos) ? $priority[0] += 1000 : $priority[2] += 1000;
-			($game3['winner'] == $pos+1) ? $priority[1] += 1000 : $priority[2] += 1000;
+			if ($game1['winner'] == $pos) $priority[0] += 1000;
+			elseif ($game1['winner'] == $pos+1) $priority[1] += 1000;
+			if ($game2['winner'] == $pos) $priority[0] += 1000;
+			elseif ($game2['winner'] == $pos+2) $priority[2] += 1000;
+			if ($game3['winner'] == $pos+1) $priority[1] += 1000;
+			elseif ($game3['winner'] == $pos+2) $priority[2] += 1000;
 			$first = 0;
 			$second = 0;
 			for ($i = 0; $i < count($priority); $i++) {
@@ -1501,8 +1519,8 @@ function updateCycleGameState($account, $gameno) {
 			}
 		}
 		else {
-			array_push($rank2, '');
-			array_push($rank3, '');
+			array_push($rank2, NULL);
+			array_push($rank3, NULL);
 		}
 		$game++;
 		$pos += 3;
