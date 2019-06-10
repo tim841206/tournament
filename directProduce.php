@@ -128,6 +128,7 @@ else {
 		makePublic($account, $gameno);
 		makeEdit($account, $gameno);
 		clearBye($account, $gameno);
+		mysqli_query($mysql, "UPDATE USERMAS SET OCCUPY=0 WHERE USERNO='$account'");
 		echo json_encode(array('message' => 'Success', 'host' => $account, 'gameno' => $gameno));
 		makeGame($account, $gameno);
 	}
@@ -186,6 +187,7 @@ else {
 		makePublic($account, $gameno);
 		makeEdit($account, $gameno);
 		clearBye($account, $gameno);
+		mysqli_query($mysql, "UPDATE USERMAS SET OCCUPY=0 WHERE USERNO='$account'");
 		echo json_encode(array('message' => 'Success', 'host' => $account, 'gameno' => $gameno));
 		unlink($account.'/'.$gameno."/assign.html");
 		makeGame($account, $gameno);

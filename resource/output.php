@@ -1,6 +1,5 @@
 <?php
 include_once("custom.php");
-include_once("database.php");
 include_once("TCPDF/tcpdf.php");
 
 $account = $_GET['account'];
@@ -8,6 +7,9 @@ $gameno = $_GET['gameno'];
 output($account, $gameno);
 
 function output($account, $gameno) {
+	$mysql = mysqli_connect("localhost", "NTUcup", "0986036999");
+	mysqli_query($mysql, "SET NAMES utf8");
+	mysqli_select_db($mysql, "tournament");
 	$name = getGamename($account, $gameno);
 	$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 	$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
@@ -21,8 +23,8 @@ function output($account, $gameno) {
 	$pdf->SetFont('msungstdlight', 'B', 16);
 
 	$count = 0;
-	$sql = mysql_query("SELECT * FROM GAMESTATE WHERE USERNO='$account' AND GAMENO='$gameno' AND PLAYNO!='NULL'");
-	while ($fetch = mysql_fetch_array($sql)) {
+	$sql = mysqli_query($mysql, "SELECT * FROM GAMESTATE WHERE USERNO='$account' AND GAMENO='$gameno' AND PLAYNO!='NULL'");
+	while ($fetch = mysqli_fetch_array($sql)) {
 		if ($count % 3 == 0) {
 			$pdf->AddPage();
 		}

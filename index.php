@@ -46,6 +46,8 @@ elseif (isset($_GET['host']) && isset($_GET['gameno'])) {
 	$fetch = mysqli_fetch_array($sql);
 	if (isset($_COOKIE['account']) && isset($_COOKIE['token']) && $_COOKIE['account'] == $host && $_COOKIE['token'] == $fetch['TOKEN']) {
 		if (isset($_GET['type']) && $_GET['type'] == 'assign') {
+			$account = $_COOKIE['account'];
+			mysqli_query($mysql, "UPDATE USERMAS SET OCCUPY=1 WHERE USERNO='$account'");
 			$content = file_get_contents($host."/".$gameno."/assign.html");
 			echo $content;
 		}
